@@ -42,5 +42,4 @@ next-env.d.ts
 *.sublime-project
 *.sublime-workspace
 
-# environments folder
-src/environments/
+
