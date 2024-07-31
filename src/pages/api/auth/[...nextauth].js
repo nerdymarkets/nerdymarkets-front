@@ -11,6 +11,8 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
+        console.log('Authorizing with credentials:', credentials);
+        console.log('Backend URL:', `${process.env.BACKEND_URL}/auth/login`);
         try {
           const response = await axios.post(
             `${process.env.BACKEND_URL}/auth/login`,
@@ -21,6 +23,7 @@ export default NextAuth({
           );
 
           const user = response.data;
+          console.log(user);
 
           if (user && user.access_token) {
             return { ...user, name: credentials.username };
