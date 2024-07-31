@@ -11,6 +11,7 @@ import {
 } from 'reactstrap';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { getCsrfToken } from 'next-auth/react';
 import axios from 'axios';
 
 const RegisterForm = ({ isOpen, toggle, csrfToken, openSignInModal }) => {

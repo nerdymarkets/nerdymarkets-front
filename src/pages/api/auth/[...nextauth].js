@@ -11,11 +11,6 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        console.log('Authorizing with credentials:', credentials);
-        console.log(
-          'Backend URL:',
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`
-        );
         try {
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
