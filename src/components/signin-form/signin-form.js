@@ -8,15 +8,24 @@ import {
   Input,
   Button,
 } from 'reactstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-const SignInForm = ({ isOpen, toggle, csrfToken, openRegisterModal }) => {
+const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [csrfToken, setCsrfToken] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      const token = await getCsrfToken();
+      setCsrfToken(token);
+    };
+    fetchCsrfToken();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,14 +90,7 @@ const SignInForm = ({ isOpen, toggle, csrfToken, openRegisterModal }) => {
 SignInForm.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
-  csrfToken: PropTypes.string.isRequired,
   openRegisterModal: PropTypes.func.isRequired,
-};
-
-SignInForm.getInitialProps = async (context) => {
-  return {
-    csrfToken: await getCsrfToken(context),
-  };
 };
 
 export default SignInForm;
