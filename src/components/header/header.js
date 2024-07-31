@@ -5,7 +5,7 @@ import Link from 'next/link';
 import SignInForm from '@/components/signin-form/signin-form';
 import nerdylogo from '../../../public/logo/nerdylogo.png';
 import Image from 'next/image';
-import SignUpForm from '@/components/signup-form/signup-form';
+import RegisterForm from '@/components/register-form/register-form';
 import Profile from '../profile/profile';
 
 const Header = () => {
@@ -83,10 +83,10 @@ const Header = () => {
         toggle={toggleSignInModal}
         openRegisterModal={toggleRegisterModal}
       />
-      <SignUpForm
+      <RegisterForm
         isOpen={isRegisterModalOpen}
         toggle={toggleRegisterModal}
-        openSignInModal={toggleSignInModal}
+        openSignInModal={toggleSignInModal} 
       />
     </>
   );
