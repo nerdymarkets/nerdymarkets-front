@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getCsrfToken } from 'next-auth/react';
-import axios from 'axios';
+import { register } from '../../pages/api/auth';
 
 const RegisterForm = ({ isOpen, toggle, csrfToken, openSignInModal }) => {
   const [username, setUsername] = useState('');
@@ -23,19 +23,17 @@ const RegisterForm = ({ isOpen, toggle, csrfToken, openSignInModal }) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
-        {
-          username,
-          password,
-        }
-      );
+      const response = await register(username, password);
       if (response.status === 201) {
-        toggle(); // Close the register modal
-        openSignInModal(); // Open the sign-in modal
+        toggle();
+        openSignInModal();
+      } else if (response.status === 409) {
+        setError('User already exists. Please try logging in.');
+      } else {
+        setError('Registration failed. Please try again.');
       }
     } catch (error) {
-      setError('Registration failed. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
     }
   };
 
