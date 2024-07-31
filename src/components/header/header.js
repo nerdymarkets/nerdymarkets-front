@@ -86,7 +86,7 @@ const Header = () => {
       <RegisterForm
         isOpen={isRegisterModalOpen}
         toggle={toggleRegisterModal}
-        openSignInModal={toggleSignInModal} 
+        openSignInModal={toggleSignInModal}
       />
     </>
   );
