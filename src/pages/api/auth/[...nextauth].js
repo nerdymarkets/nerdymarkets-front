@@ -13,7 +13,7 @@ export default NextAuth({
       authorize: async (credentials) => {
         try {
           const response = await axios.post(
-            'https://nerdymarkets-dc103a34ca25.herokuapp.com/auth/login',
+            `${process.env.BACKEND_URL}/auth/login`,
             {
               username: credentials.username,
               password: credentials.password,
