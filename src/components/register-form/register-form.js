@@ -36,7 +36,6 @@ const RegisterForm = ({ isOpen, toggle, csrfToken, openSignInModal }) => {
       }
     } catch (error) {
       setError('Registration failed. Please try again.');
-      console.error('Registration error:', error);
     }
   };
 

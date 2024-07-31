@@ -21,7 +21,6 @@ export default NextAuth({
           );
 
           const user = response.data;
-          console.log(user);
 
           if (user && user.access_token) {
             return { ...user, name: credentials.username };
