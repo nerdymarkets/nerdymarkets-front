@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getSession } from 'next-auth/react';
 import {
   Dropdown,
   DropdownToggle,
@@ -9,24 +8,12 @@ import {
   Spinner,
 } from 'reactstrap';
 import Avatar from './avatar';
+import { signOut } from 'next-auth/react';
 
-const Profile = ({ session, onSessionTimeout }) => {
+const Profile = ({ session }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const currentSession = await getSession();
-      if (!currentSession) {
-        onSessionTimeout();
-      }
-    };
-
-    const interval = setInterval(checkSession, 60000);
-
-    return () => clearInterval(interval);
-  }, [onSessionTimeout]);
 
   if (!session) {
     return (
@@ -50,7 +37,9 @@ const Profile = ({ session, onSessionTimeout }) => {
           Account settings
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem onClick={onSessionTimeout}>Logout</DropdownItem>
+        <DropdownItem onClick={() => signOut({ callbackUrl: '/' })}>
+          Logout
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
@@ -62,7 +51,6 @@ Profile.propTypes = {
       email: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  onSessionTimeout: PropTypes.func.isRequired,
 };
 
 export default Profile;

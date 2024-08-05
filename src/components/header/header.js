@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSession, signOut, getSession } from 'next-auth/react';
+import { useState, useCallback } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { NavItem, NavLink, Nav, Navbar } from 'reactstrap';
 import Link from 'next/link';
 import SignInForm from '@/components/signin-form/signin-form';
@@ -9,7 +9,8 @@ import RegisterForm from '@/components/register-form/register-form';
 import Profile from '../profile/profile';
 
 const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
@@ -33,24 +34,6 @@ const Header = () => {
     toggleRegisterModal();
   };
 
-  const handleSessionTimeout = useCallback(async () => {
-    await signOut({ callbackUrl: '/' });
-    toggleSignInModal();
-  }, [toggleSignInModal]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const currentSession = await getSession();
-      if (!currentSession) {
-        handleSessionTimeout();
-      }
-    };
-
-    const interval = setInterval(checkSession, 6000000);
-
-    return () => clearInterval(interval);
-  }, [handleSessionTimeout]);
-
   return (
     <>
       <Navbar className="flex flex-end">
@@ -70,11 +53,8 @@ const Header = () => {
               </NavLink>
             </NavItem>
           )}
-          {session && (
-            <Profile
-              session={session}
-              onSessionTimeout={handleSessionTimeout}
-            />
+          {session && status === 'authenticated' && (
+            <Profile session={session} />
           )}
         </Nav>
       </Navbar>
