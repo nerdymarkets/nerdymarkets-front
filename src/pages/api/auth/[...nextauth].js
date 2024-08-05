@@ -18,7 +18,6 @@ export default NextAuth({
             return {
               ...user,
               accessToken: user.access_token,
-              email: credentials.email,
             };
           }
           return null;
@@ -41,6 +40,9 @@ export default NextAuth({
       if (user) {
         token.accessToken = user.accessToken;
         token.email = user.email;
+        token.firstname = user.firstname;
+        token.lastname = user.lastname;
+        token.dateOfBirth = user.dateOfBirth;
         token.expires = Date.now() + 2 * 60 * 60 * 1000;
       }
       if (Date.now() > token.expires) {
@@ -56,6 +58,9 @@ export default NextAuth({
       session.accessToken = token.accessToken;
       session.user = {
         email: token.email,
+        firstname: token.firstname,
+        lastname: token.lastname,
+        dateOfBirth: token.dateOfBirth,
       };
 
       return session;

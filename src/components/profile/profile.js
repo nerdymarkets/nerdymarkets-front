@@ -11,6 +11,7 @@ import Avatar from './avatar';
 import { signOut } from 'next-auth/react';
 
 const Profile = ({ session }) => {
+  const { user } = session;
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -30,7 +31,7 @@ const Profile = ({ session }) => {
         color="secondary"
         className="d-flex align-items-center"
       >
-        <Avatar name={session.user.email} className="mr-2" />
+        <Avatar name={user.firstname} className="mr-2" />
       </DropdownToggle>
       <DropdownMenu className="text-md">
         <DropdownItem onClick={() => alert('Settings clicked')}>
@@ -48,7 +49,7 @@ const Profile = ({ session }) => {
 Profile.propTypes = {
   session: PropTypes.shape({
     user: PropTypes.shape({
-      email: PropTypes.string.isRequired,
+      firstname: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

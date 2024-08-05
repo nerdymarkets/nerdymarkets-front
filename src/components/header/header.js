@@ -10,7 +10,6 @@ import Profile from '../profile/profile';
 
 const Header = () => {
   const { data: session, status } = useSession();
-
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
