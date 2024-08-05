@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import axios from 'axios';
+import { login } from '../auth';
+import { secretKey } from '../../../environments/environment';
 
 export default NextAuth({
   providers: [
@@ -12,15 +13,7 @@ export default NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          const response = await axios.post(
-            'https://nerdymarkets-dc103a34ca25.herokuapp.com/auth/login',
-            {
-              username: credentials.username,
-              password: credentials.password,
-            }
-          );
-
-          const user = response.data;
+          const user = await login(credentials.username, credentials.password);
 
           if (user && user.access_token) {
             return { ...user, name: credentials.username };
@@ -56,5 +49,5 @@ export default NextAuth({
       return session;
     },
   },
-  secret: process.env.SECRET_KEY,
+  secret: secretKey,
 });

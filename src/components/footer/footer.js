@@ -10,7 +10,14 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center w-full justify-between">
           <div className="mb-6 md:mb-0">
             <AnimationWrapper delay={0.3}>
-              <Image src={nerdylogo} alt="logo" width={300} height={250} />
+              <Image
+                src={nerdylogo}
+                alt="logo"
+                width={300}
+                height={250}
+                priority={true}
+                placeholder="blur"
+              />
 
               <p className="text-lg font-light">Join us and be successful.</p>
             </AnimationWrapper>
