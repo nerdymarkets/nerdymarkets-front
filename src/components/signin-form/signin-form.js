@@ -14,7 +14,7 @@ import { getCsrfToken, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const router = useRouter();
@@ -30,7 +30,7 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await signIn('credentials', {
-      username,
+      email,
       password,
       redirect: false,
     });
@@ -55,13 +55,13 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
         <Form onSubmit={handleSubmit}>
           <Input name="csrfToken" type="hidden" value={csrfToken} />
           <FormGroup>
-            <Label for="username">Username</Label>
+            <Label for="email">Username</Label>
             <Input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup>

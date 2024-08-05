@@ -1,22 +1,22 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { login } from '../auth';
-import { secretKey } from '../../../environments/environment';
+import { login } from '@/pages/api/auth';
+import { secretKey } from '@/environments/environment';
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
         try {
-          const user = await login(credentials.username, credentials.password);
+          const user = await login(credentials.email, credentials.password);
 
           if (user && user.access_token) {
-            return { ...user, name: credentials.username };
+            return { ...user, email: credentials.email };
           }
 
           return null;
@@ -36,15 +36,17 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.access_token;
-        token.name = user.name;
+        token.accessToken = user.accessToken;
+        token.email = user.email;
       }
 
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
-      session.user = { name: token.name };
+      session.user = {
+        email: token.email,
+      };
 
       return session;
     },

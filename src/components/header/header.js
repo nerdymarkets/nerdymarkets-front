@@ -46,7 +46,7 @@ const Header = () => {
       }
     };
 
-    const interval = setInterval(checkSession, 60000);
+    const interval = setInterval(checkSession, 6000000);
 
     return () => clearInterval(interval);
   }, [handleSessionTimeout]);
@@ -86,7 +86,7 @@ const Header = () => {
       <RegisterForm
         isOpen={isRegisterModalOpen}
         toggle={toggleRegisterModal}
-        openSignInModal={toggleSignInModal}
+        openLoginModal={toggleSignInModal}
       />
     </>
   );

@@ -43,7 +43,7 @@ const Profile = ({ session, onSessionTimeout }) => {
         color="secondary"
         className="d-flex align-items-center"
       >
-        <Avatar name={session.user.name} className="mr-2" />
+        <Avatar name={session.user.email} className="mr-2" />
       </DropdownToggle>
       <DropdownMenu className="text-md">
         <DropdownItem onClick={() => alert('Settings clicked')}>
@@ -59,7 +59,7 @@ const Profile = ({ session, onSessionTimeout }) => {
 Profile.propTypes = {
   session: PropTypes.shape({
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   onSessionTimeout: PropTypes.func.isRequired,
