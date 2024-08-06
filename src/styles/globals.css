@@ -19,6 +19,8 @@
 body {
   height: 100vh;
   margin: 0;
+  padding: 0;
+  padding-right: 0 !important;
 }
 @layer utilities {
   .text-balance {

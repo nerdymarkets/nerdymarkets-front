@@ -33,6 +33,10 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
     };
     fetchCsrfToken();
   }, []);
+  const onOpenLoginModal = () => {
+    toggle();
+    openLoginModal();
+  };
 
   const toggleVerificationModal = () => {
     setVerificationModalOpen(!isVerificationModalOpen);
@@ -134,7 +138,7 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
             <Button type="submit" color="primary" disabled={isLoading}>
               {isLoading ? <Spinner size="sm" /> : 'Register'}
             </Button>
-            <Button color="link" onClick={toggle}>
+            <Button color="link" onClick={onOpenLoginModal}>
               Already have an account? Login
             </Button>
           </Form>
