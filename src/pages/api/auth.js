@@ -70,3 +70,26 @@ export async function changePassword(token, oldPassword, newPassword) {
     throw new Error(error.response.data.message || 'Password change failed');
   }
 }
+export async function resetPassword(token, newPassword) {
+  try {
+    const response = await axios.post(`${loginUrl}/auth/reset-password`, {
+      token,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message || 'Password reset failed');
+  }
+}
+export async function sendPasswordResetLink(email) {
+  try {
+    const response = await axios.post(`${loginUrl}/auth/forgot-password`, {
+      email,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response.data.message || 'Password reset link request failed'
+    );
+  }
+}
