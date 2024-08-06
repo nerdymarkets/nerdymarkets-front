@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getSession } from 'next-auth/react';
 import {
   Dropdown,
   DropdownToggle,
@@ -9,25 +8,13 @@ import {
   Spinner,
 } from 'reactstrap';
 import Avatar from './avatar';
-
-const Profile = ({ session, onSessionTimeout }) => {
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
+const Profile = ({ session }) => {
+  const { user } = session;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const currentSession = await getSession();
-      if (!currentSession) {
-        onSessionTimeout();
-      }
-    };
-
-    const interval = setInterval(checkSession, 60000);
-
-    return () => clearInterval(interval);
-  }, [onSessionTimeout]);
-
+  const router = useRouter();
   if (!session) {
     return (
       <Spinner color="light" type="grow">
@@ -35,7 +22,9 @@ const Profile = ({ session, onSessionTimeout }) => {
       </Spinner>
     );
   }
-
+  const navigateProfilepage = () => {
+    router.push('/profile');
+  };
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
       <DropdownToggle
@@ -43,14 +32,16 @@ const Profile = ({ session, onSessionTimeout }) => {
         color="secondary"
         className="d-flex align-items-center"
       >
-        <Avatar name={session.user.name} className="mr-2" />
+        <Avatar name={user.firstname} className="mr-2" />
       </DropdownToggle>
       <DropdownMenu className="text-md">
-        <DropdownItem onClick={() => alert('Settings clicked')}>
+        <DropdownItem onClick={navigateProfilepage}>
           Account settings
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem onClick={onSessionTimeout}>Logout</DropdownItem>
+        <DropdownItem onClick={() => signOut({ callbackUrl: '/' })}>
+          Logout
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
@@ -59,10 +50,9 @@ const Profile = ({ session, onSessionTimeout }) => {
 Profile.propTypes = {
   session: PropTypes.shape({
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      firstname: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  onSessionTimeout: PropTypes.func.isRequired,
 };
 
 export default Profile;

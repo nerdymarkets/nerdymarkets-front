@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSession, signOut, getSession } from 'next-auth/react';
-import { NavItem, NavLink, Nav, Navbar } from 'reactstrap';
+import { useState, useCallback } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { NavItem, NavLink, Nav, Navbar, Spinner } from 'reactstrap';
 import Link from 'next/link';
 import SignInForm from '@/components/signin-form/signin-form';
 import nerdylogo from '../../../public/logo/nerdylogo.png';
@@ -9,7 +9,7 @@ import RegisterForm from '@/components/register-form/register-form';
 import Profile from '../profile/profile';
 
 const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
@@ -32,25 +32,13 @@ const Header = () => {
   const handleRegisterClick = () => {
     toggleRegisterModal();
   };
-
-  const handleSessionTimeout = useCallback(async () => {
-    await signOut({ callbackUrl: '/' });
-    toggleSignInModal();
-  }, [toggleSignInModal]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const currentSession = await getSession();
-      if (!currentSession) {
-        handleSessionTimeout();
-      }
-    };
-
-    const interval = setInterval(checkSession, 60000);
-
-    return () => clearInterval(interval);
-  }, [handleSessionTimeout]);
-
+  if (status === 'loading') {
+    return (
+      <Spinner color="primary" type="grow">
+        Loading...
+      </Spinner>
+    );
+  }
   return (
     <>
       <Navbar className="flex flex-end">
@@ -70,11 +58,8 @@ const Header = () => {
               </NavLink>
             </NavItem>
           )}
-          {session && (
-            <Profile
-              session={session}
-              onSessionTimeout={handleSessionTimeout}
-            />
+          {session && status === 'authenticated' && (
+            <Profile session={session} />
           )}
         </Nav>
       </Navbar>
@@ -86,7 +71,7 @@ const Header = () => {
       <RegisterForm
         isOpen={isRegisterModalOpen}
         toggle={toggleRegisterModal}
-        openSignInModal={toggleSignInModal}
+        openLoginModal={toggleSignInModal}
       />
     </>
   );

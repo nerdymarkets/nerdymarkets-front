@@ -12,9 +12,11 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { NotificationClient } from '@/components/shared/notifications/stream';
+import { sendPasswordResetLink } from '@/pages/api/auth';
 
 const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const router = useRouter();
@@ -30,14 +32,15 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await signIn('credentials', {
-      username,
+      email,
       password,
       redirect: false,
     });
 
     if (result.error) {
-      // You can replace this with a proper error display
+      NotificationClient.error('Username or password is not correct');
     } else {
+      NotificationClient.success('Login successful.');
       toggle();
       router.push('/');
     }
@@ -47,7 +50,14 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
     toggle();
     openRegisterModal();
   };
-
+  const handlePasswordReset = async () => {
+    try {
+      await sendPasswordResetLink(email);
+      NotificationClient.success('Password reset link sent to your email.');
+    } catch (error) {
+      NotificationClient.error(error.message);
+    }
+  };
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="text-white" fade centered>
       <ModalBody className="bg-darkGray">
@@ -55,13 +65,13 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
         <Form onSubmit={handleSubmit}>
           <Input name="csrfToken" type="hidden" value={csrfToken} />
           <FormGroup>
-            <Label for="username">Username</Label>
+            <Label for="email">Username</Label>
             <Input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup>
@@ -77,9 +87,13 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
           <Button type="submit" color="primary">
             Sign in
           </Button>
-          <p className="mt-3">
+          <div className="mt-3">
             Don&apos;t have an account?{' '}
             <Button onClick={onRegisterClick}>Register</Button>
+          </div>
+          <p className="mt-3">
+            Forgot your password?{' '}
+            <Button onClick={handlePasswordReset}>Reset Password</Button>
           </p>
         </Form>
       </ModalBody>

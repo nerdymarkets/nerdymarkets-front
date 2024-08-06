@@ -1,24 +1,25 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { login } from '../auth';
-import { secretKey } from '../../../environments/environment';
+import { login } from '@/pages/api/auth';
+import { secretKey } from '@/environments/environment';
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
         try {
-          const user = await login(credentials.username, credentials.password);
-
+          const user = await login(credentials.email, credentials.password);
           if (user && user.access_token) {
-            return { ...user, name: credentials.username };
+            return {
+              ...user,
+              accessToken: user.access_token,
+            };
           }
-
           return null;
         } catch (error) {
           return null;
@@ -32,19 +33,37 @@ export default NextAuth({
   },
   session: {
     jwt: true,
+    maxAge: 2 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.access_token;
-        token.name = user.name;
+        token.accessToken = user.accessToken;
+        token.email = user.email;
+        token.firstname = user.firstname;
+        token.lastname = user.lastname;
+        token.dateOfBirth = user.dateOfBirth;
+        token.isVerified = user.isVerified;
+        token.expires = Date.now() + 2 * 60 * 60 * 1000;
+      }
+      if (Date.now() > token.expires) {
+        return null;
       }
 
       return token;
     },
     async session({ session, token }) {
+      if (Date.now() > token.expires) {
+        return null;
+      }
       session.accessToken = token.accessToken;
-      session.user = { name: token.name };
+      session.user = {
+        email: token.email,
+        firstname: token.firstname,
+        lastname: token.lastname,
+        dateOfBirth: token.dateOfBirth,
+        isVerified: token.isVerified,
+      };
 
       return session;
     },

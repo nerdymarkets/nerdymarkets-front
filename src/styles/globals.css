@@ -19,6 +19,8 @@
 body {
   height: 100vh;
   margin: 0;
+  padding: 0;
+  padding-right: 0 !important;
 }
 @layer utilities {
   .text-balance {
@@ -40,4 +42,13 @@ body {
   font-size: 20px;
   font-weight: bold;
   text-transform: uppercase;
+}
+.notification-container {
+  position: absolute;
+  background: white;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1050;
+  width: auto;
+  max-width: 300px;
 }

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { SessionProvider } from 'next-auth/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/globals.css';
-
+import { Notifications } from '@/components/shared/notifications/notifications';
 export default function App({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
       <Layout>
+        <Notifications />
         <Component {...pageProps} />
       </Layout>
     </SessionProvider>
