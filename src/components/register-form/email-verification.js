@@ -24,7 +24,7 @@ const VerificationForm = ({ isOpen, toggle, email, openLoginModal }) => {
       const response = await verify(email, code);
       if (response.status === 201) {
         openLoginModal();
-        toggle(); // Close the verification modal
+        toggle();
       } else {
         setError('Verification failed. Please try again.');
       }

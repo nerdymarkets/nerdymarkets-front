@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-
+import { NotificationClient } from '@/components/shared/notifications/stream';
 const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,8 +36,9 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
     });
 
     if (result.error) {
-      // You can replace this with a proper error display
+      NotificationClient.error('Username or password is not correct');
     } else {
+      NotificationClient.success('Login successful.');
       toggle();
       router.push('/');
     }

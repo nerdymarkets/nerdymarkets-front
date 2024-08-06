@@ -7,13 +7,14 @@ import {
   Label,
   Input,
   Button,
-  Alert,
+  Spinner,
 } from 'reactstrap';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getCsrfToken } from 'next-auth/react';
 import { register } from '../../pages/api/auth';
 import VerificationForm from './email-verification';
+import { NotificationClient } from '@/components/shared/notifications/stream';
 
 const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
   const [firstname, setFirstname] = useState('');
@@ -22,7 +23,7 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isVerificationModalOpen, setVerificationModalOpen] = useState(false);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setIsLoading(true);
     try {
       const response = await register(
         firstname,
@@ -48,16 +49,23 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
         dateOfBirth,
         password
       );
+      setIsLoading(false);
       if (response.status === 201) {
         toggle();
         toggleVerificationModal();
+        NotificationClient.success(
+          'Registration successful. Please check your email for verification.'
+        );
       } else if (response.status === 409) {
-        setError('User already exists. Please try logging in.');
+        NotificationClient.error('User already exists. Please try logging in.');
       } else {
-        setError('Registration failed. Please try again.');
+        NotificationClient.error('Registration failed. Please try again.');
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setIsLoading(false); // Stop loading
+      NotificationClient.error(
+        'An unexpected error occurred. Please try again.'
+      );
     }
   };
 
@@ -66,7 +74,6 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
       <Modal isOpen={isOpen} toggle={toggle} centered>
         <ModalBody>
           <ModalHeader toggle={toggle}>Register</ModalHeader>
-          {error && <Alert color="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Input name="csrfToken" type="hidden" value={csrfToken} />
             <FormGroup>
@@ -124,8 +131,8 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
                 required
               />
             </FormGroup>
-            <Button type="submit" color="primary">
-              Register
+            <Button type="submit" color="primary" disabled={isLoading}>
+              {isLoading ? <Spinner size="sm" /> : 'Register'}
             </Button>
             <Button color="link" onClick={toggle}>
               Already have an account? Login
