@@ -9,13 +9,12 @@ import {
 } from 'reactstrap';
 import Avatar from './avatar';
 import { signOut } from 'next-auth/react';
-
+import { useRouter } from 'next/router';
 const Profile = ({ session }) => {
   const { user } = session;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
+  const router = useRouter();
   if (!session) {
     return (
       <Spinner color="light" type="grow">
@@ -23,7 +22,9 @@ const Profile = ({ session }) => {
       </Spinner>
     );
   }
-
+  const navigateProfilepage = () => {
+    router.push('/profile');
+  };
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
       <DropdownToggle
@@ -34,7 +35,7 @@ const Profile = ({ session }) => {
         <Avatar name={user.firstname} className="mr-2" />
       </DropdownToggle>
       <DropdownMenu className="text-md">
-        <DropdownItem onClick={() => alert('Settings clicked')}>
+        <DropdownItem onClick={navigateProfilepage}>
           Account settings
         </DropdownItem>
         <DropdownItem divider />

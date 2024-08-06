@@ -51,3 +51,22 @@ export async function refreshToken(token) {
     throw new Error('Token refresh failed');
   }
 }
+export async function changePassword(token, oldPassword, newPassword) {
+  try {
+    const response = await axios.post(
+      `${loginUrl}/auth/change-password`,
+      {
+        oldPassword,
+        newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message || 'Password change failed');
+  }
+}

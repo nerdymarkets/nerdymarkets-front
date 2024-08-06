@@ -43,6 +43,7 @@ export default NextAuth({
         token.firstname = user.firstname;
         token.lastname = user.lastname;
         token.dateOfBirth = user.dateOfBirth;
+        token.isVerified = user.isVerified;
         token.expires = Date.now() + 2 * 60 * 60 * 1000;
       }
       if (Date.now() > token.expires) {
@@ -61,6 +62,7 @@ export default NextAuth({
         firstname: token.firstname,
         lastname: token.lastname,
         dateOfBirth: token.dateOfBirth,
+        isVerified: token.isVerified,
       };
 
       return session;

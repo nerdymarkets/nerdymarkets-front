@@ -1,57 +1,85 @@
-import { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { getSession, signOut } from 'next-auth/react';
+import ChangePassword from '@/components/profile/change-password';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Spinner,
+} from 'reactstrap';
+const Profile = () => {
+  const { data: session, status } = useSession();
+  const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
+  const togglePasswordChangeModal = () => {
+    setPasswordChangeModalOpen(!passwordChangeModalOpen);
+  };
 
-const Profile = ({ session }) => {
-  useEffect(() => {
-    const checkSession = async () => {
-      const currentSession = await getSession();
-      if (!currentSession) {
-        signOut();
-      }
-    };
-
-    const interval = setInterval(checkSession, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
+  if (status === 'loading') {
+    return (
+      <Spinner color="primary" type="grow">
+        Loading...
+      </Spinner>
+    );
+  }
 
   if (!session) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <h1>Profile Page</h1>
-      <p>Welcome, {session.user.name}</p>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-    </div>
+    <Container>
+      <Row className="justify-content-center">
+        <Col md="6">
+          <h2>Profile</h2>
+          <Form>
+            <FormGroup>
+              <Label for="firstname">First Name</Label>
+              <Input
+                type="text"
+                name="firstname"
+                id="firstname"
+                value={session.user.firstname}
+                readOnly
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="lastname">Last Name</Label>
+              <Input
+                type="text"
+                name="lastname"
+                id="lastname"
+                value={session.user.lastname}
+                readOnly
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                value={session.user.email}
+                readOnly
+              />
+            </FormGroup>
+
+            <Button color="primary" onClick={togglePasswordChangeModal}>
+              Change Password
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+      <ChangePassword
+        isOpen={passwordChangeModalOpen}
+        toggle={togglePasswordChangeModal}
+      />
+    </Container>
   );
 };
-
-Profile.propTypes = {
-  session: PropTypes.shape({
-    user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/signin',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { session },
-  };
-}
 
 export default Profile;

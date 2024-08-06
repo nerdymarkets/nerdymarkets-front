@@ -62,7 +62,7 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
         NotificationClient.error('Registration failed. Please try again.');
       }
     } catch (error) {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
       NotificationClient.error(
         'An unexpected error occurred. Please try again.'
       );
