@@ -44,6 +44,12 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    if (!firstname || !lastname || !email || !password) {
+      NotificationClient.error(
+        'Registration successful. Please check your email for verification.'
+      );
+      return;
+    }
     try {
       const response = await register(firstname, lastname, email, password);
       setIsLoading(false);
