@@ -9,19 +9,12 @@ export async function login(email, password) {
   return response.data;
 }
 
-export async function register(
-  firstname,
-  lastname,
-  email,
-  dateOfBirth,
-  password
-) {
+export async function register(firstname, lastname, email, password) {
   try {
     const response = await axios.post(`${loginUrl}/auth/register`, {
       firstname,
       lastname,
       email,
-      dateOfBirth,
       password,
     });
     return response;
@@ -39,16 +32,6 @@ export async function verify(email, code) {
     return response;
   } catch (error) {
     return error.response;
-  }
-}
-export async function refreshToken(token) {
-  try {
-    const response = await axios.post(`${loginUrl}/auth/refresh-token`, {
-      token,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Token refresh failed');
   }
 }
 export async function changePassword(token, oldPassword, newPassword) {
