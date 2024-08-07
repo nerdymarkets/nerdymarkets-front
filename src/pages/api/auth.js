@@ -34,16 +34,6 @@ export async function verify(email, code) {
     return error.response;
   }
 }
-export async function refreshToken(token) {
-  try {
-    const response = await axios.post(`${loginUrl}/auth/refresh-token`, {
-      token,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Token refresh failed');
-  }
-}
 export async function changePassword(token, oldPassword, newPassword) {
   try {
     const response = await axios.post(
