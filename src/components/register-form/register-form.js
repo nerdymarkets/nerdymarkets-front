@@ -20,7 +20,6 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,13 +45,7 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await register(
-        firstname,
-        lastname,
-        email,
-        dateOfBirth,
-        password
-      );
+      const response = await register(firstname, lastname, email, password);
       setIsLoading(false);
       if (response.status === 201) {
         toggle();
@@ -110,17 +103,6 @@ const RegisterForm = ({ isOpen, toggle, openLoginModal }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="dateOfBirth">Date of Birth</Label>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
                 required
               />
             </FormGroup>

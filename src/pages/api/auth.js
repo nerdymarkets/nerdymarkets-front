@@ -9,19 +9,12 @@ export async function login(email, password) {
   return response.data;
 }
 
-export async function register(
-  firstname,
-  lastname,
-  email,
-  dateOfBirth,
-  password
-) {
+export async function register(firstname, lastname, email, password) {
   try {
     const response = await axios.post(`${loginUrl}/auth/register`, {
       firstname,
       lastname,
       email,
-      dateOfBirth,
       password,
     });
     return response;
