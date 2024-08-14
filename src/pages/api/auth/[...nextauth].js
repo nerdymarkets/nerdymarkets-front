@@ -44,6 +44,8 @@ export default NextAuth({
         token.lastname = user.lastname;
         token.dateOfBirth = user.dateOfBirth;
         token.isVerified = user.isVerified;
+        token.paypalsubscriptions = user.paypalsubscriptions;
+        token.stripeSubscriptions = user.stripeSubscriptions;
         token.expires = Date.now() + 2 * 60 * 60 * 1000;
       }
       if (Date.now() > token.expires) {
@@ -63,6 +65,8 @@ export default NextAuth({
         lastname: token.lastname,
         dateOfBirth: token.dateOfBirth,
         isVerified: token.isVerified,
+        paypalsubscriptions: token.paypalsubscriptions,
+        stripeSubscriptions: token.stripeSubscriptions,
       };
 
       return session;
