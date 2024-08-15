@@ -11,7 +11,10 @@ import { Elements } from '@stripe/react-stripe-js';
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
-
+console.log(
+  'Stripe Publishable Key:',
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 export default function App({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
