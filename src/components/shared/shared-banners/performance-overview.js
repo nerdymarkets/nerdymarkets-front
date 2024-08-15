@@ -38,7 +38,7 @@ const PerformanceOverview = () => {
       <AnimationWrapper delay={0.4}>
         <div className="text-customPink font-semibold gap-6 flex flex-col items-center text-center">
           <h4>Smart Volatility ETF Portfolios Performance</h4>
-          <h7>Backtesting Results 2015-2023</h7>
+          <h6>Backtesting Results 2015-2023</h6>
           <Image
             src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=646,h=349,fit=crop/Aq2BvWKQ6gSzv6l3/capture2-mk3DJGrrX9h7N3Zk.JPG"
             alt="banner-image"
