@@ -67,7 +67,9 @@ const Stripe = () => {
       }
 
       const planId = selectedPlan === 'monthly' ? planIdMonthly : planIdYearly;
-
+      if (!paymentMethod?.id) {
+        throw new Error('Failed to create payment method.');
+      }
       const paymentMethodResponse = await createStripePaymentMethod(
         session.accessToken,
         paymentMethod.id,
@@ -84,6 +86,10 @@ const Stripe = () => {
         planId,
         selectedPlan
       );
+
+      if (subscriptionResponse.error) {
+        throw new Error(subscriptionResponse.error);
+      }
 
       setSubscriptionId(subscriptionResponse.stripeSubscriptionId);
       NotificationClient.success('Subscription created successfully!');
