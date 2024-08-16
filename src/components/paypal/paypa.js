@@ -4,8 +4,8 @@ import { NotificationClient } from '@/components/shared/notifications/stream';
 
 const Paypal = () => {
   const { data: session } = useSession();
-
-  const planId = 'P-4MA25770WY783122SM22NYCQ';
+  const planId = 'P-1E587393J1454482RM27XRMI';
+  // const planId = 'P-4MA25770WY783122SM22NYCQ'; test version
   const handleSubmit = async (e) => {
     e.preventDefault();
     const subscriber = {
