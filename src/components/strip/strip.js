@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { NotificationClient } from '@/components/shared/notifications/stream';
 import {
   createStripeSubscription,
   createStripePaymentMethod,
-  cancelStripeSubscription,
-  getStripeSubscriptionById,
 } from '@/pages/api/stripe-api';
 
 const Stripe = () => {
@@ -16,30 +14,8 @@ const Stripe = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [selectedPlan, setSelectedPlan] = useState('monthly');
-  const [subscriptionId, setSubscriptionId] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchSubscription() {
-      if (session?.user?.stripeSubscriptions?.length > 0) {
-        setLoading(true);
-        try {
-          const subscription = await getStripeSubscriptionById(
-            session.user.stripeSubscriptions[0],
-            session.accessToken
-          );
-          if (subscription) {
-            setSubscriptionId(subscription.stripeSubscriptionId);
-          }
-        } catch (err) {
-          NotificationClient.error('Failed to fetch subscription');
-        } finally {
-          setLoading(false);
-        }
-      }
-    }
-    fetchSubscription();
-  }, [session]);
+  const [loading, setLoading] = useState(false);
 
   const handlePlanChange = (event) => {
     setSelectedPlan(event.target.value);
@@ -91,40 +67,10 @@ const Stripe = () => {
         throw new Error(subscriptionResponse.error);
       }
 
-      setSubscriptionId(subscriptionResponse.stripeSubscriptionId);
       NotificationClient.success('Subscription created successfully!');
     } catch (err) {
       NotificationClient.error(
         err.message || 'An error occurred during the subscription process.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCancelSubscription = async () => {
-    if (!subscriptionId) {
-      NotificationClient.error('No subscription found to cancel.');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await cancelStripeSubscription(
-        session.accessToken,
-        subscriptionId
-      );
-
-      if (response.status === 'canceled') {
-        NotificationClient.success(response.message);
-        setSubscriptionId(null);
-      } else {
-        NotificationClient.error('Failed to cancel subscription.');
-      }
-    } catch (err) {
-      NotificationClient.error(
-        err.message || 'An error occurred during subscription cancellation.'
       );
     } finally {
       setLoading(false);
@@ -149,12 +95,6 @@ const Stripe = () => {
           {loading ? 'Processing...' : 'Pay with Stripe'}
         </button>
       </form>
-
-      {subscriptionId && (
-        <button onClick={handleCancelSubscription} disabled={loading}>
-          {loading ? 'Canceling...' : 'Cancel Subscription'}
-        </button>
-      )}
     </div>
   );
 };
