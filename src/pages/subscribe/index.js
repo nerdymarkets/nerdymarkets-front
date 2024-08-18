@@ -3,7 +3,7 @@ import { Container } from 'reactstrap';
 import Stripe from '@/components/strip/strip';
 export default function Subscribe() {
   return (
-    <Container>
+    <Container className="flex flex-col gap-40">
       <Paypal />
       <Stripe />
     </Container>

@@ -1,18 +1,26 @@
 import { createSubscription } from '@/pages/api/paypal';
 import { useSession } from 'next-auth/react';
 import { NotificationClient } from '@/components/shared/notifications/stream';
-
+import { useState } from 'react';
+import { Button } from 'reactstrap';
 const Paypal = () => {
   const { data: session } = useSession();
-  const planId = 'P-1E587393J1454482RM27XRMI';
-  // const planId = 'P-4MA25770WY783122SM22NYCQ'; test version
+  const [selectedPlan, setSelectedPlan] = useState('monthly');
+
+  const monthlyPlanId = 'P-59W222941C209392UM3BANWI';
+  const yearlyPlanId = 'P-7JP800194N2561458M3BAQLI';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const planId = selectedPlan === 'yearly' ? yearlyPlanId : monthlyPlanId;
+
     const subscriber = {
       given_name: session.firstname,
       surname: session.lastname,
       email_address: session.email,
     };
+
     const response = await createSubscription(
       session.accessToken,
       planId,
@@ -27,9 +35,20 @@ const Paypal = () => {
   };
 
   return (
-    <>
-      <button onClick={handleSubmit}>Subscribe with Paypal</button>
-    </>
+    <div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <label htmlFor="subscription-plan">Choose a subscription plan:</label>
+        <select
+          id="subscription-plan"
+          value={selectedPlan}
+          onChange={(e) => setSelectedPlan(e.target.value)}
+        >
+          <option value="monthly">Monthly Subscription</option>
+          <option value="yearly">Yearly Subscription</option>
+        </select>
+        <Button type="submit">Subscribe with Paypal</Button>
+      </form>
+    </div>
   );
 };
 

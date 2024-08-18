@@ -6,7 +6,7 @@ import {
   createStripeSubscription,
   createStripePaymentMethod,
 } from '@/pages/api/stripe-api';
-
+import { Button } from 'reactstrap';
 const Stripe = () => {
   const { data: session } = useSession();
   const planIdMonthly = 'price_1PnfpuRqt9ErfRwnRVuXccZ9';
@@ -91,9 +91,9 @@ const Stripe = () => {
           <option value="yearly">Yearly - $100/year</option>
         </select>
         <CardElement />
-        <button type="submit" disabled={!stripe || loading}>
+        <Button type="submit" disabled={!stripe || loading}>
           {loading ? 'Processing...' : 'Pay with Stripe'}
-        </button>
+        </Button>
       </form>
     </div>
   );
