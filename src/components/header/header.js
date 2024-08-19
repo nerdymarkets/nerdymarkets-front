@@ -47,11 +47,13 @@ const Header = () => {
           <Image src={nerdylogo} alt="logo" width={300} height={250} />
         </Link>
         <Nav pills className="py-4 flex items-center">
-          <NavItem>
-            <NavLink href="#" onClick={handleAuthClick}>
-              {!session && 'Sign In'}
-            </NavLink>
-          </NavItem>
+          {!session && status !== 'authenticated' && (
+            <NavItem>
+              <NavLink href="#" onClick={handleAuthClick}>
+                Sign In
+              </NavLink>
+            </NavItem>
+          )}
           {!session && (
             <NavItem>
               <NavLink href="#" onClick={handleRegisterClick}>
