@@ -59,42 +59,75 @@ const SignInForm = ({ isOpen, toggle, openRegisterModal }) => {
     }
   };
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="text-white" fade centered>
-      <ModalBody className="bg-darkGray">
-        <ModalHeader toggle={toggle}>Sign In</ModalHeader>
-        <Form onSubmit={handleSubmit}>
+    <Modal isOpen={isOpen} toggle={toggle} centered>
+      <ModalHeader
+        toggle={toggle}
+        className="bg-primary text-white rounded-t-md"
+      >
+        Sign In
+      </ModalHeader>
+      <ModalBody className="bg-gray-50 rounded-b-3xl px-6 py-4">
+        <Form onSubmit={handleSubmit} className="space-y-4">
           <Input name="csrfToken" type="hidden" value={csrfToken} />
           <FormGroup>
-            <Label for="email">Username</Label>
+            <Label
+              for="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Username
+            </Label>
             <Input
               id="email"
               name="email"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </FormGroup>
           <FormGroup>
-            <Label for="password">Password</Label>
+            <Label
+              for="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </Label>
             <Input
               id="password"
               name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </FormGroup>
-          <Button type="submit" color="primary">
+          <Button
+            type="submit"
+            color="primary"
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm"
+          >
             Sign in
           </Button>
-          <div className="mt-3">
+          <div className="mt-4 text-center text-sm text-gray-600">
             Don&apos;t have an account?{' '}
-            <Button onClick={onRegisterClick}>Register</Button>
+            <Button
+              onClick={onRegisterClick}
+              color="link"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Register
+            </Button>
           </div>
-          <p className="mt-3">
+          <div className="mt-4 text-center text-sm text-gray-600">
             Forgot your password?{' '}
-            <Button onClick={handlePasswordReset}>Reset Password</Button>
-          </p>
+            <Button
+              onClick={handlePasswordReset}
+              color="link"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Reset Password
+            </Button>
+          </div>
         </Form>
       </ModalBody>
     </Modal>

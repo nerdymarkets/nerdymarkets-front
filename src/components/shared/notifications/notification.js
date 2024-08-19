@@ -1,24 +1,25 @@
-import { Alert } from 'reactstrap';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { toast, ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Notification({ notification }) {
-  const [visible, setVisible] = useState(true);
-
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (notification) {
+      toast[notification.type](notification.message, {
+        autoClose: 3000,
+        position: 'top-right',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Slide,
+      });
+    }
+  }, [notification]);
 
-  return (
-    <Alert
-      color={notification.type}
-      isOpen={visible}
-      toggle={() => setVisible(false)}
-    >
-      {notification.message}
-    </Alert>
-  );
+  return <ToastContainer transition={Slide} />;
 }
 
 Notification.propTypes = {

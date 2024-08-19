@@ -7,8 +7,8 @@ const Paypal = () => {
   const { data: session } = useSession();
   const [selectedPlan, setSelectedPlan] = useState('monthly');
 
-  const monthlyPlanId = 'P-59W222941C209392UM3BANWI';
-  const yearlyPlanId = 'P-7JP800194N2561458M3BAQLI';
+  const monthlyPlanId = process.env.PAYPAL_PLAN_ID_MONTHLY;
+  const yearlyPlanId = process.env.PAYPAL_PLAN_ID_YEARLY;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -9,8 +9,8 @@ import {
 import { Button } from 'reactstrap';
 const Stripe = () => {
   const { data: session } = useSession();
-  const planIdMonthly = 'price_1PnfpuRqt9ErfRwnRVuXccZ9';
-  const planIdYearly = 'price_1PnfqZRqt9ErfRwngOedBzfG';
+  const planIdMonthly = process.env.STRIPE_PLAN_ID_MONTHLY;
+  const planIdYearly = process.env.STRIPE_PLAN_ID_YEARLY;
   const stripe = useStripe();
   const elements = useElements();
   const [selectedPlan, setSelectedPlan] = useState('monthly');

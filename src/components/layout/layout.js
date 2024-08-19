@@ -7,11 +7,11 @@ import Footer from '../footer/footer';
 const inter = Inter({ subsets: ['latin'] });
 const Layout = ({ children }) => {
   return (
-    <div className={`flex flex-col min-h-screen ${inter.className}`}>
+    <div className={`flex flex-col  ${inter.className}`}>
       <Container fluid className="px-4 bg-black">
         <Header />
       </Container>
-      <div className="flex-grow">{children}</div>
+      <div className="flex-grow min-h-screen ">{children}</div>
       <Footer />
     </div>
   );

@@ -17,7 +17,6 @@
 }
 
 body {
-  height: 100vh;
   margin: 0;
   padding: 0;
   padding-right: 0 !important;
@@ -51,4 +50,8 @@ body {
   z-index: 1050;
   width: auto;
   max-width: 300px;
+}
+.dropdown-item:hover {
+  border-radius: 8px;
+  background-color: #dcdfe0;
 }

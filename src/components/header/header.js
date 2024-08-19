@@ -39,6 +39,7 @@ const Header = () => {
       </Spinner>
     );
   }
+
   return (
     <>
       <Navbar className="flex flex-end">
@@ -59,7 +60,7 @@ const Header = () => {
             </NavItem>
           )}
           {session && status === 'authenticated' && (
-            <Profile session={session} />
+            <Profile session={session} status={status} />
           )}
         </Nav>
       </Navbar>
