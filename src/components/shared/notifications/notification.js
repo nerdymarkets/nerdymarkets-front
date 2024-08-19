@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Notification({ notification }) {
   useEffect(() => {
-    if (notification) {
+    if (notification && notification.type && notification.message) {
       toast[notification.type](notification.message, {
         autoClose: 3000,
         position: 'top-right',
