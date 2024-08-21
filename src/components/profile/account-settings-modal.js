@@ -36,11 +36,14 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} toggle={toggle} centered>
-        <ModalHeader toggle={toggle} className="bg-primary text-white">
+      <Modal isOpen={isOpen} toggle={toggle} centered={true}>
+        <ModalHeader
+          toggle={toggle}
+          className="bg-coolGray text-white rounded-t-3xl font-bold text-lg"
+        >
           Account Settings
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className="bg-lightGray">
           <ListGroup flush>
             <ListGroupItem>
               <div className="flex items-center justify-between">
@@ -115,7 +118,7 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
             </ListGroupItem>
           </ListGroup>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="bg-lightGray rounded-b-3xl">
           <Button color="secondary" onClick={toggle}>
             Close
           </Button>

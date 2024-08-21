@@ -1,31 +1,27 @@
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { NotificationClient } from '@/components/shared/notifications/stream';
+import { toast } from 'react-toastify';
 import {
   createStripeSubscription,
   createStripePaymentMethod,
 } from '@/pages/api/stripe-api';
+import { useSession } from 'next-auth/react';
 import { Button } from 'reactstrap';
-const Stripe = () => {
-  const { data: session } = useSession();
-  const planIdMonthly = process.env.STRIPE_PLAN_ID_MONTHLY;
-  const planIdYearly = process.env.STRIPE_PLAN_ID_YEARLY;
+import PropTypes from 'prop-types';
+const Stripe = ({ subscriptionType, toggle }) => {
+  const { data: session, update } = useSession();
+  const planIdMonthly = process.env.NEXT_PUBLIC_STRIPE_PLAN_ID_MONTHLY;
+  const planIdYearly = process.env.NEXT_PUBLIC_STRIPE_PLAN_ID_YEARLY;
   const stripe = useStripe();
   const elements = useElements();
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
 
   const [loading, setLoading] = useState(false);
-
-  const handlePlanChange = (event) => {
-    setSelectedPlan(event.target.value);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
-      NotificationClient.error('Stripe has not been properly initialized.');
+      toast.error('Stripe has not been properly initialized.');
       return;
     }
 
@@ -42,7 +38,8 @@ const Stripe = () => {
         throw new Error(error.message);
       }
 
-      const planId = selectedPlan === 'monthly' ? planIdMonthly : planIdYearly;
+      const planId =
+        subscriptionType === 'monthly' ? planIdMonthly : planIdYearly;
       if (!paymentMethod?.id) {
         throw new Error('Failed to create payment method.');
       }
@@ -60,16 +57,26 @@ const Stripe = () => {
         session.accessToken,
         paymentMethod.id,
         planId,
-        selectedPlan
+        subscriptionType
       );
 
       if (subscriptionResponse.error) {
         throw new Error(subscriptionResponse.error);
       }
-
-      NotificationClient.success('Subscription created successfully!');
+      if (subscriptionResponse.status === 'active') {
+        await update({
+          stripeSubscriptions: [
+            ...session.user.stripeSubscriptions,
+            subscriptionResponse._id,
+          ],
+        });
+        toggle();
+      } else {
+        throw new Error('Subscription was not activated successfully.');
+      }
+      toast.success('Subscription created successfully!');
     } catch (err) {
-      NotificationClient.error(
+      toast.error(
         err.message || 'An error occurred during the subscription process.'
       );
     } finally {
@@ -79,24 +86,40 @@ const Stripe = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="plan">Choose your plan:</label>
-        <select
-          id="plan"
-          value={selectedPlan}
-          onChange={handlePlanChange}
-          disabled={loading}
+      <form onSubmit={handleSubmit} className="pb-2">
+        <div className="bg-gray-100 p-5 rounded-md border border-gray-300">
+          <CardElement
+            className="text-lg"
+            options={{
+              style: {
+                base: {
+                  color: '#424770',
+                  letterSpacing: '0.025em',
+                  fontFamily: 'Source Code Pro, monospace',
+                  '::placeholder': {
+                    color: '#124E66',
+                  },
+                },
+                invalid: {
+                  color: '#9e2146',
+                },
+              },
+            }}
+          />
+        </div>
+        <Button
+          type="submit"
+          disabled={!stripe || loading}
+          className="mt-4 bg-customPinkSecondary hover:bg-customPink border-none font-bold rounded-3xl w-full"
         >
-          <option value="monthly">Monthly - $10/month</option>
-          <option value="yearly">Yearly - $100/year</option>
-        </select>
-        <CardElement />
-        <Button type="submit" disabled={!stripe || loading}>
           {loading ? 'Processing...' : 'Pay with Stripe'}
         </Button>
       </form>
     </div>
   );
 };
-
+Stripe.propTypes = {
+  subscriptionType: PropTypes.string,
+  toggle: PropTypes.func.isRequired,
+};
 export default Stripe;

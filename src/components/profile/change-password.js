@@ -13,7 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import { changePassword } from '@/pages/api/auth';
 import { useSession } from 'next-auth/react';
-import { NotificationClient } from '@/components/shared/notifications/stream';
+import { toast } from 'react-toastify';
 import PasswordValidation from '@/components/shared/password-validation';
 
 const ChangePassword = ({ isOpen, toggle }) => {
@@ -52,14 +52,14 @@ const ChangePassword = ({ isOpen, toggle }) => {
     }
     try {
       await changePassword(session.accessToken, currentPassword, newPassword);
-      NotificationClient.success('Password successfully changed');
+      toast.success('Password successfully changed');
       toggle();
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setError('');
     } catch (err) {
-      NotificationClient.error('Password change failed');
+      toast.error('Password change failed');
     }
   };
 
@@ -71,9 +71,14 @@ const ChangePassword = ({ isOpen, toggle }) => {
     toggle();
   };
   return (
-    <Modal isOpen={isOpen} toggle={handleCancel} centered>
-      <ModalHeader toggle={handleCancel}>Change Password</ModalHeader>
-      <ModalBody>
+    <Modal isOpen={isOpen} toggle={handleCancel} centered={true}>
+      <ModalHeader
+        toggle={handleCancel}
+        className="bg-coolGray text-white rounded-t-3xl font-bold text-lg"
+      >
+        Change Password
+      </ModalHeader>
+      <ModalBody className="bg-lightGray">
         <Form>
           <FormGroup>
             <Label
@@ -138,7 +143,7 @@ const ChangePassword = ({ isOpen, toggle }) => {
           </FormGroup>
         </Form>
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter className="bg-lightGray rounded-b-3xl">
         <Button
           color="primary"
           onClick={handlePasswordChange}

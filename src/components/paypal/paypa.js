@@ -1,19 +1,17 @@
 import { createSubscription } from '@/pages/api/paypal';
 import { useSession } from 'next-auth/react';
-import { NotificationClient } from '@/components/shared/notifications/stream';
-import { useState } from 'react';
-import { Button } from 'reactstrap';
-const Paypal = () => {
+import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
+import { PaypalButton } from './paypal-button';
+const Paypal = ({ subscriptionType }) => {
   const { data: session } = useSession();
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
-
-  const monthlyPlanId = process.env.PAYPAL_PLAN_ID_MONTHLY;
-  const yearlyPlanId = process.env.PAYPAL_PLAN_ID_YEARLY;
+  const monthlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_MONTHLY;
+  const yearlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_YEARLY;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const planId = selectedPlan === 'yearly' ? yearlyPlanId : monthlyPlanId;
+    const planId = subscriptionType === 'yearly' ? yearlyPlanId : monthlyPlanId;
 
     const subscriber = {
       given_name: session.firstname,
@@ -30,26 +28,17 @@ const Paypal = () => {
     if (response && response.approvalUrl) {
       window.location.href = response.approvalUrl;
     } else {
-      NotificationClient.error('Approval URL not found in the response:');
+      toast.error('Approval URL not found in the response:');
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <label htmlFor="subscription-plan">Choose a subscription plan:</label>
-        <select
-          id="subscription-plan"
-          value={selectedPlan}
-          onChange={(e) => setSelectedPlan(e.target.value)}
-        >
-          <option value="monthly">Monthly Subscription</option>
-          <option value="yearly">Yearly Subscription</option>
-        </select>
-        <Button type="submit">Subscribe with Paypal</Button>
-      </form>
+    <div className="py-20">
+      <PaypalButton onClick={handleSubmit}>Subscribe with Paypal</PaypalButton>
     </div>
   );
 };
-
+Paypal.propTypes = {
+  subscriptionType: PropTypes.string,
+};
 export default Paypal;

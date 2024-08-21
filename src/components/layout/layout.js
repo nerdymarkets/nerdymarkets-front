@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
       <Container fluid className="px-4 bg-black">
         <Header />
       </Container>
-      <div className="flex-grow min-h-screen ">{children}</div>
+      <div className="flex-grow min-h-screen">{children}</div>
       <Footer />
     </div>
   );

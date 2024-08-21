@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { resetPassword } from '@/pages/api/auth';
-import { NotificationClient } from '@/components/shared/notifications/stream';
+import { toast } from 'react-toastify';
 import {
   Form,
   FormGroup,
@@ -50,20 +50,27 @@ const ResetPassword = () => {
     }
     try {
       await resetPassword(token, newPassword);
-      NotificationClient.success('Password reset successfully');
+      toast.success('Password reset successfully');
       toggleModal();
       router.push('/');
     } catch (error) {
-      NotificationClient.error('Password reset failed');
+      toast.error('Password reset failed');
     }
   };
 
-  const toggleModal = () => setModalOpen(!modalOpen);
-
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+    router.push('/');
+  };
   return (
-    <Modal isOpen={modalOpen} toggle={toggleModal} centered>
-      <ModalHeader toggle={toggleModal}>Reset Password</ModalHeader>
-      <ModalBody>
+    <Modal isOpen={modalOpen} toggle={toggleModal} centered={true}>
+      <ModalHeader
+        toggle={toggleModal}
+        className="bg-coolGray  text-white rounded-t-3xl font-bold text-lg"
+      >
+        Reset Password
+      </ModalHeader>
+      <ModalBody className="bg-gray-100 px-6 py-4 ">
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <Label
@@ -106,7 +113,7 @@ const ResetPassword = () => {
           {error && <div className="text-danger text-sm mt-2">{error}</div>}
         </Form>
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter className="rounded-b-3xl bg-gray-100 px-6 py-4">
         <Button
           color="primary"
           onClick={handleSubmit}

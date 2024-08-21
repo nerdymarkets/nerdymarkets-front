@@ -11,7 +11,7 @@ import {
   Input,
 } from 'reactstrap';
 import { verify } from '../../pages/api/auth';
-
+import { toast } from 'react-toastify';
 const VerificationForm = ({ isOpen, toggle, email, openLoginModal }) => {
   const [code, setCode] = useState(['', '', '', '', '']);
   const [error, setError] = useState('');
@@ -45,8 +45,13 @@ const VerificationForm = ({ isOpen, toggle, email, openLoginModal }) => {
     try {
       const response = await verify(email, verificationCode);
       if (response.status === 201) {
+        toast.success('Verification successful! You can now log in.');
         openLoginModal();
         toggle();
+      } else if (response.status === 400) {
+        toast.error(
+          'Verification failed. The verification code is incorrect. Please try again.'
+        );
       } else {
         setError('Verification failed. Please try again.');
       }
@@ -56,33 +61,44 @@ const VerificationForm = ({ isOpen, toggle, email, openLoginModal }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} centered>
+    <Modal isOpen={isOpen} toggle={toggle} centered={true}>
       <ModalBody>
-        <ModalHeader toggle={toggle}>Verify Email</ModalHeader>
-        {error && <Alert color="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
-          <InputGroup
-            className="d-flex justify-content-center py-4 "
-            onPaste={handlePaste}
-          >
-            {code.map((digit, index) => (
-              <Input
-                key={index}
-                id={`code-input-${index}`}
-                type="text"
-                maxLength="1"
-                value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
-                required
-                className="text-center mx-1"
-                style={{ width: '3rem', fontSize: '1.5rem' }}
-              />
-            ))}
-          </InputGroup>
-          <Button type="submit" color="primary" className="w-100">
-            Verify
-          </Button>
-        </Form>
+        <ModalHeader
+          toggle={toggle}
+          className="bg-coolGray text-white rounded-t-3xl font-bold text-lg"
+        >
+          Verify Email
+        </ModalHeader>
+        <ModalBody className="bg-gray-50 rounded-b-3xl px-6 py-4">
+          {error && <Alert color="danger">{error}</Alert>}
+          <Form onSubmit={handleSubmit}>
+            <InputGroup
+              className="d-flex justify-content-center py-4 "
+              onPaste={handlePaste}
+            >
+              {code.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`code-input-${index}`}
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleChange(index, e.target.value)}
+                  required
+                  className="text-center mx-1"
+                  style={{ width: '3rem', fontSize: '1.5rem' }}
+                />
+              ))}
+            </InputGroup>
+
+            <Button
+              type="submit"
+              className="w-full py-2 rounded-3xl bg-customPink border-none shadow-lg"
+            >
+              Verify
+            </Button>
+          </Form>
+        </ModalBody>
       </ModalBody>
     </Modal>
   );

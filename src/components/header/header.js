@@ -2,10 +2,10 @@ import { useState, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { NavItem, NavLink, Nav, Navbar, Spinner } from 'reactstrap';
 import Link from 'next/link';
-import SignInForm from '@/components/signin-form/signin-form';
+import SignInModal from '@/components/sign-in/signin-modal';
 import nerdylogo from '../../../public/logo/nerdylogo.png';
 import Image from 'next/image';
-import RegisterForm from '@/components/register-form/register-form';
+import RegistrationModal from '@/components/registration/registration-modal';
 import Profile from '../profile/profile';
 
 const Header = () => {
@@ -32,6 +32,7 @@ const Header = () => {
   const handleRegisterClick = () => {
     toggleRegisterModal();
   };
+
   if (status === 'loading') {
     return (
       <Spinner color="primary" type="grow">
@@ -62,16 +63,21 @@ const Header = () => {
             </NavItem>
           )}
           {session && status === 'authenticated' && (
-            <Profile session={session} status={status} />
+            <>
+              <NavItem>
+                <NavLink href="/portfolio">Portfolio</NavLink>
+              </NavItem>
+              <Profile session={session} status={status} />
+            </>
           )}
         </Nav>
       </Navbar>
-      <SignInForm
+      <SignInModal
         isOpen={isSignInModalOpen}
         toggle={toggleSignInModal}
         openRegisterModal={toggleRegisterModal}
       />
-      <RegisterForm
+      <RegistrationModal
         isOpen={isRegisterModalOpen}
         toggle={toggleRegisterModal}
         openLoginModal={toggleSignInModal}

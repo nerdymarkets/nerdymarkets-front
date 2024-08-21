@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { SessionProvider } from 'next-auth/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/globals.css';
-import { Notifications } from '@/components/shared/notifications/notifications';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Load your publishable key from Stripe
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
@@ -17,7 +17,17 @@ export default function App({ Component, pageProps }) {
     <SessionProvider session={pageProps.session}>
       <Elements stripe={stripePromise}>
         <Layout>
-          <Notifications />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            pauseOnHover
+            theme="dark"
+          />
           <Component {...pageProps} />
         </Layout>
       </Elements>

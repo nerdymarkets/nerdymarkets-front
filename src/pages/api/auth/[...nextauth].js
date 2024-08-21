@@ -36,7 +36,7 @@ export default NextAuth({
     maxAge: 2 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.accessToken = user.accessToken;
         token.email = user.email;
@@ -48,6 +48,15 @@ export default NextAuth({
         token.stripeSubscriptions = user.stripeSubscriptions;
         token.expires = Date.now() + 2 * 60 * 60 * 1000;
       }
+
+      if (trigger === 'update' && session) {
+        // Handle updates to the token during session update
+        token.stripeSubscriptions =
+          session.stripeSubscriptions || token.stripeSubscriptions;
+        token.paypalsubscriptions =
+          session.paypalsubscriptions || token.paypalsubscriptions;
+      }
+
       if (Date.now() > token.expires) {
         return null;
       }
