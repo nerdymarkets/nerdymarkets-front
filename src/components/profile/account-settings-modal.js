@@ -18,6 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCcPaypal, faCcStripe } from '@fortawesome/free-brands-svg-icons';
 import ChangePassword from './change-password';
+import CancelSubscription from '../subscription/cancel-subscription';
 
 const AccountSettingsModal = ({ isOpen, toggle, user }) => {
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
@@ -33,7 +34,8 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
     toggle();
     togglePasswordChangeModal();
   };
-
+  const hasPaypalSubscriptions = user?.paypalsubscriptions?.length > 0;
+  const hasStripeSubscriptions = user?.stripeSubscriptions?.length > 0;
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle} centered={true}>
@@ -75,9 +77,7 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
             <ListGroupItem>
               <strong>Subscriptions: </strong>
 
-              {user.paypalsubscriptions.length +
-                user.stripeSubscriptions.length >
-              0 ? (
+              {hasPaypalSubscriptions || hasStripeSubscriptions ? (
                 <Badge color="info" pill className="ml-2">
                   Active
                 </Badge>
@@ -89,12 +89,12 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
             </ListGroupItem>
             <ListGroupItem className="flex items-center">
               <strong>Payment: </strong>
-              {user.paypalsubscriptions.length > 0 ? (
+              {hasPaypalSubscriptions ? (
                 <FontAwesomeIcon
                   icon={faCcPaypal}
                   className="ml-2 text-primary w-8"
                 />
-              ) : user.stripeSubscriptions.length > 0 ? (
+              ) : hasStripeSubscriptions ? (
                 <FontAwesomeIcon
                   icon={faCcStripe}
                   className="ml-2 text-primary w-8"
@@ -103,6 +103,12 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
                 <Badge color="warning">No active payment method</Badge>
               )}
             </ListGroupItem>
+            {(hasPaypalSubscriptions || hasStripeSubscriptions) && (
+              <ListGroupItem className="flex items-center">
+                <CancelSubscription />
+              </ListGroupItem>
+            )}
+
             <ListGroupItem className="flex flex-col">
               <Button
                 color="primary"

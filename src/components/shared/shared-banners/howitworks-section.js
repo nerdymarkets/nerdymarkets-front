@@ -10,7 +10,7 @@ const HowItWorksSection = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 p-4">
             <AnimationWrapper className="text-4xl font-extrabold mb-6 text-white">
-              <h2>How it works</h2>
+              <p>How it works</p>
             </AnimationWrapper>
             <AnimationWrapper delay={0.2}>
               <List className=" text-white list-decimal pl-6 space-y-4">

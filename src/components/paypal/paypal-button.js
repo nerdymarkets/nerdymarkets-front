@@ -7,34 +7,17 @@ export const PaypalButton = ({ onClick }) => {
   return (
     <div
       id="paypal-button-container"
-      style={{
-        display: 'inline-block',
-        borderRadius: '5px',
-        padding: '10px',
-        backgroundColor: '#FFC439',
-        textAlign: 'center',
-        cursor: 'pointer',
-        width: '100%',
-      }}
+      className="rounded-3xl cursor-pointer text-center bg-paypa hover:bg-paypaHover p-4 shadow-paypal"
       onClick={onClick}
     >
       <Image
         src={paypallogo}
         alt="PayPal"
-        width={100} // Adjust width as per your requirement
-        height={26} // Adjust height as per your requirement
+        width={100}
+        height={26}
         style={{ display: 'block', margin: '0 auto', height: '26px' }}
       />
-      <div
-        style={{
-          fontSize: '16px',
-          color: 'white',
-          fontWeight: '300',
-          marginTop: '5px',
-        }}
-      >
-        Subscribe with PayPal
-      </div>
+      <p className="text-white font-bold">Subscribe with PayPal</p>
     </div>
   );
 };

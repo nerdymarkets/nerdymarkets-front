@@ -22,7 +22,7 @@ const Subscription = () => {
     <Container className="pt-10 min-h-screen">
       <Row className="justify-content-center text-center ">
         <Col lg="8">
-          <h2 className="display-5 text-muted">Choose Your Subscription</h2>
+          <p className="display-5 text-muted">Choose Your Subscription</p>
           <p className="lead text-muted">
             Pick the plan that best suits your needs and start your journey with
             us today!

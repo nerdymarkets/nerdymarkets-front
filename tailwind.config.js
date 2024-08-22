@@ -24,6 +24,8 @@ module.exports = {
         oceanBlue: '#124E66',
         coolGray: '#748D92',
         softGray: '#D3D9D4',
+        paypa: '#FFC439',
+        paypaHover: '#FFC102',
       },
       boxShadow: {
         paypal:

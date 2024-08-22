@@ -32,11 +32,11 @@ const PaymentModal = ({ isOpen, toggle, subscriptionType }) => {
         toggle={toggle}
         className="text-center bg-coolGray rounded-t-3xl"
       >
-        <h2 className="text-xl font-semibold">
+        <p className="text-xl font-semibold">
           {subscriptionType === 'monthly'
             ? 'Monthly Subscription'
             : 'Yearly Subscription'}
-        </h2>
+        </p>
       </ModalHeader>
       <ModalBody className="p-6 bg-lightGray rounded-b-3xl">
         {step === 1 && (

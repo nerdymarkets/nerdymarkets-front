@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody } from 'reactstrap';
+import { Button, Modal, ModalBody, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { captureSubscription } from '@/pages/api/paypal';
 import { useSession } from 'next-auth/react';
@@ -54,13 +54,17 @@ const ReturnModal = () => {
           subscriptionDetails._id,
         ],
       }).then(() => {
-        setIsSessionUpdated(true); // Set the flag to true after updating session
+        setIsSessionUpdated(true);
       });
     }
   }, [subscriptionDetails, session, update, isSessionUpdated]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return (
+      <Spinner color="primary" type="grow">
+        Loading...
+      </Spinner>
+    );
   }
 
   const toggleModal = () => {
@@ -89,7 +93,7 @@ const ReturnModal = () => {
             />
           )}
         </div>
-        <h2 className="text-2xl font-semibold mb-4 ">{subscriptionStatus}</h2>
+        <p className="text-2xl font-semibold mb-4 ">{subscriptionStatus}</p>
         <Button
           onClick={toggleModal}
           className="w-full bg-customPinkSecondary hover:bg-customPink border-none  rounded-3xl font-bold text-lg"

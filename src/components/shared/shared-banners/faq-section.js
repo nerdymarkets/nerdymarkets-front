@@ -5,9 +5,9 @@ const FaqSection = () => {
     <div className="py-20 bg-black text-white">
       <div className="px-40">
         <AnimationWrapper>
-          <h2 className="text-5xl font-bold mb-6 text-center">
+          <p className="text-5xl font-bold mb-6 text-center">
             Frequently Asked Questions
-          </h2>
+          </p>
         </AnimationWrapper>
         <AnimationWrapper delay={0.3}>
           <div className="grid grid-cols-2">

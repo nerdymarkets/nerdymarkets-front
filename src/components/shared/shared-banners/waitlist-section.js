@@ -19,9 +19,9 @@ const WaitListSection = () => {
           </div>
           <div className="md:w-1/2 p-4">
             <AnimationWrapper>
-              <h2 className="text-6xl font-extrabold mb-6 ">
+              <p className="text-6xl font-extrabold mb-6 ">
                 Why join our Waitlist?
-              </h2>
+              </p>
 
               <p>
                 Joining our waitlist ensures you’re among the first to access

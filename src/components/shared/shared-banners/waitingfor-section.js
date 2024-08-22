@@ -19,9 +19,9 @@ const WaitingForSection = () => {
           </div>
           <div className="md:w-1/2 p-4">
             <AnimationWrapper>
-              <h2 className="text-6xl font-extrabold mb-6 ">
+              <p className="text-6xl font-extrabold mb-6 ">
                 What are you waiting for?
-              </h2>
+              </p>
               <p>
                 There&apos;s no better time to take control of your investment
                 portfolio. Once launched, our portfolios will guide you through

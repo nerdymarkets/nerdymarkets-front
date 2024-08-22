@@ -43,7 +43,7 @@ export async function captureSubscription(token, subscriptionId) {
     return error.response;
   }
 }
-export async function getSubscriptionById(subscriptionId, token) {
+export async function getPaypalSubscriptionById(subscriptionId, token) {
   try {
     const response = await axios.get(
       `${loginUrl}/paypalsubscriptions/${subscriptionId}`,
@@ -59,7 +59,7 @@ export async function getSubscriptionById(subscriptionId, token) {
     return error.response;
   }
 }
-export async function cancelSubscription(token, subscriptionId) {
+export async function cancelPaypalSubscription(token, subscriptionId) {
   try {
     const response = await axios.post(
       `${loginUrl}/paypalsubscriptions/cancel/${subscriptionId}`,
@@ -77,7 +77,7 @@ export async function cancelSubscription(token, subscriptionId) {
   }
 }
 
-export async function deleteSubscription(token, subscriptionId) {
+export async function deletePaypalSubscription(token, subscriptionId) {
   try {
     const response = await axios.delete(
       `${loginUrl}/paypalsubscriptions/delete/${subscriptionId}`,
