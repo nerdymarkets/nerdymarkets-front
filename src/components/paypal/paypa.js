@@ -7,12 +7,13 @@ const Paypal = ({ subscriptionType }) => {
   const { data: session } = useSession();
   const monthlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_MONTHLY;
   const yearlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_YEARLY;
-
+  console.log('Paypal motnhly ', monthlyPlanId);
+  console.log('Paypal yearly ', yearlyPlanId);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const planId = subscriptionType === 'yearly' ? yearlyPlanId : monthlyPlanId;
-
+    console.log(planId);
     const subscriber = {
       given_name: session.firstname,
       surname: session.lastname,
