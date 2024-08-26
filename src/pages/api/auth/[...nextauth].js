@@ -46,6 +46,7 @@ export default NextAuth({
         token.isVerified = user.isVerified;
         token.paypalsubscriptions = user.paypalsubscriptions;
         token.stripeSubscriptions = user.stripeSubscriptions;
+        token.roles = user.roles;
         token.expires = Date.now() + 2 * 60 * 60 * 1000;
       }
 
@@ -76,6 +77,7 @@ export default NextAuth({
         isVerified: token.isVerified,
         paypalsubscriptions: token.paypalsubscriptions,
         stripeSubscriptions: token.stripeSubscriptions,
+        roles: token.roles,
       };
 
       return session;
