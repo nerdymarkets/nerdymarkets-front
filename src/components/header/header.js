@@ -12,7 +12,6 @@ const Header = () => {
   const { data: session, status } = useSession();
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-
   const toggleSignInModal = useCallback(() => {
     setSignInModalOpen((prev) => !prev);
   }, []);
@@ -43,21 +42,29 @@ const Header = () => {
 
   return (
     <>
-      <Navbar className="flex flex-end">
+      <Navbar className="flex flex-end ">
         <Link href="/" passHref>
           <Image src={nerdylogo} alt="logo" width={300} height={250} />
         </Link>
         <Nav pills className="py-4 flex items-center">
           {!session && status !== 'authenticated' && (
             <NavItem>
-              <NavLink href="#" onClick={handleAuthClick}>
+              <NavLink
+                href="#"
+                onClick={handleAuthClick}
+                className="text-customPink hover:text-customPinkSecondary"
+              >
                 Sign In
               </NavLink>
             </NavItem>
           )}
           {!session && (
             <NavItem>
-              <NavLink href="#" onClick={handleRegisterClick}>
+              <NavLink
+                href="#"
+                onClick={handleRegisterClick}
+                className="text-customPink hover:text-customPinkSecondary"
+              >
                 Register
               </NavLink>
             </NavItem>
@@ -65,7 +72,12 @@ const Header = () => {
           {session && status === 'authenticated' && (
             <>
               <NavItem>
-                <NavLink href="/portfolio">Portfolio</NavLink>
+                <NavLink
+                  href="/portfolio"
+                  className="text-customPink hover:text-customPinkSecondary"
+                >
+                  Portfolio
+                </NavLink>
               </NavItem>
               <Profile session={session} status={status} />
             </>

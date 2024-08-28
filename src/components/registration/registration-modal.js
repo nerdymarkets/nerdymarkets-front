@@ -16,6 +16,7 @@ import { register } from '../../pages/api/auth';
 import VerificationForm from './email-verification';
 import { toast } from 'react-toastify';
 import PasswordValidation from '@/components/shared/password-validation';
+import PasswordInput from '../shared/password-input';
 
 const RegisterModal = ({ isOpen, toggle, openLoginModal }) => {
   const [firstname, setFirstname] = useState('');
@@ -76,8 +77,8 @@ const RegisterModal = ({ isOpen, toggle, openLoginModal }) => {
       setIsLoading(false);
       return;
     }
-    if (!allValidationsPassed || !passwordsMatch) {
-      setError('Please ensure all requirements are met and passwords match.');
+    if (!passwordsMatch) {
+      setError('Passwords do not match.');
       setIsLoading(false);
       return;
     }
@@ -101,7 +102,6 @@ const RegisterModal = ({ isOpen, toggle, openLoginModal }) => {
       toast.error('An unexpected error occurred. Please try again.');
     }
   };
-
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle} centered={true}>
@@ -169,46 +169,26 @@ const RegisterModal = ({ isOpen, toggle, openLoginModal }) => {
               )}
             </FormGroup>
             <FormGroup>
-              <Label
-                for="password"
-                className="block text-lg font-medium text-gray-500"
-              >
-                Password
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
+              <PasswordInput
+                label="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
-                className="text-lg border-2 border-gray-300 rounded-md shadow-lg font-semibold"
+                labelClassName="block text-lg font-medium text-gray-500"
+                className="text-lg border-2 border-gray-300 rounded-md shadow-lg font-semibold pr-10 "
               />
+
               {!allValidationsPassed && (
                 <PasswordValidation validations={passwordValidation} />
               )}
             </FormGroup>
             <FormGroup>
-              <Label
-                for="confirmPassword"
-                className="block text-lg font-medium text-gray-500"
-              >
-                Confirm Password
-              </Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
+              <PasswordInput
+                label="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="text-lg border-2 border-gray-300 rounded-md shadow-lg font-semibold"
+                labelClassName="block text-lg font-medium text-gray-500"
+                className="text-lg border-2 border-gray-300 rounded-md shadow-lg font-semibold pr-10 "
               />
-              {!passwordsMatch && confirmPassword && (
-                <div className="text-danger mt-2 text-sm">
-                  Passwords do not match.
-                </div>
-              )}
             </FormGroup>
             {error && <div className="text-danger mt-2 text-sm">{error}</div>}
             <Button

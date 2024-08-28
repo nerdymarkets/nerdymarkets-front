@@ -8,34 +8,26 @@ import {
   Button,
   ListGroup,
   ListGroupItem,
-  Badge,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCheckCircle,
-  faExclamationCircle,
-  faKey,
-} from '@fortawesome/free-solid-svg-icons';
-import { faCcPaypal, faCcStripe } from '@fortawesome/free-brands-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import ChangePassword from './change-password';
-import CancelSubscription from '../subscription/cancel-subscription';
 
+import UserInfo from './user-info';
+import SubscriptionInfo from './subscription-info';
 const AccountSettingsModal = ({ isOpen, toggle, user }) => {
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
-
   const togglePasswordChangeModal = () => {
     setPasswordChangeModalOpen(!passwordChangeModalOpen);
     if (passwordChangeModalOpen) {
       toggle();
     }
   };
-
   const handlePasswordChangeClick = () => {
     toggle();
     togglePasswordChangeModal();
   };
-  const hasPaypalSubscriptions = user?.paypalsubscriptions?.length > 0;
-  const hasStripeSubscriptions = user?.stripeSubscriptions?.length > 0;
+
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle} centered={true}>
@@ -46,74 +38,18 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
           Account Settings
         </ModalHeader>
         <ModalBody className="bg-lightGray">
-          <ListGroup flush>
-            <ListGroupItem>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <strong>Email: </strong>
-                  <p>{user.email}</p>
-                </div>
-                <FontAwesomeIcon
-                  icon={user.isVerified ? faCheckCircle : faExclamationCircle}
-                  className={`ml-2 w-10  ${user.isVerified ? 'text-success' : 'text-danger'}`}
-                />
-              </div>
-              {user.isVerified ? (
-                <Badge color="success" pill className="ml-2">
-                  Verified
-                </Badge>
-              ) : (
-                <Badge color="danger" pill className="ml-2">
-                  Unverified
-                </Badge>
-              )}
-            </ListGroupItem>
-            <ListGroupItem>
-              <strong>First Name: </strong> {user.firstname}
-            </ListGroupItem>
-            <ListGroupItem>
-              <strong>Last Name: </strong> {user.lastname}
-            </ListGroupItem>
-            <ListGroupItem>
-              <strong>Subscriptions: </strong>
-
-              {hasPaypalSubscriptions || hasStripeSubscriptions ? (
-                <Badge color="info" pill className="ml-2">
-                  Active
-                </Badge>
-              ) : (
-                <Badge color="secondary" pill className="ml-2">
-                  Inactive
-                </Badge>
-              )}
-            </ListGroupItem>
-            <ListGroupItem className="flex items-center">
-              <strong>Payment: </strong>
-              {hasPaypalSubscriptions ? (
-                <FontAwesomeIcon
-                  icon={faCcPaypal}
-                  className="ml-2 text-primary w-8"
-                />
-              ) : hasStripeSubscriptions ? (
-                <FontAwesomeIcon
-                  icon={faCcStripe}
-                  className="ml-2 text-primary w-8"
-                />
-              ) : (
-                <Badge color="warning">No active payment method</Badge>
-              )}
-            </ListGroupItem>
-            {(hasPaypalSubscriptions || hasStripeSubscriptions) && (
-              <ListGroupItem className="flex items-center">
-                <CancelSubscription />
-              </ListGroupItem>
-            )}
-
+          <ListGroup flush className=" rounded-3xl">
+            <UserInfo
+              firstName={user.firstname}
+              lastName={user.lastname}
+              email={user.email}
+              isVerified={user.isVerified}
+            />
+            <SubscriptionInfo />
             <ListGroupItem className="flex flex-col">
               <Button
-                color="primary"
                 onClick={handlePasswordChangeClick}
-                className="py-2 px-4 flex flex-col items-center  font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg shadow-md hover:from-blue-700 hover:to-blue-500 transition-transform transform hover:scale-105"
+                className="py-2 px-4 flex flex-col items-center border-none  font-semibold text-white rounded-lg shadow-md  transition-transform transform hover:scale-105 bg-customPink hover:bg-customPinkSecondary"
               >
                 <FontAwesomeIcon icon={faKey} className="mr-2 w-10" />
                 Change Password

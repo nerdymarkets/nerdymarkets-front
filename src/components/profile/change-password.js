@@ -6,8 +6,6 @@ import {
   ModalFooter,
   Form,
   FormGroup,
-  Label,
-  Input,
   Button,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -15,6 +13,7 @@ import { changePassword } from '@/pages/api/auth';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import PasswordValidation from '@/components/shared/password-validation';
+import PasswordInput from '@/components/shared/password-input';
 
 const ChangePassword = ({ isOpen, toggle }) => {
   const { data: session } = useSession();
@@ -81,37 +80,23 @@ const ChangePassword = ({ isOpen, toggle }) => {
       <ModalBody className="bg-lightGray">
         <Form>
           <FormGroup>
-            <Label
-              for="currentPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Current Password
-            </Label>
-            <Input
-              type="password"
-              name="currentPassword"
-              id="currentPassword"
+            <PasswordInput
+              label="Current Password"
               placeholder="Enter current password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
+              labelClassName="block text-sm font-medium text-gray-700"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </FormGroup>
           <FormGroup>
-            <Label
-              for="newPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              New Password
-            </Label>
-            <Input
-              type="password"
-              name="newPassword"
-              id="newPassword"
+            <PasswordInput
+              label="Current Password"
               placeholder="Enter new password"
+              invalid={!!error}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              invalid={!!error}
+              labelClassName="block text-sm font-medium text-gray-700"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
             {!allValidationsPassed && (
@@ -120,19 +105,13 @@ const ChangePassword = ({ isOpen, toggle }) => {
             {error && <div className="text-danger text-sm mt-2">{error}</div>}
           </FormGroup>
           <FormGroup>
-            <Label
-              for="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Confirm Password
-            </Label>
-            <Input
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
+            <PasswordInput
+              label="Confirm Password"
               placeholder="Confirm new password"
+              invalid={!!error}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              labelClassName="block text-sm font-medium text-gray-700"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
             {!passwordsMatch && confirmPassword && (

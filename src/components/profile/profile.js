@@ -36,7 +36,7 @@ const Profile = ({ session, status }) => {
         <DropdownToggle
           caret
           color="secondary"
-          className="d-flex align-items-center "
+          className="d-flex align-items-center bg-gray-800 border-none"
         >
           <Avatar name={user.firstname} className="mr-2" />
         </DropdownToggle>

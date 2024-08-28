@@ -7,7 +7,7 @@ export const PaypalButton = ({ onClick }) => {
   return (
     <div
       id="paypal-button-container"
-      className="rounded-3xl cursor-pointer text-center bg-paypa hover:bg-paypaHover p-4 shadow-paypal"
+      className="rounded-3xl cursor-pointer text-center bg-customPink  hover:bg-customPinkSecondary p-4 shadow-paypal"
       onClick={onClick}
     >
       <Image

@@ -5,10 +5,9 @@ import PropTypes from 'prop-types';
 import { PaypalButton } from './paypal-button';
 
 const Paypal = ({ subscriptionType }) => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const monthlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_MONTHLY;
   const yearlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_YEARLY;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -29,6 +28,13 @@ const Paypal = ({ subscriptionType }) => {
       );
 
       if (response && response.approvalUrl) {
+        await update({
+          paypalsubscriptions: [
+            ...session.user.paypalsubscriptions,
+            response._id,
+          ],
+        });
+
         toast.update(loadingToast, {
           render: 'Redirecting to PayPal...',
           type: 'success',

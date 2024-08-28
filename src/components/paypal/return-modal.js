@@ -84,12 +84,12 @@ const ReturnModal = () => {
           {error ? (
             <FontAwesomeIcon
               icon={faCircleExclamation}
-              className="text-red-500 text-5xl"
+              className="text-red-500 w-40"
             />
           ) : (
             <FontAwesomeIcon
               icon={faCircleCheck}
-              className="text-green-500 text-5xl"
+              className="text-green-500  w-40"
             />
           )}
         </div>

@@ -48,7 +48,6 @@ const Stripe = ({ subscriptionType, toggle }) => {
         paymentMethod.id,
         session?.user?.stripeCustomerId
       );
-
       if (paymentMethodResponse.error) {
         throw new Error(paymentMethodResponse.error);
       }
@@ -59,7 +58,6 @@ const Stripe = ({ subscriptionType, toggle }) => {
         planId,
         subscriptionType
       );
-
       if (subscriptionResponse.error) {
         throw new Error(subscriptionResponse.error);
       }

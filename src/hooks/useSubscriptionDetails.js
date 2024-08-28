@@ -1,52 +1,80 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { getPaypalSubscriptionById } from '@/pages/api/paypal';
 import { getStripeSubscriptionById } from '@/pages/api/stripe-api';
-
+import useSubscriptionStore from '@/stores/subscription-store';
 export const useSubscriptionDetails = (session) => {
-  const [stripeSubscriptionDetails, setStripeSubscriptionDetails] =
-    useState(null);
-  const [paypalSubscriptionDetails, setPaypalSubscriptionDetails] =
-    useState(null);
+  const {
+    subscriptionDetails,
+    subscriptionStatus,
+    planType,
+    isPaypalActive,
+    isStripeActive,
+    setSubscriptionDetails,
+  } = useSubscriptionStore();
+  const hasStripeSubscriptions = useMemo(
+    () => session?.user?.stripeSubscriptions?.length > 0,
+    [session?.user?.stripeSubscriptions]
+  );
 
-  const hasStripeSubscriptions = session?.user?.stripeSubscriptions?.length > 0;
-  const hasPaypalSubscriptions = session?.user?.paypalsubscriptions?.length > 0;
+  const hasPaypalSubscriptions = useMemo(
+    () => session?.user?.paypalsubscriptions?.length > 0,
+    [session?.user?.paypalsubscriptions]
+  );
   useEffect(() => {
     const fetchSubscription = async () => {
-      if (hasStripeSubscriptions) {
-        const subscriptionId = session?.user?.stripeSubscriptions[0];
-
-        try {
-          const subscriptionData = await getStripeSubscriptionById(
-            subscriptionId,
-            session.accessToken
-          );
-          setStripeSubscriptionDetails(subscriptionData);
-        } catch (error) {
-          toast.error('Failed to fetch Stripe subscription details.');
-        }
+      if (!session) {
+        return;
       }
-      if (hasPaypalSubscriptions) {
-        const subscriptionId = session?.user?.paypalsubscriptions[0];
-        try {
-          const subscriptionData = await getPaypalSubscriptionById(
-            subscriptionId,
+      try {
+        if (hasStripeSubscriptions) {
+          const subscriptionData = await getStripeSubscriptionById(
+            session.user.stripeSubscriptions[0],
             session.accessToken
           );
-          setPaypalSubscriptionDetails(subscriptionData);
-        } catch (error) {
-          toast.error('Failed to fetch PayPal subscription details.');
+          if (subscriptionData?.status.toLowerCase() === 'active') {
+            setSubscriptionDetails({
+              ...subscriptionData,
+              isStripeActive: true,
+            });
+          }
         }
+
+        if (hasPaypalSubscriptions) {
+          const subscriptionData = await getPaypalSubscriptionById(
+            session.user.paypalsubscriptions[0],
+            session.accessToken
+          );
+
+          if (
+            subscriptionData?.status.toLowerCase() === 'active' ||
+            subscriptionData?.status.toLowerCase() === 'approval_pending'
+          ) {
+            setSubscriptionDetails({
+              ...subscriptionData,
+              isPaypalActive: true,
+            });
+          }
+        }
+      } catch (error) {
+        toast.error('Failed to fetch subscription details.');
       }
     };
 
     fetchSubscription();
-  }, [hasPaypalSubscriptions, hasStripeSubscriptions, session]);
+  }, [
+    session,
+    hasStripeSubscriptions,
+    hasPaypalSubscriptions,
+    setSubscriptionDetails,
+  ]);
 
   return {
-    stripeSubscriptionDetails,
-    paypalSubscriptionDetails,
-    setStripeSubscriptionDetails,
-    setPaypalSubscriptionDetails,
+    subscriptionDetails,
+    subscriptionStatus,
+    planType,
+    setSubscriptionDetails,
+    isPaypalActive,
+    isStripeActive,
   };
 };

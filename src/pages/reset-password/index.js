@@ -5,8 +5,6 @@ import { toast } from 'react-toastify';
 import {
   Form,
   FormGroup,
-  Label,
-  Input,
   Button,
   Modal,
   ModalHeader,
@@ -14,6 +12,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 import PasswordValidation from '@/components/shared/password-validation';
+import PasswordInput from '@/components/shared/password-input';
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -73,37 +72,27 @@ const ResetPassword = () => {
       <ModalBody className="bg-gray-100 px-6 py-4 ">
         <Form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label
-              for="newPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              New Password
-            </Label>
-            <Input
-              type="password"
-              id="newPassword"
+            <PasswordInput
+              label="New Password"
+              placeholder="New Password"
+              labelClassName="block text-sm font-medium text-gray-700"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400  sm:text-sm"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
             />
+
             <PasswordValidation validations={passwordValidation} />
           </FormGroup>
           <FormGroup>
-            <Label
-              for="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Confirm Password
-            </Label>
-            <Input
-              type="password"
-              id="confirmPassword"
+            <PasswordInput
+              label="Confirm Password"
+              placeholder="Confirm Password"
+              labelClassName="block text-sm font-medium text-gray-700"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400  sm:text-sm"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
             />
+
             {!passwordsMatch && confirmPassword && (
               <div className="text-danger mt-2 text-sm">
                 Passwords do not match.

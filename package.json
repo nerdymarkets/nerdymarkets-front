@@ -27,7 +27,8 @@
     "reactstrap": "^9.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.5",
-    "tailwind-merge": "^2.4.0"
+    "tailwind-merge": "^2.4.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",

@@ -43,10 +43,10 @@ const MonthlySubscriptionCard = ({ onHoverChange, onSubscribe }) => {
               </CardText>
             </AnimationWrapper>
             <AnimationWrapper delay={0.5} className="text-center">
-              <CardText className="display-4 mb-4">$10/month</CardText>
+              <CardText className="display-4 mb-4">$12/month</CardText>
               <Button
                 onClick={onSubscribe}
-                className="bg-gradient-to-r from-green-500 to-green-300 border-0 text-white shadow-md hover:translate-y-[-2px] hover:shadow-lg transition-transform duration-200 rounded-full px-4 py-2"
+                className=" bg-customPink  hover:bg-customPinkSecondary  border-0 text-white shadow-md hover:translate-y-[-2px] hover:shadow-lg transition-transform duration-200 rounded-full px-4 py-2"
               >
                 Subscribe Now
               </Button>

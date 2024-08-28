@@ -6,7 +6,7 @@ const Avatar = ({ name }) => {
   };
 
   return (
-    <div className="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center text-white text-lg font-bold">
+    <div className="bg-customPink rounded-full w-10 h-10 flex items-center justify-center text-white text-lg font-bold">
       {getInitial(name)}
     </div>
   );

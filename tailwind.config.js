@@ -39,7 +39,6 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'gradient-custom':
           'linear-gradient(to right, #f7f7f7, #e2e2e2, #cfcfcf)',
-        'gradient-button': 'linear-gradient(135deg,#E0F7FA 20%, #ED51C2 80%)',
       },
       backgroundColor: (theme) => ({
         ...theme('colors'),

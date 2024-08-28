@@ -59,6 +59,22 @@ export async function getPaypalSubscriptionById(subscriptionId, token) {
     return error.response;
   }
 }
+export async function getPaypalSubscriptionStatus(token) {
+  try {
+    const response = await axios.get(
+      `${loginUrl}/paypalsubscriptions/user/status`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}
 export async function cancelPaypalSubscription(token, subscriptionId) {
   try {
     const response = await axios.post(
