@@ -1,10 +1,17 @@
-import { ListGroupItem, Badge } from 'reactstrap';
+import { ListGroupItem, Badge, Button } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import CancelSubscription from '../subscription/cancel-subscription';
 import PaymentInfo from './payment-info';
-import SwitchStripSubscription from '@/components/subscription/switch-strip-subscription';
-const SubscriptionInfo = () => {
+import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
+const SubscriptionInfo = ({ toggle }) => {
   const { subscriptionStatus, planType } = useSubscriptionStore();
+
+  const router = useRouter();
+  const handelNavigateToChangePlan = () => {
+    toggle();
+    router.push('/change-plan');
+  };
   return (
     <>
       <ListGroupItem className="text-center">
@@ -15,11 +22,11 @@ const SubscriptionInfo = () => {
               <Badge
                 pill
                 color="warning"
-                className={` p-2.5  uppercase ${subscriptionStatus === 'approval_pending' ? '' : 'bg-customPink-important'}`}
+                className={`uppercase ${subscriptionStatus === 'approval_pending' ? '' : 'bg-customPink-important'}`}
               >
                 {subscriptionStatus}
               </Badge>
-              <Badge pill className=" p-2.5 bg-customPink-important uppercase">
+              <Badge pill className="  bg-customPink-important uppercase">
                 {planType}
               </Badge>
             </>
@@ -35,13 +42,28 @@ const SubscriptionInfo = () => {
 
         {subscriptionStatus === 'active' && (
           <div className="flex justify-center items-center gap-2">
-            <CancelSubscription buttonName="Cancel Subscription" />
-            <SwitchStripSubscription />
+            <CancelSubscription
+              buttonName="Cancel Subscription"
+              toggle={toggle}
+              color="danger"
+            />
+            <Button
+              size="sm"
+              color="primary"
+              className="text-white rounded-3xl font-bold shadow-lg border-none"
+              onClick={handelNavigateToChangePlan}
+            >
+              {planType === 'monthly'
+                ? 'Switch to Yearly'
+                : 'Switch to Monthly'}
+            </Button>
           </div>
         )}
       </ListGroupItem>
     </>
   );
 };
-
+SubscriptionInfo.propTypes = {
+  toggle: PropTypes.func.isRequired,
+};
 export default SubscriptionInfo;

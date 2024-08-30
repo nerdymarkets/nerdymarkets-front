@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { PaypalButton } from './paypal-button';
 
-const Paypal = ({ subscriptionType }) => {
+const Paypal = ({ subscriptionType, buttonName }) => {
   const { data: session, update } = useSession();
   const monthlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_MONTHLY;
   const yearlyPlanId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID_YEARLY;
@@ -62,13 +62,14 @@ const Paypal = ({ subscriptionType }) => {
 
   return (
     <div className="py-20">
-      <PaypalButton onClick={handleSubmit}>Subscribe with PayPal</PaypalButton>
+      <PaypalButton onClick={handleSubmit}>{buttonName}</PaypalButton>
     </div>
   );
 };
 
 Paypal.propTypes = {
   subscriptionType: PropTypes.string,
+  buttonName: PropTypes.string.isRequired,
 };
 
 export default Paypal;

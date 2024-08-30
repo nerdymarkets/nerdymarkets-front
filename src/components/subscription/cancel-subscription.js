@@ -12,12 +12,16 @@ import {
 } from '@/pages/api/paypal';
 import { toast } from 'react-toastify';
 
-import { useRouter } from 'next/router';
 import useSubscriptionStore from '@/stores/subscription-store';
-const CancelSubscription = ({ buttonName }) => {
-  const { data: session, update } = useSession();
+const CancelSubscription = ({
+  buttonName,
+  toggle,
+  onSubscriptionMethodChange,
+  className,
+  color,
+}) => {
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const {
     setSubscriptionDetails,
@@ -25,6 +29,7 @@ const CancelSubscription = ({ buttonName }) => {
     isStripeActive,
     subscriptionDetails,
     subscriptionStatus,
+    clearSubscriptionDetails,
   } = useSubscriptionStore();
   const handleCancelSubscription = async () => {
     setLoading(true);
@@ -33,24 +38,19 @@ const CancelSubscription = ({ buttonName }) => {
       try {
         const cancelResponse = await cancelStripeSubscription(
           session?.accessToken,
-          subscriptionDetails?.stripeSubscriptionId
+          subscriptionDetails?.stripeSubscriptions[0].stripeSubscriptionId
         );
 
         if (cancelResponse.status === 'canceled') {
           toast.success('Stripe subscription successfully canceled.');
           await deleteStripeSubscription(
             session?.accessToken,
-            subscriptionDetails?.stripeSubscriptionId
+            subscriptionDetails?.stripeSubscriptions[0].stripeSubscriptionId
           );
-          const updatedSubscriptions = session.user.stripeSubscriptions.filter(
-            (id) => id !== subscriptionDetails?._id
-          );
-
-          await update({
-            stripeSubscriptions: updatedSubscriptions,
-          });
           setSubscriptionDetails(null);
-          router.push('/');
+          clearSubscriptionDetails();
+          onSubscriptionMethodChange('stripe');
+          toggle();
         } else {
           toast.error('Failed to cancel the Stripe subscription.');
         }
@@ -61,18 +61,21 @@ const CancelSubscription = ({ buttonName }) => {
       }
     } else if (isPaypalActive) {
       try {
-        let cancelResponse;
-
+        // Cancel the PayPal subscription first
         if (subscriptionStatus === 'approval_pending') {
           await deletePaypalSubscription(
             session?.accessToken,
-            subscriptionDetails?._id
+            subscriptionDetails?.paypalSubscriptions[0]?._id
           );
-          toast.success('PayPal subscription Deleted');
+          toast.success('PayPal subscription deleted successfully.');
+          setSubscriptionDetails(null);
+          clearSubscriptionDetails();
+          onSubscriptionMethodChange('paypal');
+          toggle();
         } else {
-          cancelResponse = await cancelPaypalSubscription(
+          const cancelResponse = await cancelPaypalSubscription(
             session?.accessToken,
-            subscriptionDetails?.paypalSubscriptionId
+            subscriptionDetails?.paypalSubscriptions[0]?.paypalSubscriptionId
           );
 
           if (
@@ -80,25 +83,23 @@ const CancelSubscription = ({ buttonName }) => {
             cancelResponse.message === 'Subscription canceled successfully'
           ) {
             toast.success('PayPal subscription successfully canceled.');
+
+            // Proceed to delete the subscription after cancellation
             await deletePaypalSubscription(
               session?.accessToken,
-              subscriptionDetails?._id
+              subscriptionDetails?.paypalSubscriptions[0]?._id
             );
+            toast.success('PayPal subscription deleted successfully.');
+            setSubscriptionDetails(null);
+            clearSubscriptionDetails();
+            onSubscriptionMethodChange('paypal');
+            toggle();
           } else {
             toast.error('Failed to cancel the PayPal subscription.');
+            setLoading(false);
             return;
           }
         }
-
-        const updatedSubscriptions = session.user.paypalsubscriptions.filter(
-          (id) => id !== subscriptionDetails._id
-        );
-
-        await update({
-          paypalsubscriptions: updatedSubscriptions,
-        });
-        setSubscriptionDetails(null);
-        router.push('/');
       } catch (error) {
         toast.error(
           'An error occurred while canceling or deleting the PayPal subscription.'
@@ -114,11 +115,11 @@ const CancelSubscription = ({ buttonName }) => {
   return (
     <>
       <Button
-        color="danger"
+        color={color}
         size="sm"
         onClick={handleCancelSubscription}
         disabled={loading}
-        className="rounded-3xl font-bold shadow-lg border-none"
+        className={`${className} rounded-3xl font-bold  border-none`}
       >
         {loading ? <Spinner size="sm" /> : buttonName}
       </Button>
@@ -127,5 +128,9 @@ const CancelSubscription = ({ buttonName }) => {
 };
 CancelSubscription.propTypes = {
   buttonName: PropTypes.string.isRequired,
+  toggle: PropTypes.func,
+  className: PropTypes.string,
+  color: PropTypes.string,
+  onSubscriptionMethodChange: PropTypes.func,
 };
 export default CancelSubscription;

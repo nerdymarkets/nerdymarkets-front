@@ -9,6 +9,8 @@ import {
   faCircleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import { getUserSubscriptions } from '@/pages/api/auth';
+import useSubscriptionStore from '@/stores/subscription-store';
 const ReturnModal = () => {
   const [modalOpen, setModalOpen] = useState(true);
   const router = useRouter();
@@ -17,23 +19,42 @@ const ReturnModal = () => {
     'Processing your subscription...'
   );
   const [error, setError] = useState(null);
-  const [subscriptionDetails, setSubscriptionDetails] = useState(null);
+  const [subscriptionInfo, setSubscriptionInfo] = useState(null);
   const [isSessionUpdated, setIsSessionUpdated] = useState(false);
-
+  const { setSubscriptionDetails } = useSubscriptionStore();
   useEffect(() => {
     const { subscription_id } = router.query;
     if (
       status === 'authenticated' &&
       session?.accessToken &&
       subscription_id &&
-      !subscriptionDetails
+      !subscriptionInfo
     ) {
       captureSubscription(session.accessToken, subscription_id)
-        .then((response) => {
+        .then(async (response) => {
           setSubscriptionStatus(
             'Subscription successfully activated and paid.'
           );
-          setSubscriptionDetails(response);
+          setSubscriptionInfo(response);
+          const subscriptionData = await getUserSubscriptions(
+            session.accessToken
+          );
+          const combinedSubscriptionDetails = {
+            stripeSubscriptions: subscriptionData.stripeSubscriptions || [],
+            paypalSubscriptions: subscriptionData.paypalSubscriptions || [],
+            isStripeActive:
+              subscriptionData.stripeSubscriptions?.some(
+                (sub) => sub.status.toLowerCase() === 'active'
+              ) || false,
+            isPaypalActive:
+              subscriptionData.paypalSubscriptions?.some(
+                (sub) =>
+                  sub.status.toLowerCase() === 'active' ||
+                  sub.status.toLowerCase() === 'approval_pending'
+              ) || false,
+          };
+
+          setSubscriptionDetails(combinedSubscriptionDetails);
           toast.success('Subscription successfully activated and paid.');
         })
         .catch((error) => {
@@ -44,20 +65,20 @@ const ReturnModal = () => {
     } else if (status === 'unauthenticated') {
       setSubscriptionStatus('User is not authenticated.');
     }
-  }, [router.query, session, status, subscriptionDetails]);
+  }, [router.query, session, setSubscriptionDetails, status, subscriptionInfo]);
 
   useEffect(() => {
-    if (subscriptionDetails && session && !isSessionUpdated) {
+    if (subscriptionInfo && session && !isSessionUpdated) {
       update({
         paypalsubscriptions: [
           ...session.user.paypalsubscriptions,
-          subscriptionDetails._id,
+          subscriptionInfo._id,
         ],
       }).then(() => {
         setIsSessionUpdated(true);
       });
     }
-  }, [subscriptionDetails, session, update, isSessionUpdated]);
+  }, [session, update, isSessionUpdated, subscriptionInfo]);
 
   if (status === 'loading') {
     return (

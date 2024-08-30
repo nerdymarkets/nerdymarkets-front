@@ -76,3 +76,17 @@ export async function sendPasswordResetLink(email) {
     );
   }
 }
+export async function getUserSubscriptions(token) {
+  try {
+    const response = await axios.get(`${loginUrl}/auth/subscriptions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch subscriptions'
+    );
+  }
+}

@@ -3,7 +3,6 @@ import { Button, Modal, ModalBody } from 'reactstrap';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useMemo } from 'react';
-import useSubscriptionStore from '@/stores/subscription-store';
 import { toast } from 'react-toastify';
 import { deletePaypalSubscription } from '@/pages/api/paypal';
 import { getPaypalSubscriptionById } from '@/pages/api/paypal';
@@ -15,8 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const CancelModal = () => {
   const [modalOpen] = useState(true);
   const { data: session, update } = useSession();
-  const { subscriptionDetails, setSubscriptionDetails } =
-    useSubscriptionStore();
+  const [subscriptionDetail, setSubscriptionDetail] = useState(null);
+
   const router = useRouter();
   const hasPaypalSubscriptions = useMemo(
     () => session?.user?.paypalsubscriptions?.length > 0,
@@ -34,14 +33,8 @@ const CancelModal = () => {
             session.user.paypalsubscriptions[0],
             session.accessToken
           );
-          if (
-            paypalSubscription?.status.toLowerCase() === 'active' ||
-            paypalSubscription?.status.toLowerCase() === 'approval_pending'
-          ) {
-            setSubscriptionDetails({
-              ...paypalSubscription,
-              isPaypalActive: true,
-            });
+          if (paypalSubscription?.status.toLowerCase() === 'approval_pending') {
+            setSubscriptionDetail(paypalSubscription);
           }
         }
       } catch (err) {
@@ -52,33 +45,32 @@ const CancelModal = () => {
     };
 
     fetchSubscription();
-  }, [hasPaypalSubscriptions, session, setSubscriptionDetails]);
+  }, [hasPaypalSubscriptions, session, setSubscriptionDetail]);
 
   const handleCancelSubscription = async () => {
     try {
       await deletePaypalSubscription(
         session?.accessToken,
-        subscriptionDetails._id
+        subscriptionDetail._id
       );
       const updatedSubscriptions = session.user.paypalsubscriptions.filter(
-        (id) => id !== subscriptionDetails._id
+        (id) => id !== subscriptionDetail._id
       );
 
-      await update({
-        paypalsubscriptions: updatedSubscriptions,
-      });
-      setSubscriptionDetails(null);
-      toast.success('Succsesfult canceled');
+      await update({ paypalsubscriptions: updatedSubscriptions });
+      setSubscriptionDetail(null);
+      toast.success('Successfully canceled');
       router.push('/');
     } catch (err) {
-      toast.error(
-        'An error occurred while canceling or deleting the PayPal subscription.'
-      );
+      toast.error('An error occurred while canceling the PayPal subscription.');
     }
   };
-
-  const navigateAprovalUrl = () => {
-    router.push(subscriptionDetails.approvalUrl);
+  const navigateApprovalUrl = () => {
+    if (subscriptionDetail?.approvalUrl) {
+      router.push(subscriptionDetail.approvalUrl);
+    } else {
+      toast.error('No approval URL found.');
+    }
   };
   return (
     <Modal
@@ -102,7 +94,7 @@ const CancelModal = () => {
               className="text-green-500 text-5xl w-40"
             />
             <Button
-              onClick={navigateAprovalUrl}
+              onClick={navigateApprovalUrl}
               className="w-full bg-green-500 hover:bg-green-600 border-none rounded-3xl font-bold text-lg mb-4"
             >
               Finish Subscription

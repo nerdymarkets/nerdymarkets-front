@@ -45,7 +45,7 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
               email={user.email}
               isVerified={user.isVerified}
             />
-            <SubscriptionInfo />
+            <SubscriptionInfo toggle={toggle} />
             <ListGroupItem className="flex flex-col">
               <Button
                 onClick={handlePasswordChangeClick}
@@ -82,8 +82,6 @@ AccountSettingsModal.propTypes = {
     firstname: PropTypes.string.isRequired,
     lastname: PropTypes.string.isRequired,
     isVerified: PropTypes.bool.isRequired,
-    paypalsubscriptions: PropTypes.array.isRequired,
-    stripeSubscriptions: PropTypes.array.isRequired,
   }).isRequired,
 };
 

@@ -7,7 +7,6 @@ import nerdylogo from '../../../public/logo/nerdylogo.png';
 import Image from 'next/image';
 import RegistrationModal from '@/components/registration/registration-modal';
 import Profile from '../profile/profile';
-
 const Header = () => {
   const { data: session, status } = useSession();
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);

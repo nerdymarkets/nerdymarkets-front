@@ -109,10 +109,17 @@ const PaymentModal = ({ isOpen, toggle, subscriptionType }) => {
         {step === 2 && (
           <div>
             {paymentMethod === 'paypal' && (
-              <Paypal subscriptionType={subscriptionType} />
+              <Paypal
+                subscriptionType={subscriptionType}
+                buttonName="Subscribe with PayPal"
+              />
             )}
             {paymentMethod === 'stripe' && (
-              <Stripe subscriptionType={subscriptionType} toggle={toggle} />
+              <Stripe
+                subscriptionType={subscriptionType}
+                toggle={toggle}
+                buttonName="Pay"
+              />
             )}
             <Button
               color="secondary"

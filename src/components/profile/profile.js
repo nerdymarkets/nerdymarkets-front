@@ -10,7 +10,8 @@ import {
 import Avatar from './avatar';
 import { signOut } from 'next-auth/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Import icons
+import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 import AccountSettingsModal from './account-settings-modal';
 
 const Profile = ({ session, status }) => {
@@ -18,6 +19,7 @@ const Profile = ({ session, status }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [accountSettingsModalOpen, setAccountSettingsModalOpen] =
     useState(false);
+
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const toggleAccountSettingsModal = () =>
     setAccountSettingsModalOpen(!accountSettingsModalOpen);

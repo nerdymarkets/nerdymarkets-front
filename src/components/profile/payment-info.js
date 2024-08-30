@@ -7,9 +7,10 @@ const PaymentInfo = () => {
   const {
     isPaypalActive,
     isStripeActive,
-    subscriptionStatus,
     subscriptionDetails,
+    subscriptionStatus,
   } = useSubscriptionStore();
+
   const handleFinishSubscriptionClick = () => {
     if (subscriptionDetails?.approvalUrl) {
       window.location.href = subscriptionDetails.approvalUrl;
@@ -18,10 +19,10 @@ const PaymentInfo = () => {
   return (
     <>
       {isPaypalActive ? (
-        <ListGroupItem className="flex items-center border-none gap-2">
+        <ListGroupItem className="flex items-center border-none gap-2 ">
           <FontAwesomeIcon
             icon={faCcPaypal}
-            className="ml-2 text-primary w-20"
+            className="py-2 text-primary w-20"
           />
           {subscriptionStatus === 'approval_pending' && (
             <>
@@ -38,7 +39,10 @@ const PaymentInfo = () => {
           )}
         </ListGroupItem>
       ) : isStripeActive ? (
-        <FontAwesomeIcon icon={faCcStripe} className="ml-2 text-primary w-12" />
+        <FontAwesomeIcon
+          icon={faCcStripe}
+          className=" py-2 text-primary w-20"
+        />
       ) : (
         <Badge color="danger">No active payment method</Badge>
       )}
