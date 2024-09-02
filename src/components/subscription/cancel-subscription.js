@@ -84,7 +84,6 @@ const CancelSubscription = ({
           ) {
             toast.success('PayPal subscription successfully canceled.');
 
-            // Proceed to delete the subscription after cancellation
             await deletePaypalSubscription(
               session?.accessToken,
               subscriptionDetails?.paypalSubscriptions[0]?._id

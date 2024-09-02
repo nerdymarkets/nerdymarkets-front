@@ -4,6 +4,7 @@ import CancelSubscription from '../subscription/cancel-subscription';
 import PaymentInfo from './payment-info';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
+import ChangeSubscriptionPlan from '../subscription/change-subscription-plan';
 const SubscriptionInfo = ({ toggle }) => {
   const { subscriptionStatus, planType } = useSubscriptionStore();
 
@@ -47,7 +48,7 @@ const SubscriptionInfo = ({ toggle }) => {
               toggle={toggle}
               color="danger"
             />
-            <Button
+            {/* <Button
               size="sm"
               color="primary"
               className="text-white rounded-3xl font-bold shadow-lg border-none"
@@ -56,7 +57,8 @@ const SubscriptionInfo = ({ toggle }) => {
               {planType === 'monthly'
                 ? 'Switch to Yearly'
                 : 'Switch to Monthly'}
-            </Button>
+            </Button> */}
+            <ChangeSubscriptionPlan />
           </div>
         )}
       </ListGroupItem>

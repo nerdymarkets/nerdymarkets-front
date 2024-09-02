@@ -104,3 +104,22 @@ export async function deleteStripeSubscription(token, subscriptionId) {
     return error.response;
   }
 }
+export async function changeStripeSubscriptionPlan(token, newPlanId) {
+  try {
+    const response = await axios.patch(
+      `${loginUrl}/stripe-subscriptions/change-plan`,
+      {
+        newPlanId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
