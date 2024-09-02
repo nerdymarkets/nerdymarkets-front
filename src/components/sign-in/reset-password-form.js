@@ -32,7 +32,11 @@ const ResetPasswordForm = ({
         className="w-full rounded-3xl bg-customPink border-none shadow-lg"
         disabled={!isEmailValid || isLoading}
       >
-        {isLoading ? <Spinner size="sm" /> : 'Send Reset Link'}
+        {isLoading ? (
+          <Spinner size="sm" className="text-customPink" />
+        ) : (
+          'Send Reset Link'
+        )}
       </Button>
     </Form>
   );

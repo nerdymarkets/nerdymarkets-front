@@ -6,6 +6,7 @@ const useSubscriptionStore = create((set) => ({
   planType: null,
   isPaypalActive: false,
   isStripeActive: false,
+  loading: false,
 
   setSubscriptionDetails: (details) => {
     const isPaypalActive = details?.isPaypalActive ?? false;
@@ -31,6 +32,7 @@ const useSubscriptionStore = create((set) => ({
       planType,
       isPaypalActive,
       isStripeActive,
+      loading: false,
     });
   },
 
@@ -42,6 +44,7 @@ const useSubscriptionStore = create((set) => ({
       isPaypalActive: false,
       isStripeActive: false,
     }),
+  setLoading: (isLoading) => set({ loading: isLoading }),
 }));
 
 export default useSubscriptionStore;

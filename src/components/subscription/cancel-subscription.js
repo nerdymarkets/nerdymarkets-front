@@ -86,7 +86,7 @@ const CancelSubscription = ({ buttonName, toggle, className, color }) => {
         disabled={loading}
         className={`${className} rounded-3xl font-bold  border-none`}
       >
-        {loading ? <Spinner size="sm" /> : buttonName}
+        {loading ? <Spinner size="sm text-customPink" /> : buttonName}
       </Button>
     </>
   );

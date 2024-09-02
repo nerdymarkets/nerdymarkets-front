@@ -26,9 +26,9 @@ const Profile = ({ session, status }) => {
 
   if (!status === 'authenticated') {
     return (
-      <Spinner color="primary" type="grow">
-        Loading...
-      </Spinner>
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner className="text-customPink" />
+      </div>
     );
   }
 

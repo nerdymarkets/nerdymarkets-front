@@ -32,11 +32,7 @@ const Header = () => {
   };
 
   if (status === 'loading') {
-    return (
-      <Spinner color="primary" type="grow">
-        Loading...
-      </Spinner>
-    );
+    return <Spinner className="text-customPink" />;
   }
 
   return (

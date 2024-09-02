@@ -128,7 +128,7 @@ const Stripe = ({ subscriptionType, toggle, buttonName }) => {
         >
           {loading ? (
             <>
-              <Spinner size="sm" className="me-2" />
+              <Spinner size="sm" className="me-2 text-customPink" />
               Processing...
             </>
           ) : (

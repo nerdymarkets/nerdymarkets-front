@@ -48,6 +48,7 @@ const SubscriptionInfo = ({ toggle }) => {
               toggle={toggle}
               color="danger"
             />
+            <ChangeSubscriptionPlan />
             {/* <Button
               size="sm"
               color="primary"
@@ -58,7 +59,6 @@ const SubscriptionInfo = ({ toggle }) => {
                 ? 'Switch to Yearly'
                 : 'Switch to Monthly'}
             </Button> */}
-            <ChangeSubscriptionPlan />
           </div>
         )}
       </ListGroupItem>

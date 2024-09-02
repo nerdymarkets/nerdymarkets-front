@@ -109,7 +109,7 @@ const ChangeSubscriptionPlan = () => {
       >
         {isLoading ? (
           <>
-            <Spinner size="sm" color="light" /> Changing Plan...
+            <Spinner size="sm" className="text-customPink" /> Changing Plan...
           </>
         ) : (
           'Change Subscription Plan'

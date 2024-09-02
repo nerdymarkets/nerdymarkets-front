@@ -196,7 +196,11 @@ const RegisterModal = ({ isOpen, toggle, openLoginModal }) => {
               className="w-full rounded-3xl bg-customPink border-none shadow-lg  py-2"
               disabled={isLoading}
             >
-              {isLoading ? <Spinner size="sm" /> : 'Register'}
+              {isLoading ? (
+                <Spinner size="sm" className="text-customPink" />
+              ) : (
+                'Register'
+              )}
             </Button>
             <Button
               color="link"

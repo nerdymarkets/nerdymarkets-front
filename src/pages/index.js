@@ -12,7 +12,7 @@ export default function Home() {
   if (status === 'loading') {
     return (
       <div className="text-center">
-        <Spinner color="primary" />
+        <Spinner className="text-customPink" />
       </div>
     );
   }

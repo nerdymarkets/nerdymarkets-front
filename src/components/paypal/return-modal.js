@@ -81,11 +81,7 @@ const ReturnModal = () => {
   }, [session, update, isSessionUpdated, subscriptionInfo]);
 
   if (status === 'loading') {
-    return (
-      <Spinner color="primary" type="grow">
-        Loading...
-      </Spinner>
-    );
+    return <Spinner className="text-customPink" />;
   }
 
   const toggleModal = () => {

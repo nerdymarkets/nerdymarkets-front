@@ -11,12 +11,13 @@ import useSubscriptionStore from '@/stores/subscription-store';
 const inter = Inter({ subsets: ['latin'] });
 const Layout = ({ children }) => {
   const { data: session, status } = useSession();
-  const { setSubscriptionDetails } = useSubscriptionStore();
+  const { setSubscriptionDetails, setLoading } = useSubscriptionStore();
   useEffect(() => {
     const fetchSubscription = async () => {
       if (!session) {
         return;
       }
+      setLoading(true);
       try {
         const subscriptionData = await getUserSubscriptions(
           session.accessToken
@@ -39,13 +40,15 @@ const Layout = ({ children }) => {
         setSubscriptionDetails(combinedSubscriptionDetails);
       } catch (error) {
         toast.error('Failed to fetch subscription details.');
+      } finally {
+        setLoading(false);
       }
     };
 
     if (status === 'authenticated') {
       fetchSubscription();
     }
-  }, [setSubscriptionDetails, status, session]);
+  }, [setSubscriptionDetails, status, session, setLoading]);
 
   return (
     <div className={`flex flex-col  ${inter.className}`}>

@@ -2,23 +2,22 @@ import Subscription from '@/components/subscription/subscription';
 import { useSession } from 'next-auth/react';
 import { Spinner, Container } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
+import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
+
 const Portfolio = () => {
   const { status } = useSession();
-  const { subscriptionDetails } = useSubscriptionStore();
+  const { subscriptionDetails, loading } = useSubscriptionStore();
 
-  if (status === 'loading') {
+  if (status === 'loading' || loading) {
     return (
-      <div className="text-center">
-        <Spinner color="primary" />
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner className="text-customPink" />
       </div>
     );
   }
+
   if (status === 'unauthenticated') {
-    return (
-      <Container className="text-center">
-        <h1 className="text-3xl text-red-500">User not authenticated</h1>
-      </Container>
-    );
+    return <NotAuthenticatedMessage />;
   }
   const hasActiveSubscription =
     subscriptionDetails?.isStripeActive || subscriptionDetails?.isPaypalActive;
