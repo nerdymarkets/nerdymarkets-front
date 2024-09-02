@@ -2,10 +2,7 @@ import { Button, Spinner } from 'reactstrap';
 import { useSession } from 'next-auth/react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import {
-  cancelStripeSubscription,
-  deleteStripeSubscription,
-} from '@/pages/api/stripe-api';
+import { cancelStripeSubscription } from '@/pages/api/stripe-api';
 import {
   cancelPaypalSubscription,
   deletePaypalSubscription,
@@ -13,13 +10,7 @@ import {
 import { toast } from 'react-toastify';
 
 import useSubscriptionStore from '@/stores/subscription-store';
-const CancelSubscription = ({
-  buttonName,
-  toggle,
-  onSubscriptionMethodChange,
-  className,
-  color,
-}) => {
+const CancelSubscription = ({ buttonName, toggle, className, color }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -40,28 +31,18 @@ const CancelSubscription = ({
           session?.accessToken,
           subscriptionDetails?.stripeSubscriptions[0].stripeSubscriptionId
         );
-
         if (cancelResponse.status === 'canceled') {
           toast.success('Stripe subscription successfully canceled.');
-          await deleteStripeSubscription(
-            session?.accessToken,
-            subscriptionDetails?.stripeSubscriptions[0].stripeSubscriptionId
-          );
-          setSubscriptionDetails(null);
           clearSubscriptionDetails();
-          onSubscriptionMethodChange('stripe');
           toggle();
         } else {
           toast.error('Failed to cancel the Stripe subscription.');
         }
-      } catch (error) {
-        toast.error(
-          'An error occurred while canceling the Stripe subscription.'
-        );
+      } finally {
+        setLoading(false);
       }
     } else if (isPaypalActive) {
       try {
-        // Cancel the PayPal subscription first
         if (subscriptionStatus === 'approval_pending') {
           await deletePaypalSubscription(
             session?.accessToken,
@@ -70,7 +51,6 @@ const CancelSubscription = ({
           toast.success('PayPal subscription deleted successfully.');
           setSubscriptionDetails(null);
           clearSubscriptionDetails();
-          onSubscriptionMethodChange('paypal');
           toggle();
         } else {
           const cancelResponse = await cancelPaypalSubscription(
@@ -83,32 +63,18 @@ const CancelSubscription = ({
             cancelResponse.message === 'Subscription canceled successfully'
           ) {
             toast.success('PayPal subscription successfully canceled.');
-
-            await deletePaypalSubscription(
-              session?.accessToken,
-              subscriptionDetails?.paypalSubscriptions[0]?._id
-            );
-            toast.success('PayPal subscription deleted successfully.');
-            setSubscriptionDetails(null);
             clearSubscriptionDetails();
-            onSubscriptionMethodChange('paypal');
             toggle();
           } else {
             toast.error('Failed to cancel the PayPal subscription.');
-            setLoading(false);
-            return;
           }
         }
-      } catch (error) {
-        toast.error(
-          'An error occurred while canceling or deleting the PayPal subscription.'
-        );
+      } finally {
+        setLoading(false);
       }
     } else {
-      toast.error('No active subscription found to cancel.');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -130,6 +96,5 @@ CancelSubscription.propTypes = {
   toggle: PropTypes.func,
   className: PropTypes.string,
   color: PropTypes.string,
-  onSubscriptionMethodChange: PropTypes.func,
 };
 export default CancelSubscription;

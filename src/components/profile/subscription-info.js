@@ -8,11 +8,11 @@ import ChangeSubscriptionPlan from '../subscription/change-subscription-plan';
 const SubscriptionInfo = ({ toggle }) => {
   const { subscriptionStatus, planType } = useSubscriptionStore();
 
-  const router = useRouter();
-  const handelNavigateToChangePlan = () => {
-    toggle();
-    router.push('/change-plan');
-  };
+  // const router = useRouter();
+  // const handelNavigateToChangePlan = () => {
+  //   toggle();
+  //   router.push('/change-plan');
+  // };
   return (
     <>
       <ListGroupItem className="text-center">

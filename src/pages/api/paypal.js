@@ -109,3 +109,27 @@ export async function deletePaypalSubscription(token, subscriptionId) {
     return error.response;
   }
 }
+export async function changePaypalSubscriptionPlan(
+  token,
+  newPlanId,
+  subscriber
+) {
+  try {
+    const response = await axios.patch(
+      `${loginUrl}/paypalsubscriptions/change-plan`,
+      {
+        newPlanId,
+        subscriber,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}

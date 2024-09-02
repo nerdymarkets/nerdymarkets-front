@@ -39,10 +39,10 @@ const ChangePlan = () => {
   ).toLocaleDateString();
   const formattedStripePrice = price ? (price / 100).toFixed(2) : '';
 
-  const handleSubscriptionMethodChange = (method) => {
-    setSubscriptionMethod(method);
-    setStep(2);
-  };
+  // const handleSubscriptionMethodChange = (method) => {
+  //   setSubscriptionMethod(method);
+  //   setStep(2);
+  // };
   const NavigateToHomePage = () => {
     router.push('/');
   };
@@ -91,7 +91,6 @@ const ChangePlan = () => {
             </div>
             <CancelSubscription
               buttonName="Change"
-              onSubscriptionMethodChange={handleSubscriptionMethodChange}
               className="w-full py-4 bg-customPink hover:bg-customPinkSecondary shadow-2xl"
             />
           </CardBody>

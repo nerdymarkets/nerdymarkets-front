@@ -7,7 +7,6 @@ import { useSession } from 'next-auth/react';
 import { getUserSubscriptions } from '@/pages/api/auth';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-
 import useSubscriptionStore from '@/stores/subscription-store';
 const inter = Inter({ subsets: ['latin'] });
 const Layout = ({ children }) => {
