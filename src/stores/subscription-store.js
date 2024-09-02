@@ -45,6 +45,18 @@ const useSubscriptionStore = create((set) => ({
       isStripeActive: false,
     }),
   setLoading: (isLoading) => set({ loading: isLoading }),
+
+  // Computed property to get the active subscription details
+  getActiveSubscription: () => {
+    return (state) => {
+      if (state.isPaypalActive) {
+        return state.subscriptionDetails?.paypalSubscriptions?.[0] ?? null;
+      } else if (state.isStripeActive) {
+        return state.subscriptionDetails?.stripeSubscriptions?.[0] ?? null;
+      }
+      return null;
+    };
+  },
 }));
 
 export default useSubscriptionStore;

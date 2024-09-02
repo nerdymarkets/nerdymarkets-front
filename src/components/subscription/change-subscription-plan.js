@@ -79,6 +79,7 @@ const ChangeSubscriptionPlan = () => {
           newPlanId,
           subscriber
         );
+
         if (response && response.approvalUrl) {
           toast.success('Redirecting to PayPal...');
           window.location.href = response.approvalUrl;

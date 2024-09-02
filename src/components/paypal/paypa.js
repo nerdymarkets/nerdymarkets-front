@@ -62,7 +62,7 @@ const Paypal = ({ subscriptionType, buttonName }) => {
 
   return (
     <div className="py-20">
-      <PaypalButton onClick={handleSubmit}>{buttonName}</PaypalButton>
+      <PaypalButton onClick={handleSubmit} buttonName={buttonName} />
     </div>
   );
 };

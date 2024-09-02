@@ -14,7 +14,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons';
 import ChangePassword from './change-password';
 
 import UserInfo from './user-info';
-import SubscriptionInfo from './subscription-info';
+import Subscription from './subscription';
 const AccountSettingsModal = ({ isOpen, toggle, user }) => {
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
   const togglePasswordChangeModal = () => {
@@ -45,7 +45,7 @@ const AccountSettingsModal = ({ isOpen, toggle, user }) => {
               email={user.email}
               isVerified={user.isVerified}
             />
-            <SubscriptionInfo toggle={toggle} />
+            <Subscription toggle={toggle} />
             <ListGroupItem className="flex flex-col">
               <Button
                 onClick={handlePasswordChangeClick}

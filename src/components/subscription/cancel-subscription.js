@@ -10,7 +10,13 @@ import {
 import { toast } from 'react-toastify';
 
 import useSubscriptionStore from '@/stores/subscription-store';
-const CancelSubscription = ({ buttonName, toggle, className, color }) => {
+const CancelSubscription = ({
+  buttonName,
+  toggle,
+  className,
+  color,
+  onSubscriptionMethodChange,
+}) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +40,8 @@ const CancelSubscription = ({ buttonName, toggle, className, color }) => {
         if (cancelResponse.status === 'canceled') {
           toast.success('Stripe subscription successfully canceled.');
           clearSubscriptionDetails();
-          toggle();
+          onSubscriptionMethodChange && onSubscriptionMethodChange('strip');
+          toggle && toggle();
         } else {
           toast.error('Failed to cancel the Stripe subscription.');
         }
@@ -51,7 +58,7 @@ const CancelSubscription = ({ buttonName, toggle, className, color }) => {
           toast.success('PayPal subscription deleted successfully.');
           setSubscriptionDetails(null);
           clearSubscriptionDetails();
-          toggle();
+          toggle && toggle();
         } else {
           const cancelResponse = await cancelPaypalSubscription(
             session?.accessToken,
@@ -64,7 +71,8 @@ const CancelSubscription = ({ buttonName, toggle, className, color }) => {
           ) {
             toast.success('PayPal subscription successfully canceled.');
             clearSubscriptionDetails();
-            toggle();
+            onSubscriptionMethodChange && onSubscriptionMethodChange('paypal');
+            toggle && toggle();
           } else {
             toast.error('Failed to cancel the PayPal subscription.');
           }
@@ -86,7 +94,7 @@ const CancelSubscription = ({ buttonName, toggle, className, color }) => {
         disabled={loading}
         className={`${className} rounded-3xl font-bold  border-none`}
       >
-        {loading ? <Spinner size="sm text-customPink" /> : buttonName}
+        {loading ? <Spinner size="sm" /> : buttonName}
       </Button>
     </>
   );
@@ -96,5 +104,10 @@ CancelSubscription.propTypes = {
   toggle: PropTypes.func,
   className: PropTypes.string,
   color: PropTypes.string,
+  onSubscriptionMethodChange: PropTypes.func,
+};
+CancelSubscription.defaultProps = {
+  toggle: null,
+  onSubscriptionMethodChange: null,
 };
 export default CancelSubscription;

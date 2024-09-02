@@ -1,71 +1,95 @@
-import { ListGroupItem, Badge, Button } from 'reactstrap';
-import useSubscriptionStore from '@/stores/subscription-store';
-import CancelSubscription from '../subscription/cancel-subscription';
-import PaymentInfo from './payment-info';
-import { useRouter } from 'next/router';
+import { Popover, PopoverHeader, PopoverBody, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
-import ChangeSubscriptionPlan from '../subscription/change-subscription-plan';
-const SubscriptionInfo = ({ toggle }) => {
-  const { subscriptionStatus, planType } = useSubscriptionStore();
+import { useState } from 'react';
+import useSubscriptionStore from '@/stores/subscription-store';
+const SubscriptionInfo = ({ id, item }) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const togglePopover = () => setPopoverOpen(!popoverOpen);
+  const getActiveSubscription = useSubscriptionStore((state) =>
+    state.getActiveSubscription()
+  );
+  const activeSubscription = useSubscriptionStore(getActiveSubscription);
 
-  // const router = useRouter();
-  // const handelNavigateToChangePlan = () => {
-  //   toggle();
-  //   router.push('/change-plan');
-  // };
+  if (!activeSubscription) {
+    return null;
+  }
+  const {
+    status,
+    next_billing_time,
+    planType,
+    currentPeriodEnd,
+    startDate,
+    price,
+    billing_info,
+  } = activeSubscription;
+  const formatDate = (date) => (date ? new Date(date).toLocaleString() : 'N/A');
+  const formatPrice = () => {
+    if (billing_info?.amount?.total && billing_info?.amount?.currency) {
+      return `${billing_info?.amount?.currency}${parseFloat(billing_info?.amount?.total).toFixed(2)}`;
+    }
+    if (price) {
+      const dollarPrice = price / 100;
+      return `$${dollarPrice.toFixed(2)}`;
+    }
+    return 'N/A';
+  };
   return (
     <>
-      <ListGroupItem className="text-center">
-        <strong>Subscriptions</strong>
-        <div className="flex items-center gap-2 justify-center">
-          {subscriptionStatus ? (
-            <>
-              <Badge
-                pill
-                color="warning"
-                className={`uppercase ${subscriptionStatus === 'approval_pending' ? '' : 'bg-customPink-important'}`}
-              >
-                {subscriptionStatus}
-              </Badge>
-              <Badge pill className="  bg-customPink-important uppercase">
-                {planType}
-              </Badge>
-            </>
-          ) : (
-            <Badge color="danger" pill className="ml-2 my-2">
-              Inactive
-            </Badge>
-          )}
-        </div>
-        <div className="flex justify-center">
-          <PaymentInfo />
-        </div>
-
-        {subscriptionStatus === 'active' && (
-          <div className="flex justify-center items-center gap-2">
-            <CancelSubscription
-              buttonName="Cancel Subscription"
-              toggle={toggle}
-              color="danger"
-            />
-            <ChangeSubscriptionPlan />
-            {/* <Button
-              size="sm"
-              color="primary"
-              className="text-white rounded-3xl font-bold shadow-lg border-none"
-              onClick={handelNavigateToChangePlan}
-            >
-              {planType === 'monthly'
-                ? 'Switch to Yearly'
-                : 'Switch to Monthly'}
-            </Button> */}
+      <Button
+        id={`Popover${id}`}
+        type="button"
+        size="sm"
+        className="m-2 bg-customPink border-none hover:bg-customPinkSecondary rounded-3xl"
+        onClick={togglePopover}
+      >
+        {item.text}
+      </Button>
+      <Popover
+        placement={item.placement}
+        isOpen={popoverOpen}
+        target={`Popover${id}`}
+        toggle={togglePopover}
+      >
+        <PopoverHeader>Subscription Details</PopoverHeader>
+        <PopoverBody>
+          <div>
+            <strong>Next Charge Date:</strong>
+            <p>{formatDate(next_billing_time || currentPeriodEnd)}</p>
           </div>
-        )}
-      </ListGroupItem>
+          <div>
+            <strong>Plan Type:</strong>
+            <p className="uppercase">{planType || 'N/A'}</p>
+          </div>
+          <div>
+            <strong>Subscription Status:</strong>
+            <p className="uppercase">{status || 'N/A'}</p>
+          </div>
+          <div>
+            <strong>Start Date:</strong>
+            <p>{formatDate(startDate)}</p>
+          </div>
+          <div>
+            <strong>Price:</strong>
+            <p>{formatPrice()}</p>
+          </div>
+          {status === 'approval_pending' && (
+            <div>
+              <strong>Action Required:</strong>
+              <p>Please complete the subscription approval process.</p>
+            </div>
+          )}
+        </PopoverBody>
+      </Popover>
     </>
   );
 };
+
 SubscriptionInfo.propTypes = {
-  toggle: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  item: PropTypes.shape({
+    placement: PropTypes.oneOf(['top', 'bottom', 'left', 'right']),
+    text: PropTypes.string,
+  }).isRequired,
 };
+
 export default SubscriptionInfo;

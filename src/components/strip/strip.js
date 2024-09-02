@@ -17,7 +17,6 @@ const Stripe = ({ subscriptionType, toggle, buttonName }) => {
   const { setSubscriptionDetails } = useSubscriptionStore();
   const stripe = useStripe();
   const elements = useElements();
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -86,13 +85,11 @@ const Stripe = ({ subscriptionType, toggle, buttonName }) => {
         setSubscriptionDetails(combinedSubscriptionDetails);
         toggle();
       } else {
-        throw new Error('Subscription was not activated successfully.');
+        toast.error('Subscription was not activated successfully.');
       }
       toast.success('Subscription created successfully!');
     } catch (err) {
-      toast.error(
-        err.message || 'An error occurred during the subscription process.'
-      );
+      toast.error('An error occurred during the subscription process.');
     } finally {
       setLoading(false);
     }
@@ -101,6 +98,9 @@ const Stripe = ({ subscriptionType, toggle, buttonName }) => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="pb-2">
+        <p className="text-center font-bold py-4 text-lg">
+          Credit or Debit Card
+        </p>
         <div className="bg-gray-100 p-5 rounded-md border border-gray-300">
           <CardElement
             className="text-lg"

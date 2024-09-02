@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import paypallogo from '../../../public/logo/paypalsecondlogo.png';
 
-export const PaypalButton = ({ onClick }) => {
+export const PaypalButton = ({ onClick, buttonName }) => {
   return (
     <div
       id="paypal-button-container"
@@ -17,13 +17,14 @@ export const PaypalButton = ({ onClick }) => {
         height={26}
         style={{ display: 'block', margin: '0 auto', height: '26px' }}
       />
-      <p className="text-white font-bold">Subscribe with PayPal</p>
+      <p className="text-white font-bold">{buttonName}</p>
     </div>
   );
 };
 
 PaypalButton.propTypes = {
   onClick: PropTypes.func.isRequired,
+  buttonName: PropTypes.string,
 };
 
 export default PaypalButton;
