@@ -17,6 +17,11 @@
       "presets": ["next/babel"]
     }
   },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "rules": {
     "eqeqeq": "error",
     "curly": "error",
