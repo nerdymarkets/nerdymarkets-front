@@ -18,22 +18,22 @@ const FileDownloader = () => {
       const params = {
         Bucket:
           'betastage-betastack-nerdym-datastorebucket46f857ee-molwgoe5ncwf',
-        Key: 'IV_Portfolios/Data/Metrics/Performance/Daily/2024-08-29/etf_returns.csv', // Ensure the path is correct
+        Key: 'IV_Portfolios/Data/Metrics/Performance/Daily/2024-08-29/etf_returns.csv',
       };
 
       try {
         const command = new GetObjectCommand(params);
         const data = await s3.send(command);
-        const csvContent = await data.Body.transformToString(); // Convert S3 object Body to string
+        const csvContent = await data.Body.transformToString();
 
-        setFileContent(csvContent); // Set the CSV content
-        console.log('Fetched CSV Data:', csvContent); // Debugging log
+        setFileContent(csvContent);
+        console.log('Fetched CSV Data:', csvContent);
       } catch (err) {
         console.error('Error fetching file from S3:', err);
       }
     };
 
-    fetchFileFromS3(); // Fetch the file when the component mounts
+    fetchFileFromS3();
   }, []);
 
   return (

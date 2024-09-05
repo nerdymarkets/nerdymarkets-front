@@ -41,7 +41,7 @@ const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
           <PortfolioLineChart portfolios={portfoliosData} />
           <PortfolioBarChartDaily dailyData={dailyData} />
           <PortfolioBarChartMonthly monthlyData={monthlyData} />
-          <FileDownloader />
+          {/* <FileDownloader /> */}
         </Container>
       ) : (
         <Subscription />
