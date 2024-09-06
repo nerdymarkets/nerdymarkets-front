@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { loginUrl } from '../../environments/environment';
+import { backendBaseUrl } from '../../environments/environment';
 export async function fetchAdminDashboard(accessToken) {
   try {
-    const response = await axios.get(`${loginUrl}/admin/dashboard`, {
+    const response = await axios.get(`${backendBaseUrl}/admin/dashboard`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -20,7 +20,7 @@ export async function cancelSubscription(
 ) {
   try {
     const response = await axios.post(
-      `${loginUrl}/admin/cancel/${subscriptionId}`,
+      `${backendBaseUrl}/admin/cancel/${subscriptionId}`,
       { userId, method },
       {
         headers: {

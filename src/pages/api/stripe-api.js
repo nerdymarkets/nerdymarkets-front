@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { loginUrl } from '../../environments/environment';
+import { backendBaseUrl } from '../../environments/environment';
 
 export async function createStripePaymentMethod(
   token,
@@ -8,7 +8,7 @@ export async function createStripePaymentMethod(
 ) {
   try {
     const response = await axios.post(
-      `${loginUrl}/stripe-payments/create-payment-method`,
+      `${backendBaseUrl}/stripe-payments/create-payment-method`,
       {
         paymentMethodId,
         customerId,
@@ -34,7 +34,7 @@ export async function createStripeSubscription(
 ) {
   try {
     const response = await axios.post(
-      `${loginUrl}/stripe-subscriptions/create`,
+      `${backendBaseUrl}/stripe-subscriptions/create`,
       {
         planId,
         paymentMethodId,
@@ -56,7 +56,7 @@ export async function createStripeSubscription(
 export async function getStripeSubscriptionById(subscriptionId, token) {
   try {
     const response = await axios.get(
-      `${loginUrl}/stripe-subscriptions/${subscriptionId}`,
+      `${backendBaseUrl}/stripe-subscriptions/${subscriptionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ export async function getStripeSubscriptionById(subscriptionId, token) {
 export async function cancelStripeSubscription(token, stripeSubscriptionId) {
   try {
     const response = await axios.post(
-      `${loginUrl}/stripe-subscriptions/cancel/${stripeSubscriptionId}`,
+      `${backendBaseUrl}/stripe-subscriptions/cancel/${stripeSubscriptionId}`,
       {},
       {
         headers: {
@@ -91,7 +91,7 @@ export async function cancelStripeSubscription(token, stripeSubscriptionId) {
 export async function deleteStripeSubscription(token, subscriptionId) {
   try {
     const response = await axios.delete(
-      `${loginUrl}/stripe-subscriptions/delete/${subscriptionId}`,
+      `${backendBaseUrl}/stripe-subscriptions/delete/${subscriptionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ export async function deleteStripeSubscription(token, subscriptionId) {
 export async function changeStripeSubscriptionPlan(token, newPlanId) {
   try {
     const response = await axios.patch(
-      `${loginUrl}/stripe-subscriptions/change-plan`,
+      `${backendBaseUrl}/stripe-subscriptions/change-plan`,
       {
         newPlanId,
       },

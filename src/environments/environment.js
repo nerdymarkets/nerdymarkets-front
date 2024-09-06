@@ -1,5 +1,5 @@
 module.exports = {
   apiUrl: process.env.NEXTAUTH_URL,
-  loginUrl: process.env.NEXT_PUBLIC_LOGIN,
+  backendBaseUrl: process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
   secretKey: process.env.SECRET_KEY,
 };

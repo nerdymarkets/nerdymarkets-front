@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { loginUrl } from '../../environments/environment';
+import { backendBaseUrl } from '../../environments/environment';
 
 export async function createSubscription(token, planId, subscriber) {
   try {
     const response = await axios.post(
-      `${loginUrl}/paypalsubscriptions/create`,
+      `${backendBaseUrl}/paypalsubscriptions/create`,
       {
         planId,
         givenName: subscriber.given_name,
@@ -27,7 +27,7 @@ export async function createSubscription(token, planId, subscriber) {
 export async function captureSubscription(token, subscriptionId) {
   try {
     const response = await axios.post(
-      `${loginUrl}/paypalsubscriptions/capture`,
+      `${backendBaseUrl}/paypalsubscriptions/capture`,
       {
         subscriptionId,
       },
@@ -46,7 +46,7 @@ export async function captureSubscription(token, subscriptionId) {
 export async function getPaypalSubscriptionById(subscriptionId, token) {
   try {
     const response = await axios.get(
-      `${loginUrl}/paypalsubscriptions/${subscriptionId}`,
+      `${backendBaseUrl}/paypalsubscriptions/${subscriptionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ export async function getPaypalSubscriptionById(subscriptionId, token) {
 export async function getPaypalSubscriptionStatus(token) {
   try {
     const response = await axios.get(
-      `${loginUrl}/paypalsubscriptions/user/status`,
+      `${backendBaseUrl}/paypalsubscriptions/user/status`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ export async function getPaypalSubscriptionStatus(token) {
 export async function cancelPaypalSubscription(token, subscriptionId) {
   try {
     const response = await axios.post(
-      `${loginUrl}/paypalsubscriptions/cancel/${subscriptionId}`,
+      `${backendBaseUrl}/paypalsubscriptions/cancel/${subscriptionId}`,
       {},
       {
         headers: {
@@ -96,7 +96,7 @@ export async function cancelPaypalSubscription(token, subscriptionId) {
 export async function deletePaypalSubscription(token, subscriptionId) {
   try {
     const response = await axios.delete(
-      `${loginUrl}/paypalsubscriptions/delete/${subscriptionId}`,
+      `${backendBaseUrl}/paypalsubscriptions/delete/${subscriptionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -116,7 +116,7 @@ export async function changePaypalSubscriptionPlan(
 ) {
   try {
     const response = await axios.patch(
-      `${loginUrl}/paypalsubscriptions/change-plan`,
+      `${backendBaseUrl}/paypalsubscriptions/change-plan`,
       {
         newPlanId,
         subscriber,

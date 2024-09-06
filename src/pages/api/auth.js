@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { loginUrl } from '../../environments/environment';
+import { backendBaseUrl } from '../../environments/environment';
 
 export async function login(email, password) {
-  const response = await axios.post(`${loginUrl}/auth/login`, {
+  const response = await axios.post(`${backendBaseUrl}/auth/login`, {
     email,
     password,
   });
@@ -11,7 +11,7 @@ export async function login(email, password) {
 
 export async function register(firstname, lastname, email, password) {
   try {
-    const response = await axios.post(`${loginUrl}/auth/register`, {
+    const response = await axios.post(`${backendBaseUrl}/auth/register`, {
       firstname,
       lastname,
       email,
@@ -25,7 +25,7 @@ export async function register(firstname, lastname, email, password) {
 
 export async function verify(email, code) {
   try {
-    const response = await axios.post(`${loginUrl}/auth/verify`, {
+    const response = await axios.post(`${backendBaseUrl}/auth/verify`, {
       email,
       code,
     });
@@ -37,7 +37,7 @@ export async function verify(email, code) {
 export async function changePassword(token, oldPassword, newPassword) {
   try {
     const response = await axios.post(
-      `${loginUrl}/auth/change-password`,
+      `${backendBaseUrl}/auth/change-password`,
       {
         oldPassword,
         newPassword,
@@ -55,7 +55,7 @@ export async function changePassword(token, oldPassword, newPassword) {
 }
 export async function resetPassword(token, newPassword) {
   try {
-    const response = await axios.post(`${loginUrl}/auth/reset-password`, {
+    const response = await axios.post(`${backendBaseUrl}/auth/reset-password`, {
       token,
       newPassword,
     });
@@ -66,9 +66,12 @@ export async function resetPassword(token, newPassword) {
 }
 export async function sendPasswordResetLink(email) {
   try {
-    const response = await axios.post(`${loginUrl}/auth/forgot-password`, {
-      email,
-    });
+    const response = await axios.post(
+      `${backendBaseUrl}/auth/forgot-password`,
+      {
+        email,
+      }
+    );
     return response.data;
   } catch (error) {
     throw new Error(
@@ -78,7 +81,7 @@ export async function sendPasswordResetLink(email) {
 }
 export async function getUserSubscriptions(token) {
   try {
-    const response = await axios.get(`${loginUrl}/auth/subscriptions`, {
+    const response = await axios.get(`${backendBaseUrl}/auth/subscriptions`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
