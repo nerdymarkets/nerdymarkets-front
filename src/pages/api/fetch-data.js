@@ -35,7 +35,6 @@ export default async function handler(req, res) {
 
     res.status(200).json(result.data); // Return JSON data
   } catch (err) {
-    console.error('Error fetching file from S3:', err);
     res.status(500).json({ error: 'Error fetching file from S3' });
   }
 }

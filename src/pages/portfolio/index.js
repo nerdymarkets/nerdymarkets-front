@@ -12,7 +12,6 @@ import PropTypes from 'prop-types';
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChartDaily from '@/components/charts/portfolio-bar-chart-daily';
 import PortfolioBarChartMonthly from '@/components/charts/portfolio-bar-chart-monthly';
-import FileDownloader from '@/components/AWS/file-downloader';
 
 const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
   const { status } = useSession();
@@ -41,7 +40,6 @@ const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
           <PortfolioLineChart portfolios={portfoliosData} />
           <PortfolioBarChartDaily dailyData={dailyData} />
           <PortfolioBarChartMonthly monthlyData={monthlyData} />
-          {/* <FileDownloader /> */}
         </Container>
       ) : (
         <Subscription />

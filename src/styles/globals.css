@@ -29,6 +29,10 @@ body {
 .custom-rounded-button {
   border-radius: 9999px !important;
 }
+.custom-table-border {
+  border-top-radius: 20px !important;
+  border: 2px solid red;
+}
 .avatar {
   background-color: #007bff;
   border-radius: 50%;

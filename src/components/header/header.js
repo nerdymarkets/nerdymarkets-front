@@ -74,6 +74,16 @@ const Header = () => {
                   Portfolio
                 </NavLink>
               </NavItem>
+              {session.user.roles.includes('admin') && (
+                <NavItem>
+                  <NavLink
+                    href="/admin"
+                    className="text-customPink hover:text-customPinkSecondary"
+                  >
+                    Dashboard
+                  </NavLink>
+                </NavItem>
+              )}
               <Profile session={session} status={status} />
             </>
           )}

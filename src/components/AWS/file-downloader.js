@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-
+import { toast } from 'react-toastify';
 const FileDownloader = () => {
   const [fileContent, setFileContent] = useState('');
 
@@ -27,9 +27,8 @@ const FileDownloader = () => {
         const csvContent = await data.Body.transformToString();
 
         setFileContent(csvContent);
-        console.log('Fetched CSV Data:', csvContent);
       } catch (err) {
-        console.error('Error fetching file from S3:', err);
+        toast.error('Error fetching file from S3:');
       }
     };
 

@@ -28,6 +28,7 @@ const CancelSubscription = ({
     subscriptionStatus,
     clearSubscriptionDetails,
   } = useSubscriptionStore();
+
   const handleCancelSubscription = async () => {
     setLoading(true);
 
