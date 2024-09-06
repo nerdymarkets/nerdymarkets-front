@@ -1,8 +1,8 @@
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-toastify';
-
+import { useState } from 'react';
 const SigninForm = ({
   csrfToken,
   onSubmit,
@@ -11,8 +11,10 @@ const SigninForm = ({
   password,
   setPassword,
 }) => {
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const result = await signIn('credentials', {
       email,
       password,
@@ -23,8 +25,9 @@ const SigninForm = ({
       toast.error('Username or password is not correct');
     } else {
       toast.success('Login successful.');
-      onSubmit(); // Call the onSubmit function passed as prop to toggle modal and redirect
+      onSubmit();
     }
+    setLoading(false);
   };
 
   return (
@@ -62,8 +65,13 @@ const SigninForm = ({
       <Button
         type="submit"
         className="w-full rounded-3xl bg-customPink border-none shadow-lg"
+        disabled={loading}
       >
-        Sign in
+        {loading ? (
+          <Spinner size="sm" className="text-customPink" />
+        ) : (
+          'Sign in'
+        )}{' '}
       </Button>
     </Form>
   );
