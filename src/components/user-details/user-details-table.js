@@ -53,6 +53,7 @@ const UserDetailsTable = ({ userDetails }) => {
             <th>Last Name</th>
             <th>Last Login</th>
             <th>Logins per Week</th>
+            <th>Registration Date</th>
             <th>Active Subscription</th>
           </tr>
         </thead>
@@ -66,6 +67,7 @@ const UserDetailsTable = ({ userDetails }) => {
                 <td>{user.lastname}</td>
                 <td>{formatDate(user.lastLogin)}</td>
                 <td>{user.loginsPerWeek}</td>
+                <td>{formatDate(user.registrationDate)}</td>
                 <td>
                   {user.activeSubscription ? (
                     <>
