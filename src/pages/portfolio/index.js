@@ -3,17 +3,13 @@ import { useSession, getSession } from 'next-auth/react';
 import { Spinner, Container } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
-import {
-  getS3Object,
-  getDailyData,
-  getMonthlyData,
-} from '@/pages/api/portfolio';
+import { getPerformanceData } from '@/pages/api/portfolio';
 import PropTypes from 'prop-types';
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
-import PortfolioBarChartDaily from '@/components/charts/portfolio-bar-chart-daily';
-import PortfolioBarChartMonthly from '@/components/charts/portfolio-bar-chart-monthly';
+import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
+import PortfolioStatsTable from '@/components/charts/portfolio-stats-table';
 
-const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
+const Portfolio = ({ performanceData }) => {
   const { status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
 
@@ -37,9 +33,9 @@ const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
       {hasActiveSubscription ? (
         <Container className="text-center">
           <h1 className="text-5xl">Portfoliao Charts</h1>
-          <PortfolioLineChart portfolios={portfoliosData} />
-          <PortfolioBarChartDaily dailyData={dailyData} />
-          <PortfolioBarChartMonthly monthlyData={monthlyData} />
+          <PortfolioLineChart performanceData={performanceData} />
+          <PortfolioBarChart performanceData={performanceData} />
+          <PortfolioStatsTable performanceData={performanceData} />
         </Container>
       ) : (
         <Subscription />
@@ -49,21 +45,12 @@ const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
 };
 
 Portfolio.propTypes = {
-  portfoliosData: PropTypes.any,
-  dailyData: PropTypes.any,
-  monthlyData: PropTypes.any,
+  performanceData: PropTypes.any,
 };
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   const token = session?.accessToken;
-
-  const bucketName =
-    'betastage-betastack-nerdym-datastorebucket46f857ee-molwgoe5ncwf';
-  const portfoliosPath =
-    'IV_Portfolios/Data/Portfolios/2024-08-28/PortfoliosValues.csv';
-  const daily = 'IV_Portfolios/Data/Metrics/Performance/Daily';
-  const monthly = 'IV_Portfolios/Data/Metrics/Performance/Monthly';
 
   if (!token) {
     return {
@@ -75,25 +62,17 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const [portfoliosData, dailyData, monthlyData] = await Promise.all([
-      getS3Object(token, bucketName, portfoliosPath),
-      getDailyData(token, bucketName, daily),
-      getMonthlyData(token, bucketName, monthly),
-    ]);
+    const performanceData = await getPerformanceData(token);
 
     return {
       props: {
-        portfoliosData: portfoliosData ?? null,
-        dailyData: dailyData ?? null,
-        monthlyData: monthlyData ?? null,
+        performanceData: performanceData ?? null,
       },
     };
   } catch (error) {
     return {
       props: {
-        portfoliosData: null,
-        dailyData: null,
-        monthlyData: null,
+        performanceData: null,
       },
     };
   }

@@ -19,49 +19,68 @@ ChartJS.register(
   Legend
 );
 
-const PortfolioLineChart = ({ portfolios }) => {
-  const dates = [...new Set(portfolios.map((item) => item['Date']))];
-  const spyData = portfolios.filter((item) => item.Ticker === 'SPY');
-  const portfoliosData = portfolios.filter((item) => item.Ticker !== 'SPY');
-  const spyValues = dates.map((date) => {
-    const dataPoint = spyData.find((item) => item.Date === date);
-    return dataPoint ? dataPoint['Underlying Price'] : null;
-  });
-  const portfoliosByTicker = {};
-  portfoliosData.forEach((item) => {
-    if (!portfoliosByTicker[item.Ticker]) {
-      portfoliosByTicker[item.Ticker] = Array(dates.length).fill(null);
-    }
-    const dateIndex = dates.indexOf(item.Date);
-    portfoliosByTicker[item.Ticker][dateIndex] = item['Underlying Price'];
+const PortfolioLineChart = ({ performanceData }) => {
+  const labels = ['Monthly', 'YTD', 'Inception'];
+  const portfolios = ['Portfolio_1', 'Portfolio_2', 'Portfolio_3'];
+
+  const datasets = portfolios.map((portfolio, index) => {
+    const data = labels.map((label) => {
+      if (performanceData.data[label]) {
+        const portfolioPath = Object.keys(performanceData.data[label]).find(
+          (key) => key.includes(`${portfolio}`) && key.includes('metrics')
+        );
+
+        return portfolioPath
+          ? performanceData.data[label][portfolioPath]?.data?.[0][
+              'Total Performance [%]'
+            ]
+          : 0;
+      }
+      return 0;
+    });
+
+    return {
+      label: `Portfolio ${index + 1}`,
+      data,
+      fill: false,
+      borderColor: `rgba(${(index + 1) * 50}, 99, 132, 1)`,
+      tension: 0.1,
+    };
   });
 
-  // Data for Chart.js
+  const spyData = labels.map((label) => {
+    if (performanceData.data[label]) {
+      const spyPath = Object.keys(performanceData.data[label]).find((key) =>
+        key.includes('Portfolio_SPY_metrics')
+      );
+
+      return spyPath
+        ? performanceData.data[label][spyPath]?.data?.[0][
+            'Total Performance [%]'
+          ]
+        : 0;
+    }
+    return 0;
+  });
+
+  datasets.push({
+    label: 'SPY',
+    data: spyData,
+    fill: false,
+    borderColor: 'rgba(75, 192, 192, 1)',
+    tension: 0.1,
+  });
+
   const data = {
-    labels: dates,
-    datasets: [
-      {
-        label: 'SPY Benchmark',
-        data: spyValues,
-        borderColor: 'rgba(75,192,192,1)',
-        borderWidth: 2,
-        fill: false,
-      },
-      ...Object.keys(portfoliosByTicker).map((ticker) => ({
-        label: ticker,
-        data: portfoliosByTicker[ticker],
-        borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-        borderWidth: 2,
-        fill: false,
-      })),
-    ],
+    labels,
+    datasets,
   };
 
   return <Line data={data} />;
 };
 
 PortfolioLineChart.propTypes = {
-  portfolios: PropTypes.array,
+  performanceData: PropTypes.object.isRequired,
 };
 
 export default PortfolioLineChart;
