@@ -36,7 +36,7 @@ const Portfolio = ({ portfoliosData, dailyData, monthlyData }) => {
     <div className="bg-lightGray">
       {hasActiveSubscription ? (
         <Container className="text-center">
-          <h1 className="text-5xl">Portfolio Charts</h1>
+          <h1 className="text-5xl">Portfoliao Charts</h1>
           <PortfolioLineChart portfolios={portfoliosData} />
           <PortfolioBarChartDaily dailyData={dailyData} />
           <PortfolioBarChartMonthly monthlyData={monthlyData} />

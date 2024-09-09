@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card, CardBody, CardTitle, CardText, Button } from 'reactstrap';
 import AnimationWrapper from '@/components/shared/animation-wrapper';
-import Image from 'next/image';
-import YearlyImage from '../../../public/images/yearly.png';
 import PropTypes from 'prop-types';
 const YearlySubscriptionCard = ({ onHoverChange, onSubscribe }) => {
   return (
@@ -19,21 +17,8 @@ const YearlySubscriptionCard = ({ onHoverChange, onSubscribe }) => {
       <AnimationWrapper className="h-100" delay={0.2}>
         <Card className="shadow-lg h-100 text-muted bg-white rounded-[1.5rem] transition-transform duration-200 hover:translate-y-[-0px] hover:shadow-xl">
           <CardBody className="d-flex flex-column align-items-center">
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Image
-                src={YearlyImage}
-                alt="Yearly Subscription"
-                width={300}
-                height={100}
-                className="rounded-2xl"
-              />
-            </motion.div>
             <AnimationWrapper delay={0.3}>
-              <CardTitle tag="h4" className="mt-4">
+              <CardTitle className="mt-4 text-3xl">
                 Yearly Subscription
               </CardTitle>
             </AnimationWrapper>

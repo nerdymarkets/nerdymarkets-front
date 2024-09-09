@@ -91,7 +91,7 @@ const ChangePassword = ({ isOpen, toggle }) => {
           </FormGroup>
           <FormGroup>
             <PasswordInput
-              label="Current Password"
+              label="New password"
               placeholder="Enter new password"
               invalid={!!error}
               value={newPassword}

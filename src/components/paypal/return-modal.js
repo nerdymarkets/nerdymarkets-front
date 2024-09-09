@@ -55,7 +55,9 @@ const ReturnModal = () => {
           };
 
           setSubscriptionDetails(combinedSubscriptionDetails);
-          toast.success('Subscription successfully activated and paid.');
+          toast.success(
+            'Thank you! Subscription successfully activated and paid.'
+          );
         })
         .catch((error) => {
           setSubscriptionStatus('Failed to activate subscription.');
