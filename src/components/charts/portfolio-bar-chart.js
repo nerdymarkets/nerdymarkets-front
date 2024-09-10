@@ -14,42 +14,33 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const PortfolioBarChart = ({ performanceData }) => {
   const [activeType, setActiveType] = useState('Daily');
-  const latestDailyKey = Object.keys(performanceData.data.Daily).find((key) =>
-    key.includes('etf_returns.csv')
-  );
-  const labels =
-    activeType === 'Daily'
-      ? performanceData.data.Daily[latestDailyKey].data.map(
-          (item) => item.Ticker
-        )
-      : ['Portfolio 1', 'Portfolio 2', 'Portfolio 3'];
+
+  const labels = ['Portfolio 1', 'Portfolio 2', 'Portfolio 3'];
 
   const getDailyData = () => {
-    const dailyReturns = performanceData.data.Daily[latestDailyKey].data.map(
-      (item) => {
-        return item.daily_return;
-      }
-    );
-    return dailyReturns;
-  };
-  const getAvgDailyReturnData = (type) => {
-    const typeKeys = Object.keys(performanceData.data[type]);
-    const portfolioKeys = typeKeys.filter(
-      (key) => key.includes('Portfolio_') && key.includes('metrics')
-    );
-    return portfolioKeys.map((key) => {
-      const portfolioData = performanceData.data[type][key];
-      return portfolioData?.data?.[0]?.['Avg. Daily Return [%]'] ?? 0;
+    return labels.map((label, index) => {
+      const portfolioNumber = `Portfolio_${index + 1}`;
+      return performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0;
     });
   };
 
+  const getAvgDailyReturnData = (type) => {
+    return labels.map((label, index) => {
+      const portfolioNumber = `Portfolio_${index + 1}`;
+      return (
+        performanceData.data[type][portfolioNumber]?.[
+          'Avg. Daily Return [%]'
+        ] ?? 0
+      );
+    });
+  };
   const chartData = {
     labels,
     datasets: [
       {
         label:
           activeType === 'Daily'
-            ? 'Daily Returns'
+            ? 'Portfolio Return (Daily)'
             : `Avg. Daily Return (${activeType})`,
         data:
           activeType === 'Daily'
@@ -77,6 +68,7 @@ const PortfolioBarChart = ({ performanceData }) => {
           </button>
         ))}
       </div>
+
       <Bar data={chartData} />
     </div>
   );

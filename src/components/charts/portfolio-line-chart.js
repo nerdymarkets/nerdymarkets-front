@@ -20,63 +20,60 @@ ChartJS.register(
 );
 
 const PortfolioLineChart = ({ performanceData }) => {
-  const labels = ['Monthly', 'YTD', 'Inception'];
-  const portfolios = ['Portfolio_1', 'Portfolio_2', 'Portfolio_3'];
-
-  const datasets = portfolios.map((portfolio, index) => {
-    const data = labels.map((label) => {
-      if (performanceData.data[label]) {
-        const portfolioPath = Object.keys(performanceData.data[label]).find(
-          (key) => key.includes(`${portfolio}`) && key.includes('metrics')
-        );
-
-        return portfolioPath
-          ? performanceData.data[label][portfolioPath]?.data?.[0][
-              'Total Performance [%]'
-            ]
-          : 0;
+  const timelines = ['YTD', 'Monthly', 'Inception'];
+  const portfolios = ['Portfolio_1', 'Portfolio_2', 'Portfolio_3', 'SPY'];
+  const extractPerformanceData = (portfolio) => {
+    return timelines.map((timeline) => {
+      const timelineData = performanceData.data[timeline][portfolio];
+      if (timelineData && timelineData['Total Performance [%]'] !== undefined) {
+        return timelineData['Total Performance [%]'];
       }
       return 0;
     });
+  };
+
+  const datasets = portfolios.map((portfolio, index) => {
+    const data = extractPerformanceData(portfolio);
 
     return {
-      label: `Portfolio ${index + 1}`,
+      label: portfolio === 'SPY' ? 'SPY' : `Portfolio ${index + 1}`,
       data,
       fill: false,
-      borderColor: `rgba(${(index + 1) * 50}, 99, 132, 1)`,
+      borderColor:
+        portfolio === 'SPY'
+          ? 'rgba(75, 192, 192, 1)'
+          : `rgba(${(index + 1) * 50}, 99, 132, 1)`,
       tension: 0.1,
     };
   });
 
-  const spyData = labels.map((label) => {
-    if (performanceData.data[label]) {
-      const spyPath = Object.keys(performanceData.data[label]).find((key) =>
-        key.includes('Portfolio_SPY_metrics')
-      );
-
-      return spyPath
-        ? performanceData.data[label][spyPath]?.data?.[0][
-            'Total Performance [%]'
-          ]
-        : 0;
-    }
-    return 0;
-  });
-
-  datasets.push({
-    label: 'SPY',
-    data: spyData,
-    fill: false,
-    borderColor: 'rgba(75, 192, 192, 1)',
-    tension: 0.1,
-  });
-
   const data = {
-    labels,
+    labels: timelines,
     datasets,
   };
+  const options = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Timeline',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Total Performance [%]',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
 
-  return <Line data={data} />;
+  return <Line data={data} options={options} />;
 };
 
 PortfolioLineChart.propTypes = {

@@ -6,13 +6,23 @@ import {
 } from '@aws-sdk/client-s3';
 import { toast } from 'react-toastify';
 
-const FileDownloader = () => {
-  const [fileContent, setFileContent] = useState('');
-  const [jsonData, setJsonData] = useState([]);
+const useLatestPortfolio = () => {
+  const [data, setData] = useState(() => {
+    const cachedData = sessionStorage.getItem('portfolioData');
+    return cachedData ? JSON.parse(cachedData) : [];
+  });
+  const [loading, setLoading] = useState(
+    !sessionStorage.getItem('portfolioData')
+  );
+  const [error, setError] = useState(null);
+  const [latestFolderDate, setLatestFolderDate] = useState(() => {
+    return sessionStorage.getItem('latestFolderDate') || null;
+  });
 
   useEffect(() => {
     const fetchLatestFileFromS3 = async () => {
-      // Initialize the S3 client
+      setLoading(true);
+      setError(null);
       const s3 = new S3Client({
         region: process.env.NEXT_PUBLIC_AWS_REGION,
         credentials: {
@@ -21,12 +31,10 @@ const FileDownloader = () => {
         },
       });
 
-      const bucketName =
-        'betastage-betastack-nerdym-datastorebucket46f857ee-molwgoe5ncwf';
+      const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME;
       const prefix = 'IV_Portfolios/Data/Portfolios/';
 
       try {
-        // List objects in the Portfolios folder
         const listCommand = new ListObjectsV2Command({
           Bucket: bucketName,
           Prefix: prefix,
@@ -35,14 +43,13 @@ const FileDownloader = () => {
 
         if (!listResponse.Contents || listResponse.Contents.length === 0) {
           toast.error('No objects found in the Portfolios directory.');
+          setLoading(false);
           return;
         }
-
-        // Extract date folders from object keys
         const dateFolders = [
           ...new Set(
             listResponse.Contents.map((file) => {
-              const match = file.Key.match(/\/(\d{4}-\d{2}-\d{2})\//); // Extract the date folder from the key
+              const match = file.Key.match(/\/(\d{4}-\d{2}-\d{2})\//);
               return match ? match[1] : null;
             }).filter((date) => date !== null)
           ),
@@ -50,17 +57,21 @@ const FileDownloader = () => {
 
         if (dateFolders.length === 0) {
           toast.error('No date folders found in the prefix.');
+          setLoading(false);
           return;
         }
 
-        // Sort the date folders in descending order to get the most recent dates first
         const sortedDateFolders = dateFolders.sort(
           (a, b) => new Date(b).getTime() - new Date(a).getTime()
         );
 
-        // Attempt to fetch the 'PortfoliosValues.csv' file from the most recent folder
+        const latestDate = sortedDateFolders[0];
+        if (latestFolderDate === latestDate) {
+          setLoading(false);
+          return;
+        }
+
         for (const dateFolder of sortedDateFolders) {
-          // Filter to get only the `PortfoliosValues.csv` files in the current folder
           const csvFiles = listResponse.Contents.filter(
             (file) =>
               file.Key.includes(`/${dateFolder}/`) &&
@@ -68,55 +79,64 @@ const FileDownloader = () => {
           );
 
           if (csvFiles.length > 0) {
-            // Fetch the first CSV file in the most recent folder
             const params = {
               Bucket: bucketName,
-              Key: csvFiles[0].Key, // Adjust the key dynamically
+              Key: csvFiles[0].Key,
             };
 
             const command = new GetObjectCommand(params);
             const data = await s3.send(command);
-            const csvContent = await data.Body.transformToString(); // Read the CSV file content
+            const csvContent = await data.Body.transformToString();
 
-            setFileContent(csvContent);
-            const json = csvToJson(csvContent); // Convert CSV to JSON
-            setJsonData(json);
-            return; // Exit after fetching the first successful file
+            const json = csvToJson(csvContent);
+            setData(json);
+            setLatestFolderDate(latestDate);
+            sessionStorage.setItem('portfolioData', JSON.stringify(json));
+            sessionStorage.setItem('latestFolderDate', latestDate);
+
+            setLoading(false);
+            return;
           }
         }
-
-        // If no CSV files are found in any of the folders, show an error message
         toast.error(
           'No PortfoliosValues.csv files found in any available date folders.'
         );
+        setLoading(false);
       } catch (err) {
         toast.error('Error fetching file from S3: ' + err.message);
+        setError(err);
+        setLoading(false);
       }
     };
 
-    fetchLatestFileFromS3();
-  }, []);
+    if (!latestFolderDate) {
+      fetchLatestFileFromS3();
+    } else {
+      setLoading(false);
+    }
+  }, [latestFolderDate]);
 
-  // Helper function to convert CSV to JSON
   const csvToJson = (csv) => {
-    const lines = csv.split('\n');
+    const lines = csv.trim().split('\n');
     const headers = lines[0].split(',').map((header) => header.trim());
-    const jsonData = lines.slice(1).map((line) => {
-      const values = line.split(',').map((value) => value.trim());
-      const entry = {};
-      headers.forEach((header, index) => {
-        entry[header] = values[index];
-      });
-      return entry;
-    });
+    const jsonData = lines
+      .slice(1)
+      .map((line) => {
+        const values = line.split(',').map((value) => value.trim());
+        if (values.length !== headers.length) {
+          return null;
+        }
+        const entry = {};
+        headers.forEach((header, index) => {
+          entry[header] = values[index];
+        });
+        return entry;
+      })
+      .filter((entry) => entry !== null);
     return jsonData;
   };
-  console.log(jsonData);
-  return (
-    <div>
-      <h2>Fetched CSV Data (JSON Format):</h2>
-    </div>
-  );
+
+  return { data, loading, error, latestFolderDate };
 };
 
-export default FileDownloader;
+export default useLatestPortfolio;

@@ -3,11 +3,15 @@ import { useSession, getSession } from 'next-auth/react';
 import { Spinner, Container } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
-import { getPerformanceData } from '@/pages/api/portfolio';
+import {
+  getPerformanceData,
+  getLatestPortfolioData,
+} from '@/pages/api/portfolio';
 import PropTypes from 'prop-types';
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
 import PortfolioStatsTable from '@/components/charts/portfolio-stats-table';
+import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
 
 const Portfolio = ({ performanceData }) => {
   const { status } = useSession();
@@ -24,7 +28,6 @@ const Portfolio = ({ performanceData }) => {
   if (status === 'unauthenticated') {
     return <NotAuthenticatedMessage />;
   }
-
   const hasActiveSubscription =
     subscriptionDetails?.isStripeActive || subscriptionDetails?.isPaypalActive;
 
@@ -36,6 +39,7 @@ const Portfolio = ({ performanceData }) => {
           <PortfolioLineChart performanceData={performanceData} />
           <PortfolioBarChart performanceData={performanceData} />
           <PortfolioStatsTable performanceData={performanceData} />
+          <PortfolioPieChart />
         </Container>
       ) : (
         <Subscription />
@@ -46,6 +50,7 @@ const Portfolio = ({ performanceData }) => {
 
 Portfolio.propTypes = {
   performanceData: PropTypes.any,
+  latestPortfolioData: PropTypes.any,
 };
 
 export async function getServerSideProps(context) {
@@ -63,16 +68,19 @@ export async function getServerSideProps(context) {
 
   try {
     const performanceData = await getPerformanceData(token);
+    const latestPortfolioData = await getLatestPortfolioData(token);
 
     return {
       props: {
         performanceData: performanceData ?? null,
+        latestPortfolioData: latestPortfolioData ?? null,
       },
     };
   } catch (error) {
     return {
       props: {
         performanceData: null,
+        latestPortfolioData: null,
       },
     };
   }

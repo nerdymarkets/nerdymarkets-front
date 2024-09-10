@@ -16,18 +16,17 @@ const PortfolioStatsTable = ({ performanceData }) => {
 
   // Function to dynamically get data for the selected type
   const getStatsData = (type) => {
-    const typeKeys = Object.keys(performanceData.data[type]);
-
-    // Filter only portfolio keys
-    const portfolioKeys = typeKeys.filter(
-      (key) => key.includes('Portfolio_') && key.includes('metrics')
+    // Get keys for portfolios from the data
+    const typeData = performanceData.data[type];
+    const portfolioKeys = Object.keys(typeData).filter(
+      (key) => key.includes('Portfolio_') || key === 'SPY'
     );
 
     // Extract relevant stats for each portfolio
     const stats = portfolioKeys.map((key) => {
-      const portfolioData = performanceData.data[type][key]?.data?.[0];
+      const portfolioData = typeData[key];
       return {
-        portfolio: key.split('_')[1], // Extract portfolio number from the key
+        portfolio: key.replace('Portfolio_', 'Portfolio '), // Extract portfolio number from the key
         maxDailyReturn: portfolioData['Max Daily Return [%]'],
         maxDrawdown: portfolioData['Max Drawdown [%]'],
         sharpeRatio: portfolioData['Sharpe Ratio'],
@@ -77,7 +76,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
           {tableData.map((row, index) => (
             <tr key={index} className="border border-gray-200">
               <td className="border border-gray-300 px-4 py-2 text-center">
-                Portfolio {index + 1}
+                {row.portfolio}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
                 {row.maxDailyReturn ?? '-'}
