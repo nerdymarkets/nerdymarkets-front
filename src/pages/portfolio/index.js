@@ -9,8 +9,9 @@ import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
 import PortfolioStatsTable from '@/components/charts/portfolio-stats-table';
 import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
-
-const Portfolio = ({ performanceData }) => {
+import UserComments from '@/components/user-comments/user-comments';
+import { fetchAllComments } from '@/pages/api/auth';
+const Portfolio = ({ performanceData, comments }) => {
   const { status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
 
@@ -37,6 +38,9 @@ const Portfolio = ({ performanceData }) => {
           <PortfolioBarChart performanceData={performanceData} />
           <PortfolioStatsTable performanceData={performanceData} />
           <PortfolioPieChart />
+          <div className="my-4">
+            <UserComments initialComments={comments} />
+          </div>
         </Container>
       ) : (
         <Subscription />
@@ -47,6 +51,7 @@ const Portfolio = ({ performanceData }) => {
 
 Portfolio.propTypes = {
   performanceData: PropTypes.any,
+  comments: PropTypes.array,
 };
 
 export async function getServerSideProps(context) {
@@ -64,17 +69,18 @@ export async function getServerSideProps(context) {
 
   try {
     const performanceData = await getPerformanceData(token);
-
+    const comments = await fetchAllComments(session.accessToken);
     return {
       props: {
         performanceData: performanceData ?? null,
+        comments: comments ?? null,
       },
     };
   } catch (error) {
     return {
       props: {
         performanceData: null,
-        latestPortfolioData: null,
+        comments: null,
       },
     };
   }

@@ -10,7 +10,8 @@ module.exports = {
       colors: {
         customPink: '#ED51C2',
         customPinkSecondary: '#ed6dca',
-        // Add custom colors
+        lightPink: '#f8d7da',
+        darkPink: '#f5c6cb',
         lightGray: '#F8F9FA',
         darkGray: '#343A40',
         navyBlue: '#2B3A67',
@@ -48,6 +49,10 @@ module.exports = {
         'modal-custom': '#1a1a1a',
         softBlue: '#E0F7FA',
       }),
+      fontFamily: {
+        handwritten: ['Pacifico', 'cursive'],
+        script: ['Dancing Script', 'cursive'],
+      },
     },
   },
   plugins: [],

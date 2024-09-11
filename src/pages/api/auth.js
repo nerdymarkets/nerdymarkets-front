@@ -93,3 +93,15 @@ export async function getUserSubscriptions(token) {
     );
   }
 }
+export async function fetchAllComments(accessToken) {
+  try {
+    const response = await axios.get(`${backendBaseUrl}/auth/comments`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}
