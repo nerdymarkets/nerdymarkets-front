@@ -1,167 +1,106 @@
 import { useState } from 'react';
-import { Table, Popover, PopoverBody, Button, Spinner } from 'reactstrap';
+import { Table, Button, Container, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { formatDate } from '@/utils/fomrat-date';
-import { cancelSubscription } from '@/pages/api/admin-api';
-import { toast } from 'react-toastify';
-import { useSession } from 'next-auth/react';
-const UserDetailsTable = ({ userDetails }) => {
-  const { data: session } = useSession();
-  const [popoverOpen, setPopoverOpen] = useState({});
-  const [loading, setLoading] = useState(false);
-  const togglePopover = (userId) => {
-    setPopoverOpen((prevState) => ({
-      ...prevState,
-      [userId]: !prevState[userId],
-    }));
-  };
-  const handleCancelSubscription = async (userId, subscriptionId, method) => {
-    setLoading(true);
+import UserDetailsTableHead from './user-details-table-head';
+import UserDetailsTableBody from './user-details-table-body';
+import UserDetailsTableFooter from './user-details-table-footer';
 
-    try {
-      await cancelSubscription(
-        session.accessToken,
-        subscriptionId,
-        userId,
-        method
-      );
-      toast.success('Subscription Canceld Succsesfulyy');
-    } catch (err) {
-      toast.error('Failed to Cancel User Subscription');
-    } finally {
-      setLoading(false);
-    }
+const UserDetailsTable = ({ userDetails }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortAsc, setSortAsc] = useState(true);
+  const [sortedUserDetails, setSortedUserDetails] = useState(userDetails);
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 15;
+
+  const downloadCSV = () => {
+    const csvContent = [
+      ['First Name', 'Last Name', 'Email'],
+      ...userDetails.map((user) => [user.firstname, user.lastname, user.email]),
+    ]
+      .map((e) => e.join(','))
+      .join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'user_details.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
+  const filteredUserDetails = sortedUserDetails.filter((user) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      user.firstname.toLowerCase().includes(query) ||
+      user.lastname.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query)
+    );
+  });
+
+  const handleSortBySubscription = () => {
+    const sortedData = [...sortedUserDetails].sort((a, b) => {
+      const aHasSubscription = !!a.activeSubscription;
+      const bHasSubscription = !!b.activeSubscription;
+      return sortAsc
+        ? aHasSubscription - bHasSubscription
+        : bHasSubscription - aHasSubscription;
+    });
+
+    setSortAsc(!sortAsc);
+    setSortedUserDetails(sortedData);
+  };
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUserDetails.slice(
+    indexOfFirstUser,
+    indexOfLastUser
+  );
+
   return (
-    <div className="mt-20 p-4 rounded-3xl ">
+    <Container className="mt-16">
+      <div className="flex justify-between items-center">
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-1/4"
+        />
+        <Button
+          onClick={downloadCSV}
+          className="flex m-4 bg-customPink hover:bg-customPinkSecondary border-none"
+        >
+          Download CSV
+        </Button>
+      </div>
       <Table
         dark
         hover
         responsive
-        className="text-white mb-0"
+        className="text-white"
         style={{
           borderTopLeftRadius: '1rem',
           borderTopRightRadius: '1rem',
           overflow: 'hidden',
         }}
       >
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Email</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Last Login</th>
-            <th>Logins per Week</th>
-            <th>Registration Date</th>
-            <th>Active Subscription</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userDetails.map((user) => {
-            return (
-              <tr key={user.userId}>
-                <td>{user.userId}</td>
-                <td>{user.email}</td>
-                <td>{user.firstname}</td>
-                <td>{user.lastname}</td>
-                <td>{formatDate(user.lastLogin)}</td>
-                <td>{user.loginsPerWeek}</td>
-                <td>{formatDate(user.registrationDate)}</td>
-                <td>
-                  {user.activeSubscription ? (
-                    <>
-                      <span
-                        id={`subscriptionType-${user.userId}`}
-                        style={{
-                          cursor: 'pointer',
-                          textDecoration: 'underline',
-                        }}
-                        onClick={() => togglePopover(user.userId)}
-                      >
-                        {user.activeSubscription.type}
-                      </span>
-                      <Popover
-                        placement="top"
-                        isOpen={popoverOpen[user.userId]}
-                        target={`subscriptionType-${user.userId}`}
-                        toggle={() => togglePopover(user.userId)}
-                      >
-                        <PopoverBody>
-                          <div>
-                            <p>
-                              <strong>Payment Method:</strong>{' '}
-                              {user.activeSubscription.type}
-                            </p>
-                            <p>
-                              <strong>Plan Type:</strong>{' '}
-                              {user.activeSubscription.details.planType}
-                            </p>
-                            <p>
-                              <strong>Status:</strong>{' '}
-                              {user.activeSubscription.details.status}
-                            </p>
-                            <p>
-                              <strong>Subscription ID:</strong>{' '}
-                              {user.activeSubscription.details
-                                .paypalSubscriptionId ||
-                                user.activeSubscription.details
-                                  .stripeSubscriptionId}
-                            </p>
-                            <p>
-                              <strong> Plan: </strong>{' '}
-                              {user.activeSubscription.details.plan}
-                            </p>
-                            <p>
-                              <strong> Start Date:</strong>{' '}
-                              {formatDate(
-                                user.activeSubscription.details.startDate
-                              )}
-                            </p>
-                            <p>
-                              <strong> Next Charge:</strong>{' '}
-                              {formatDate(
-                                user.activeSubscription.details
-                                  .next_billing_time ||
-                                  user.activeSubscription.details
-                                    .currentPeriodEnd
-                              )}
-                            </p>
-                            <Button
-                              color="danger"
-                              onClick={() =>
-                                handleCancelSubscription(
-                                  user.userId,
-                                  user.activeSubscription.details
-                                    .paypalSubscriptionId ||
-                                    user.activeSubscription.details
-                                      .stripeSubscriptionId,
-                                  user.activeSubscription.type
-                                )
-                              }
-                              disabled={loading}
-                            >
-                              {loading ? (
-                                <Spinner className="text-customPink" />
-                              ) : (
-                                'Cancel Subscription'
-                              )}
-                            </Button>
-                          </div>
-                        </PopoverBody>
-                      </Popover>
-                    </>
-                  ) : (
-                    // If user doesn't have an active subscription, you can render something else or nothing at all.
-                    <span>No active subscription</span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+        <UserDetailsTableHead
+          onSort={handleSortBySubscription}
+          sortAsc={sortAsc}
+        />
+        <UserDetailsTableBody userDetails={currentUsers} />
       </Table>
-    </div>
+      <div className="flex justify-end">
+        <UserDetailsTableFooter
+          totalUsers={filteredUserDetails.length}
+          usersPerPage={usersPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    </Container>
   );
 };
 
@@ -174,14 +113,20 @@ UserDetailsTable.propTypes = {
       lastname: PropTypes.string.isRequired,
       lastLogin: PropTypes.string.isRequired,
       loginsPerWeek: PropTypes.number.isRequired,
+      registrationDate: PropTypes.string,
       activeSubscription: PropTypes.shape({
         type: PropTypes.string.isRequired,
         details: PropTypes.shape({
           planType: PropTypes.string.isRequired,
+          status: PropTypes.string.isRequired,
           next_billing_time: PropTypes.string,
           currentPeriodEnd: PropTypes.string,
+          paypalSubscriptionId: PropTypes.string,
+          stripeSubscriptionId: PropTypes.string,
+          plan: PropTypes.string.isRequired,
+          startDate: PropTypes.string.isRequired,
         }).isRequired,
-      }).isRequired,
+      }),
     })
   ).isRequired,
 };
