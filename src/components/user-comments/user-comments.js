@@ -24,7 +24,9 @@ const UserComments = ({ initialComments }) => {
               <td className="py-3 px-4 w-20 border-r-2  ">
                 {formatDate(comment.createdAt)}
               </td>
-              <td className="py-3 px-4">{comment.comment}</td>
+              <td className="py-3 px-4 break-words max-w-xs overflow-hidden">
+                {comment.comment}
+              </td>
             </tr>
           ))}
         </tbody>

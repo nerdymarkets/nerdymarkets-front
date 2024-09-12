@@ -14,11 +14,19 @@ const UserDetailsTable = ({ userDetails }) => {
 
   const downloadCSV = () => {
     const csvContent = [
-      ['First Name', 'Last Name', 'Email'],
-      ...userDetails.map((user) => [user.firstname, user.lastname, user.email]),
+      ['First Name', 'Last Name', 'Email', 'Subscription Status'],
+      ...userDetails.map((user) => [
+        user.firstname,
+        user.lastname,
+        user.email,
+        user.activeSubscription
+          ? user.activeSubscription.type
+          : 'Not Subscribed',
+      ]),
     ]
       .map((e) => e.join(','))
       .join('\n');
+
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

@@ -78,7 +78,9 @@ const AdminComments = ({ initialComments }) => {
               className="flex justify-between items-center mb-2"
             >
               <p>{formatDate(comment.createdAt)}</p>
-              <p>{comment.comment}</p>
+              <p className="break-words max-w-xs overflow-hidden">
+                {comment.comment}
+              </p>
               <button
                 onClick={() => handleDeleteComment(comment._id)}
                 className="bg-red-500 px-2 py-1 rounded"
