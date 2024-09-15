@@ -14,7 +14,6 @@ import { fetchAllComments } from '@/pages/api/auth';
 const Portfolio = ({ performanceData, comments }) => {
   const { status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
-
   if (status === 'loading' || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -27,7 +26,9 @@ const Portfolio = ({ performanceData, comments }) => {
     return <NotAuthenticatedMessage />;
   }
   const hasActiveSubscription =
-    subscriptionDetails?.isStripeActive || subscriptionDetails?.isPaypalActive;
+    subscriptionDetails?.isStripeActive ||
+    subscriptionDetails?.isPaypalActive ||
+    subscriptionDetails?.isManuallyActivated;
 
   return (
     <div className="bg-lightGray">

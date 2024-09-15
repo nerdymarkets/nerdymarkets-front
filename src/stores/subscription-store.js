@@ -6,11 +6,13 @@ const useSubscriptionStore = create((set) => ({
   planType: null,
   isPaypalActive: false,
   isStripeActive: false,
+  isManuallyActivated: false,
   loading: false,
 
   setSubscriptionDetails: (details) => {
     const isPaypalActive = details?.isPaypalActive ?? false;
     const isStripeActive = details?.isStripeActive ?? false;
+    const isManuallyActivated = details?.isManuallyActivated ?? false;
     let subscriptionStatus = null;
     let planType = null;
 
@@ -32,6 +34,7 @@ const useSubscriptionStore = create((set) => ({
       planType,
       isPaypalActive,
       isStripeActive,
+      isManuallyActivated,
       loading: false,
     });
   },

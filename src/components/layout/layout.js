@@ -35,6 +35,7 @@ const Layout = ({ children }) => {
                 sub.status.toLowerCase() === 'active' ||
                 sub.status.toLowerCase() === 'approval_pending'
             ) || false,
+          isManuallyActivated: subscriptionData.isManuallyActivated || false,
         };
 
         setSubscriptionDetails(combinedSubscriptionDetails);

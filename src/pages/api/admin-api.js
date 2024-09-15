@@ -35,3 +35,21 @@ export async function cancelSubscription(
     return error.response;
   }
 }
+export async function activateUserSubscription(accessToken, userId, isActive) {
+  try {
+    const response = await axios.patch(
+      `${backendBaseUrl}/admin/activate-subscription/${userId}`,
+      { isActive },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}

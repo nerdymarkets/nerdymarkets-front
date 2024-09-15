@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { Popover, PopoverBody, Button, Spinner } from 'reactstrap';
+import { Popover, PopoverBody, Button, Spinner, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { formatDate } from '@/utils/fomrat-date';
-import { cancelSubscription } from '@/pages/api/admin-api';
+import {
+  cancelSubscription,
+  activateUserSubscription,
+} from '@/pages/api/admin-api'; // Import the API function
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
 
-const UserDetailsTableBody = ({ userDetails }) => {
+const UserDetailsTableBody = ({ userDetails: initialUserDetails }) => {
   const { data: session } = useSession();
   const [popoverOpen, setPopoverOpen] = useState({});
   const [loading, setLoading] = useState(false);
+  const [activating, setActivating] = useState({});
+  const [userDetails, setUserDetails] = useState(initialUserDetails); // Local state for userDetails
 
   const togglePopover = (userId) => {
     setPopoverOpen((prevState) => ({
@@ -33,6 +38,32 @@ const UserDetailsTableBody = ({ userDetails }) => {
       toast.error('Failed to Cancel User Subscription');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleSubscription = async (userId, newIsActive) => {
+    setActivating((prevState) => ({ ...prevState, [userId]: true }));
+    try {
+      await activateUserSubscription(session.accessToken, userId, newIsActive);
+
+      // Update the local state to reflect the change
+      setUserDetails((prevDetails) =>
+        prevDetails.map((user) =>
+          user.userId === userId
+            ? { ...user, isManuallyActivated: newIsActive }
+            : user
+        )
+      );
+
+      toast.success(
+        `Subscription ${newIsActive ? 'activated' : 'deactivated'} successfully`
+      );
+    } catch (err) {
+      toast.error(
+        `Failed to ${newIsActive ? 'activate' : 'deactivate'} subscription`
+      );
+    } finally {
+      setActivating((prevState) => ({ ...prevState, [userId]: false }));
     }
   };
 
@@ -127,7 +158,28 @@ const UserDetailsTableBody = ({ userDetails }) => {
                 </Popover>
               </>
             ) : (
-              <span>No active subscription</span>
+              <div>
+                <label
+                  htmlFor={`toggle-${user.userId}`}
+                  className="form-check-label"
+                >
+                  {user.isManuallyActivated ? 'Deactivate' : 'Activate'}{' '}
+                  Subscription
+                </label>
+                <Input
+                  type="checkbox"
+                  id={`toggle-${user.userId}`}
+                  checked={user.isManuallyActivated}
+                  onChange={(e) =>
+                    handleToggleSubscription(user.userId, e.target.checked)
+                  }
+                  disabled={activating[user.userId]}
+                  className="toggle-switch"
+                />
+                {activating[user.userId] && (
+                  <Spinner size="sm" className="ms-2" />
+                )}
+              </div>
             )}
           </td>
         </tr>
@@ -159,6 +211,7 @@ UserDetailsTableBody.propTypes = {
           startDate: PropTypes.string.isRequired,
         }).isRequired,
       }),
+      isManuallyActivated: PropTypes.bool,
     })
   ).isRequired,
 };
