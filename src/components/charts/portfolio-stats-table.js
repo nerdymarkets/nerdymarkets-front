@@ -14,6 +14,11 @@ const PortfolioStatsTable = ({ performanceData }) => {
     'Total Performance [%]',
   ];
 
+  // Function to round numbers to 3 decimal places
+  const roundToThree = (num) => {
+    return num ? Number(num).toFixed(3) : '-';
+  };
+
   // Function to dynamically get data for the selected type
   const getStatsData = (type) => {
     // Get keys for portfolios from the data
@@ -27,11 +32,11 @@ const PortfolioStatsTable = ({ performanceData }) => {
       const portfolioData = typeData[key];
       return {
         portfolio: key.replace('Portfolio_', 'Portfolio '), // Extract portfolio number from the key
-        maxDailyReturn: portfolioData['Max Daily Return [%]'],
-        maxDrawdown: portfolioData['Max Drawdown [%]'],
-        sharpeRatio: portfolioData['Sharpe Ratio'],
-        sortinoRatio: portfolioData['Sortino Ratio'],
-        totalPerformance: portfolioData['Total Performance [%]'],
+        maxDailyReturn: roundToThree(portfolioData['Max Daily Return [%]']),
+        maxDrawdown: roundToThree(portfolioData['Max Drawdown [%]']),
+        sharpeRatio: roundToThree(portfolioData['Sharpe Ratio']),
+        sortinoRatio: roundToThree(portfolioData['Sortino Ratio']),
+        totalPerformance: roundToThree(portfolioData['Total Performance [%]']),
       };
     });
 
@@ -79,19 +84,19 @@ const PortfolioStatsTable = ({ performanceData }) => {
                 {row.portfolio}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.maxDailyReturn ?? '-'}
+                {row.maxDailyReturn}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.maxDrawdown ?? '-'}
+                {row.maxDrawdown}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.sharpeRatio ?? '-'}
+                {row.sharpeRatio}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.sortinoRatio ?? '-'}
+                {row.sortinoRatio}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.totalPerformance ?? '-'}
+                {row.totalPerformance}
               </td>
             </tr>
           ))}

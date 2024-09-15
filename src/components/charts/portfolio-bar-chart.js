@@ -20,28 +20,22 @@ const PortfolioBarChart = ({ performanceData }) => {
   const getDailyData = () => {
     return labels.map((label, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
-      return performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0;
+      return Number((performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0).toFixed(3));
     });
   };
 
   const getAvgDailyReturnData = (type) => {
     return labels.map((label, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
-      return (
-        performanceData.data[type][portfolioNumber]?.[
-          'Avg. Daily Return [%]'
-        ] ?? 0
-      );
+      return Number((performanceData.data[type][portfolioNumber]?.['Total Performance [%]'] ?? 0).toFixed(3));
     });
   };
+
   const chartData = {
     labels,
     datasets: [
       {
-        label:
-          activeType === 'Daily'
-            ? 'Portfolio Return (Daily)'
-            : `Avg. Daily Return (${activeType})`,
+        label: `Total Return [%] (${activeType})`,
         data:
           activeType === 'Daily'
             ? getDailyData()
