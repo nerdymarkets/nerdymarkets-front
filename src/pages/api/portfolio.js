@@ -18,17 +18,3 @@ export async function getPerformanceData(token, type) {
     return null;
   }
 }
-export async function getLatestPortfolioData(token) {
-  try {
-    const response = await axios.get(`${backendBaseUrl}/s3/latest-portfolio`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    const latestPortfolioData = response.data;
-    return latestPortfolioData;
-  } catch (error) {
-    return null;
-  }
-}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { Button } from 'reactstrap';
 import {
   Chart as ChartJS,
   BarElement,
@@ -18,16 +19,26 @@ const PortfolioBarChart = ({ performanceData }) => {
   const labels = ['Portfolio 1', 'Portfolio 2', 'Portfolio 3'];
 
   const getDailyData = () => {
-    return labels.map((label, index) => {
+    return labels.map((_, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
-      return Number((performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0).toFixed(3));
+      return Number(
+        (
+          performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0
+        ).toFixed(3)
+      );
     });
   };
 
   const getAvgDailyReturnData = (type) => {
-    return labels.map((label, index) => {
+    return labels.map((_, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
-      return Number((performanceData.data[type][portfolioNumber]?.['Total Performance [%]'] ?? 0).toFixed(3));
+      return Number(
+        (
+          performanceData.data[type][portfolioNumber]?.[
+            'Total Performance [%]'
+          ] ?? 0
+        ).toFixed(3)
+      );
     });
   };
 
@@ -40,30 +51,94 @@ const PortfolioBarChart = ({ performanceData }) => {
           activeType === 'Daily'
             ? getDailyData()
             : getAvgDailyReturnData(activeType),
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+        backgroundColor: (context) => {
+          const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, 'rgba(75, 192, 192, 0.9)');
+          gradient.addColorStop(1, 'rgba(75, 192, 192, 0.2)');
+          return gradient;
+        },
         borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
+        borderWidth: 2,
+        hoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+        hoverBorderColor: '#fff',
+        hoverBorderWidth: 3,
+        borderRadius: 8,
       },
     ],
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#ddd',
+        },
+      },
+      y: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+        ticks: {
+          color: '#ddd',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: '#ddd',
+          boxWidth: 20,
+        },
+        position: 'top',
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        titleColor: '#fff',
+        bodyColor: '#ddd',
+        borderColor: '#fff',
+        borderWidth: 1,
+        padding: 10,
+      },
+    },
+  };
+
   return (
-    <div>
+    <div
+      style={{
+        padding: '20px',
+        backgroundColor: '#1a1a1a',
+        borderRadius: '10px',
+      }}
+    >
+      <h1 className="text-white text-3xl pb-4">
+        Dynamic Of Each Portfolio Returns
+      </h1>
       <div className="flex justify-center mb-4">
         {['Daily', 'Monthly', 'YTD', 'Inception'].map((type) => (
-          <button
+          <Button
             key={type}
-            className={`px-4 py-2 mx-2 text-white ${
-              activeType === type ? 'bg-blue-500' : 'bg-gray-500'
+            className={`px-4 py-2 mx-2 text-white border-none  ${
+              activeType === type
+                ? 'bg-customPink hover:bg-customPinkSecondary'
+                : 'bg-gray-500'
             }`}
             onClick={() => setActiveType(type)}
           >
             {type}
-          </button>
+          </Button>
         ))}
       </div>
 
-      <Bar data={chartData} />
+      <div style={{ height: '400px' }}>
+        <Bar data={chartData} options={chartOptions} />
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { Line } from 'react-chartjs-2';
+import { Container, Spinner } from 'reactstrap';
 import {
   Chart as ChartJS,
   LineElement,
@@ -8,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import PropTypes from 'prop-types';
+import useLatestInceptionEquity from '@/hooks/latest-inception-equity';
 
 ChartJS.register(
   LineElement,
@@ -19,65 +20,121 @@ ChartJS.register(
   Legend
 );
 
-const PortfolioLineChart = ({ performanceData }) => {
-  const timelines = ['YTD', 'Monthly', 'Inception'];
-  const portfolios = ['Portfolio_1', 'Portfolio_2', 'Portfolio_3', 'SPY'];
-  const extractPerformanceData = (portfolio) => {
-    return timelines.map((timeline) => {
-      const timelineData = performanceData.data[timeline][portfolio];
-      if (timelineData && timelineData['Total Performance [%]'] !== undefined) {
-        return timelineData['Total Performance [%]'];
-      }
-      return 0;
-    });
+const PortfolioLineChart = () => {
+  const { data, loading } = useLatestInceptionEquity();
+
+  // Prepare data for the chart
+  const labels = data.map((item) => item['']);
+  const portfolio1 = data.map((item) => parseFloat(item[1]));
+  const portfolio2 = data.map((item) => parseFloat(item[2]));
+  const portfolio3 = data.map((item) => parseFloat(item[3]));
+  const spy = data.map((item) => parseFloat(item.SPY));
+
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Portfolio 1',
+        data: portfolio1,
+        borderColor: '#6A5ACD',
+        borderWidth: 2,
+        pointBackgroundColor: '#6A5ACD',
+        pointHoverRadius: 6,
+        pointRadius: 4,
+        fill: false,
+        tension: 0.4,
+      },
+      {
+        label: 'Portfolio 2',
+        data: portfolio2,
+        borderColor: '#FFA500',
+        borderWidth: 2,
+        pointBackgroundColor: '#FFA500',
+        pointHoverRadius: 6,
+        pointRadius: 4,
+        fill: false,
+        tension: 0.4,
+      },
+      {
+        label: 'Portfolio 3',
+        data: portfolio3,
+        borderColor: '#32CD32',
+        borderWidth: 2,
+        pointBackgroundColor: '#32CD32',
+        pointHoverRadius: 6,
+        pointRadius: 4,
+        fill: false,
+        tension: 0.4,
+      },
+      {
+        label: 'Portfolio SPY',
+        data: spy,
+        borderColor: '#FF6347',
+        borderWidth: 2,
+        pointBackgroundColor: '#FF6347',
+        pointHoverRadius: 6,
+        pointRadius: 4,
+        fill: false,
+        tension: 0.4,
+      },
+    ],
   };
 
-  const datasets = portfolios.map((portfolio, index) => {
-    const data = extractPerformanceData(portfolio);
-
-    return {
-      label: portfolio === 'SPY' ? 'SPY' : `Portfolio ${index + 1}`,
-      data,
-      fill: false,
-      borderColor:
-        portfolio === 'SPY'
-          ? 'rgba(75, 192, 192, 1)'
-          : `rgba(${(index + 1) * 50}, 99, 132, 1)`,
-      tension: 0.1,
-    };
-  });
-
-  const data = {
-    labels: timelines,
-    datasets,
-  };
-  const options = {
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
-        title: {
-          display: true,
-          text: 'Timeline',
+        grid: {
+          color: '#444',
+        },
+        ticks: {
+          color: '#ddd',
         },
       },
       y: {
-        title: {
-          display: true,
-          text: 'Total Performance [%]',
+        grid: {
+          color: '#444',
+        },
+        ticks: {
+          color: '#ddd',
         },
       },
     },
     plugins: {
       legend: {
         display: true,
+        labels: {
+          color: '#ddd',
+        },
+        position: 'top',
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: '#222',
+        titleColor: '#fff',
+        bodyColor: '#ddd',
+      },
+      datalabels: {
+        display: false,
       },
     },
   };
 
-  return <Line data={data} options={options} />;
-};
-
-PortfolioLineChart.propTypes = {
-  performanceData: PropTypes.object.isRequired,
+  return (
+    <Container className="bg-[#1a1a1a] p-5 rounded-2xl ">
+      <h3 className="text-white text-3xl mb-4">
+        All Portfolios VS SPY Benchmarks
+      </h3>
+      {loading ? (
+        <Spinner className="text-customPink" />
+      ) : (
+        <div style={{ height: '400px' }}>
+          <Line data={chartData} options={chartOptions} />
+        </div>
+      )}
+    </Container>
+  );
 };
 
 export default PortfolioLineChart;

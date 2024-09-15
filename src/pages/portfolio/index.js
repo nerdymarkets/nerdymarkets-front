@@ -31,11 +31,10 @@ const Portfolio = ({ performanceData, comments }) => {
     subscriptionDetails?.isManuallyActivated;
 
   return (
-    <div className="bg-lightGray">
+    <div className="bg-black">
       {hasActiveSubscription ? (
-        <Container className="text-center">
-          <h1 className="text-5xl">Portfoliao Charts</h1>
-          <PortfolioLineChart performanceData={performanceData} />
+        <Container className="text-center flex flex-col gap-20">
+          <PortfolioLineChart />
           <PortfolioBarChart performanceData={performanceData} />
           <PortfolioStatsTable performanceData={performanceData} />
           <PortfolioPieChart />

@@ -69,14 +69,14 @@ const PortfolioPieChart = () => {
   };
 
   return (
-    <Container className="py-20">
-      <h2>
+    <Container className="bg-[#1a1a1a] p-5 rounded-2xl ">
+      <h2 className="text-3xl text-white">
         Current Portfolio Composition (Holdings by Weights) {latestFolderDate}
       </h2>
       <Row className="mt-4">
         {[portfolio1, portfolio2, portfolio3].map((portfolio, index) => (
           <Col key={index} md={4}>
-            <h3>Portfolio {index + 1}</h3>
+            <h3 className="text-white ">Portfolio {index + 1}</h3>
             <div
               className="flex justify-center items-center mt-4"
               style={{ height: '400px' }}
