@@ -22,7 +22,6 @@ ChartJS.register(
 const PortfolioLineChart = () => {
   const { equityData, loading } = useEquityDataStore();
 
-  // Prepare data for the chart
   const labels = equityData.map((item) => item['']);
   const portfolio1 = equityData.map((item) => parseFloat(item[1]));
   const portfolio2 = equityData.map((item) => parseFloat(item[2]));
