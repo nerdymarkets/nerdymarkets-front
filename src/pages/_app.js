@@ -34,6 +34,8 @@ function SessionWrapper({ children }) {
         );
         setPerformanceData(performanceResponse);
       } catch (error) {
+        return null;
+      } finally {
         setLoading(false);
       }
     };

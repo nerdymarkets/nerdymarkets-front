@@ -18,7 +18,6 @@ const Portfolio = () => {
   const { subscriptionDetails, loading } = useSubscriptionStore();
   const { performanceData, loading: performanceDataLoading } =
     usePerformanceStore();
-  console.log(performanceData);
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -32,7 +31,7 @@ const Portfolio = () => {
         const commentsResponse = await fetchAllComments(session.accessToken);
         setComments(commentsResponse);
       } catch (error) {
-        console.error('Failed to fetch comments:', error);
+        return null;
       } finally {
         setIsLoading(false);
       }
