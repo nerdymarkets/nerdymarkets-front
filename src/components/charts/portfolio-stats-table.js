@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import { Table, Button } from 'reactstrap';
 const PortfolioStatsTable = ({ performanceData }) => {
-  const [activeType, setActiveType] = useState('Inception'); // State to handle active type
+  const [activeType, setActiveType] = useState('Inception');
 
-  // Define the columns to be displayed in the table
   const columns = [
     'Portfolio',
     'Max Daily Return [%]',
@@ -14,24 +13,20 @@ const PortfolioStatsTable = ({ performanceData }) => {
     'Total Performance [%]',
   ];
 
-  // Function to round numbers to 3 decimal places
   const roundToThree = (num) => {
     return num ? Number(num).toFixed(3) : '-';
   };
 
-  // Function to dynamically get data for the selected type
   const getStatsData = (type) => {
-    // Get keys for portfolios from the data
     const typeData = performanceData.data[type];
     const portfolioKeys = Object.keys(typeData).filter(
       (key) => key.includes('Portfolio_') || key === 'SPY'
     );
 
-    // Extract relevant stats for each portfolio
     const stats = portfolioKeys.map((key) => {
       const portfolioData = typeData[key];
       return {
-        portfolio: key.replace('Portfolio_', 'Portfolio '), // Extract portfolio number from the key
+        portfolio: key.replace('Portfolio_', 'Portfolio '),
         maxDailyReturn: roundToThree(portfolioData['Max Daily Return [%]']),
         maxDrawdown: roundToThree(portfolioData['Max Drawdown [%]']),
         sharpeRatio: roundToThree(portfolioData['Sharpe Ratio']),
@@ -42,66 +37,57 @@ const PortfolioStatsTable = ({ performanceData }) => {
 
     return stats;
   };
-
-  // Get the data for the currently active type
   const tableData = getStatsData(activeType);
 
   return (
-    <div>
-      {/* Buttons to switch between data types */}
+    <div className=" bg-customBlack p-5 rounded-2xl ">
       <div className="flex justify-center mb-4">
         {['Inception', 'Monthly', 'YTD'].map((type) => (
-          <button
+          <Button
             key={type}
-            className={`px-4 py-2 mx-2 text-white ${
-              activeType === type ? 'bg-blue-500' : 'bg-gray-500'
+            className={`px-4 py-2 mx-2 text-white border-none ${
+              activeType === type
+                ? 'bg-customPink hover:bg-customPinkSecondary'
+                : 'bg-gray-500'
             }`}
             onClick={() => setActiveType(type)}
           >
             {type}
-          </button>
+          </Button>
         ))}
       </div>
-
-      {/* Table to display stats */}
-      <table className="min-w-full border-collapse border border-gray-200">
+      <Table
+        className="font-sans text-white"
+        dark
+        hover
+        responsive
+        style={{
+          borderRadius: '1rem',
+          overflow: 'hidden',
+        }}
+      >
         <thead>
           <tr>
             {columns.map((column) => (
-              <th
-                key={column}
-                className="border border-gray-300 px-4 py-2 bg-gray-100 text-center"
-              >
-                {column}
+              <th key={column} className="  px-4 py-2 text-center ">
+                <p>{column}</p>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {tableData.map((row, index) => (
-            <tr key={index} className="border border-gray-200">
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.portfolio}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.maxDailyReturn}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.maxDrawdown}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.sharpeRatio}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.sortinoRatio}
-              </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {row.totalPerformance}
-              </td>
+            <tr key={index}>
+              <td className=" px-4 py-2 text-center ">{row.portfolio}</td>
+              <td className="  px-4 py-2 text-center">{row.maxDailyReturn}</td>
+              <td className=" px-4 py-2 text-center">{row.maxDrawdown}</td>
+              <td className="  px-4 py-2 text-center">{row.sharpeRatio}</td>
+              <td className="px-4 py-2 text-center">{row.sortinoRatio}</td>
+              <td className=" px-4 py-2 text-center">{row.totalPerformance}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

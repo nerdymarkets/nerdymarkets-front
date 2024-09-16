@@ -52,6 +52,7 @@ module.exports = {
       fontFamily: {
         handwritten: ['Pacifico', 'cursive'],
         script: ['Dancing Script', 'cursive'],
+        sans: ['Inter', 'sans-serif'],
       },
     },
   },

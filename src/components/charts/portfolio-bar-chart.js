@@ -110,13 +110,7 @@ const PortfolioBarChart = ({ performanceData }) => {
   };
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        backgroundColor: '#1a1a1a',
-        borderRadius: '10px',
-      }}
-    >
+    <div className="bg-customBlack p-5 rounded-2xl">
       <h1 className="text-white text-3xl pb-4">
         Dynamic Of Each Portfolio Returns
       </h1>
