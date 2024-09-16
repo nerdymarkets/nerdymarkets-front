@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { Spinner, Container } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
-import { getPerformanceData } from '@/pages/api/portfolio';
+import usePerformanceStore from '@/stores/usePerfromanceStore';
 
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
@@ -16,34 +16,31 @@ import { fetchAllComments } from '@/pages/api/auth';
 const Portfolio = () => {
   const { data: session, status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
-  const [performanceData, setPerformanceData] = useState(null);
+  const { performanceData, loading: performanceDataLoading } =
+    usePerformanceStore();
+  console.log(performanceData);
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     if (!session?.accessToken) {
       return;
     }
 
-    const fetchPerformanceData = async () => {
+    const fetchComments = async () => {
       setIsLoading(true);
       try {
-        const performanceResponse = await getPerformanceData(
-          session.accessToken
-        );
-        setPerformanceData(performanceResponse);
         const commentsResponse = await fetchAllComments(session.accessToken);
         setComments(commentsResponse);
       } catch (error) {
-        return null;
+        console.error('Failed to fetch comments:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchPerformanceData();
+    fetchComments();
   }, [session?.accessToken]);
-  if (status === 'loading' || loading || isLoading) {
+  if (status === 'loading' || loading || isLoading || performanceDataLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner className="text-customPink" />
