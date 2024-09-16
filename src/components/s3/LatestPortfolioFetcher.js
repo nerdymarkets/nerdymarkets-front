@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   S3Client,
   ListObjectsV2Command,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { toast } from 'react-toastify';
+import usePortfolioDataStore from '@/stores/usePortfolioDataStore';
 
-const useLatestPortfolio = () => {
-  const [data, setData] = useState(() => {
-    const cachedData = sessionStorage.getItem('portfolioData');
-    return cachedData ? JSON.parse(cachedData) : [];
-  });
-  const [loading, setLoading] = useState(
-    !sessionStorage.getItem('portfolioData')
+const LatestPortfolioFetcher = () => {
+  const setPortfolioData = usePortfolioDataStore(
+    (state) => state.setPortfolioData
   );
-  const [error, setError] = useState(null);
-  const [latestFolderDate, setLatestFolderDate] = useState(() => {
-    return sessionStorage.getItem('latestFolderDate') || null;
-  });
+  const setLoading = usePortfolioDataStore((state) => state.setLoading);
+  const setError = usePortfolioDataStore((state) => state.setError);
+  const setLatestFolderDate = usePortfolioDataStore(
+    (state) => state.setLatestFolderDate
+  );
+  const latestFolderDate = usePortfolioDataStore(
+    (state) => state.latestFolderDate
+  );
 
   useEffect(() => {
     const fetchLatestFileFromS3 = async () => {
@@ -46,6 +47,7 @@ const useLatestPortfolio = () => {
           setLoading(false);
           return;
         }
+
         const dateFolders = [
           ...new Set(
             listResponse.Contents.map((file) => {
@@ -89,11 +91,8 @@ const useLatestPortfolio = () => {
             const csvContent = await data.Body.transformToString();
 
             const json = csvToJson(csvContent);
-            setData(json);
-            setLatestFolderDate(latestDate);
-            sessionStorage.setItem('portfolioData', JSON.stringify(json));
-            sessionStorage.setItem('latestFolderDate', latestDate);
-
+            setPortfolioData(json); // Update Zustand state with data
+            setLatestFolderDate(latestDate); // Update the latest folder date
             setLoading(false);
             return;
           }
@@ -104,17 +103,19 @@ const useLatestPortfolio = () => {
         setLoading(false);
       } catch (err) {
         toast.error('Error fetching file from S3: ' + err.message);
-        setError(err);
+        setError(err.message);
         setLoading(false);
       }
     };
 
-    if (!latestFolderDate) {
-      fetchLatestFileFromS3();
-    } else {
-      setLoading(false);
-    }
-  }, [latestFolderDate]);
+    fetchLatestFileFromS3(); // Fetch data when component mounts
+  }, [
+    setPortfolioData,
+    setLoading,
+    setError,
+    setLatestFolderDate,
+    latestFolderDate,
+  ]);
 
   const csvToJson = (csv) => {
     const lines = csv.trim().split('\n');
@@ -136,7 +137,7 @@ const useLatestPortfolio = () => {
     return jsonData;
   };
 
-  return { data, loading, error, latestFolderDate };
+  return null; // This component doesn't render anything, just handles fetching
 };
 
-export default useLatestPortfolio;
+export default LatestPortfolioFetcher;

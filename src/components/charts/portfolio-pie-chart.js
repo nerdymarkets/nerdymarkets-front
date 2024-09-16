@@ -1,21 +1,19 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import useLatestPortfolio from '@/hooks/latest-portfolio';
 import { Container, Spinner, Row, Col } from 'reactstrap';
-
+import usePortfolioDataStore from '@/stores/usePortfolioDataStore';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const PortfolioPieChart = () => {
-  const { data, loading, latestFolderDate } = useLatestPortfolio();
-
+  const { portfolioData, loading, latestFolderDate } = usePortfolioDataStore();
   if (loading) {
     return <Spinner className="text-customPink" />;
   }
 
-  const portfolio1 = data.filter((item) => item.Group === '1');
-  const portfolio2 = data.filter((item) => item.Group === '2');
-  const portfolio3 = data.filter((item) => item.Group === '3');
+  const portfolio1 = portfolioData.filter((item) => item.Group === '1');
+  const portfolio2 = portfolioData.filter((item) => item.Group === '2');
+  const portfolio3 = portfolioData.filter((item) => item.Group === '3');
 
   const createChartData = (portfolioData) => ({
     labels: portfolioData.map((item) => item.Ticker),

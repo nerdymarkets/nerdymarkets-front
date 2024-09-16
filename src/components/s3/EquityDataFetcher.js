@@ -1,25 +1,20 @@
-import { useState, useEffect } from 'react';
+// components/EquityDataFetcher.js
+import { useEffect } from 'react';
 import {
   S3Client,
   ListObjectsV2Command,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { toast } from 'react-toastify';
+import useEquityDataStore from '@/stores/useEqutiyDataStore';
 
-const useLatestEquitySinceInception = () => {
-  const [data, setData] = useState(() => {
-    const cachedData = sessionStorage.getItem('lastEquityData');
-    return cachedData ? JSON.parse(cachedData) : [];
-  });
-  const [loading, setLoading] = useState(
-    !sessionStorage.getItem('lastEquityData')
-  );
-  const [error, setError] = useState(null);
+const EquityDataFetcher = () => {
+  const setEquityData = useEquityDataStore((state) => state.setEquityData);
+  const setLoading = useEquityDataStore((state) => state.setLoading);
 
   useEffect(() => {
     const fetchLatestFileFromS3 = async () => {
       setLoading(true);
-      setError(null);
       const s3 = new S3Client({
         region: process.env.NEXT_PUBLIC_AWS_REGION,
         credentials: {
@@ -40,7 +35,7 @@ const useLatestEquitySinceInception = () => {
 
         if (!listResponse.Contents || listResponse.Contents.length === 0) {
           toast.error('No objects found in the Portfolios directory.');
-          setLoading(false);
+          setLoading(false); // Set loading to false if no data is found
           return;
         }
 
@@ -63,13 +58,6 @@ const useLatestEquitySinceInception = () => {
           (a, b) => new Date(b).getTime() - new Date(a).getTime()
         );
 
-        const latestDate = sortedDateFolders[0];
-
-        if (latestDate && data.length > 0) {
-          setLoading(false);
-          return;
-        }
-
         for (const dateFolder of sortedDateFolders) {
           const csvFiles = listResponse.Contents.filter(
             (file) =>
@@ -88,10 +76,9 @@ const useLatestEquitySinceInception = () => {
             const csvContent = await data.Body.transformToString();
 
             const json = csvToJson(csvContent);
-            setData(json);
-            sessionStorage.setItem('lastEquityData', JSON.stringify(json));
-
+            setEquityData(json);
             setLoading(false);
+
             return;
           }
         }
@@ -101,13 +88,12 @@ const useLatestEquitySinceInception = () => {
         setLoading(false);
       } catch (err) {
         toast.error('Error fetching file from S3: ' + err.message);
-        setError(err);
         setLoading(false);
       }
     };
 
     fetchLatestFileFromS3();
-  }, [data.length]);
+  }, [setEquityData, setLoading]);
 
   const csvToJson = (csv) => {
     const lines = csv.trim().split('\n');
@@ -129,7 +115,7 @@ const useLatestEquitySinceInception = () => {
     return jsonData;
   };
 
-  return { data, loading, error };
+  return null;
 };
 
-export default useLatestEquitySinceInception;
+export default EquityDataFetcher;

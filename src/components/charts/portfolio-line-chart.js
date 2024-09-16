@@ -9,8 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import useLatestInceptionEquity from '@/hooks/latest-inception-equity';
-
+import useEquityDataStore from '@/stores/useEqutiyDataStore';
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -21,14 +20,14 @@ ChartJS.register(
 );
 
 const PortfolioLineChart = () => {
-  const { data, loading } = useLatestInceptionEquity();
+  const { equityData, loading } = useEquityDataStore();
 
   // Prepare data for the chart
-  const labels = data.map((item) => item['']);
-  const portfolio1 = data.map((item) => parseFloat(item[1]));
-  const portfolio2 = data.map((item) => parseFloat(item[2]));
-  const portfolio3 = data.map((item) => parseFloat(item[3]));
-  const spy = data.map((item) => parseFloat(item.SPY));
+  const labels = equityData.map((item) => item['']);
+  const portfolio1 = equityData.map((item) => parseFloat(item[1]));
+  const portfolio2 = equityData.map((item) => parseFloat(item[2]));
+  const portfolio3 = equityData.map((item) => parseFloat(item[3]));
+  const spy = equityData.map((item) => parseFloat(item.SPY));
 
   const chartData = {
     labels: labels,
