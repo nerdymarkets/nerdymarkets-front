@@ -9,7 +9,7 @@ const InfoBanner = () => {
       <Container className="flex  items-center">
         <AnimationWrapper>
           <div className="flex flex-col  items-start">
-            <h1 className="text-8xl font-extrabold leading-tight">
+            <h1 className="text-2xl md:text-8xl font-extrabold leading-tight">
               Smart Alpha Portfolios for big
               <span className={twMerge('text-customPink px-2')}>success</span>
             </h1>
@@ -27,7 +27,7 @@ const InfoBanner = () => {
           </div>
         </AnimationWrapper>
 
-        <AnimationWrapper delay={0.3}>
+        <AnimationWrapper delay={0.3} className="md:block hidden">
           <Image
             src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=639,h=334,fit=crop/Aq2BvWKQ6gSzv6l3/performance_portfolios-AzGrN7l06MTJnog3.png"
             alt="banner-image"

@@ -30,10 +30,11 @@ const SubscriptionForm = ({ labelTextColor, roundedButton, inputWidth }) => {
     e.preventDefault();
   };
   const widthClass = {
-    small: '200px',
-    medium: '400px',
-    large: '600px',
+    small: 'w-full md:w-48',
+    medium: 'w-full md:w-72',
+    large: 'w-full md:w-96',
   };
+
   return (
     <Form onSubmit={handleSubmit} className="flex flex-col  text-white">
       <Row>
