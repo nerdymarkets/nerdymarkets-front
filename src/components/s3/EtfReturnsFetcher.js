@@ -1,21 +1,19 @@
-// components/EquityDataFetcher.js
-
 import { useEffect } from 'react';
-import useEquityDataStore from '@/stores/useEqutiyDataStore';
+import useEquityDataStore from '@/stores/useEtfDataStore';
 import useFetchLatestData from '@/hooks/useFetchLatestData';
 
-const EquityDataFetcher = () => {
-  const setEquityData = useEquityDataStore((state) => state.setEquityData);
+const EtfReturnsFetcher = () => {
+  const setEtfData = useEquityDataStore((state) => state.setEtfData);
   const setLoading = useEquityDataStore((state) => state.setLoading);
-  const equityData = useEquityDataStore((state) => state.equityData);
+  const EtfData = useEquityDataStore((state) => state.EtfData);
   const { fetchLatestDataFromS3, loading } = useFetchLatestData();
 
   useEffect(() => {
-    if (equityData.length === 0 && !loading) {
+    if (EtfData.length === 0 && !loading) {
       const fetchEquityData = async () => {
         const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME;
-        const prefix = 'IV_Portfolios/Data/Metrics/Performance/Inception/';
-        const fileSuffix = 'Portfolios_equity_data_since_inception.csv';
+        const prefix = 'IV_Portfolios/Data/Metrics/Performance/Daily';
+        const fileSuffix = 'etf_returns.csv';
 
         const result = await fetchLatestDataFromS3(
           bucketName,
@@ -23,13 +21,13 @@ const EquityDataFetcher = () => {
           fileSuffix
         );
         if (result) {
-          setEquityData(result.json);
+          setEtfData(result.json);
         }
       };
 
       fetchEquityData();
     }
-  }, [fetchLatestDataFromS3, setEquityData, equityData, loading]);
+  }, [fetchLatestDataFromS3, loading, EtfData.length, setEtfData]);
 
   useEffect(() => {
     setLoading(loading);
@@ -38,4 +36,4 @@ const EquityDataFetcher = () => {
   return null;
 };
 
-export default EquityDataFetcher;
+export default EtfReturnsFetcher;

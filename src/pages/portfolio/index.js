@@ -12,6 +12,7 @@ import PortfolioStatsTable from '@/components/charts/portfolio-stats-table';
 import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
 import UserComments from '@/components/user-comments/user-comments';
 import { fetchAllComments } from '@/pages/api/auth';
+import EtfReturnsLineChart from '@/components/charts/Etf-returns-line-chart';
 
 const Portfolio = () => {
   const { data: session, status } = useSession();
@@ -63,6 +64,7 @@ const Portfolio = () => {
           <PortfolioBarChart performanceData={performanceData} />
           <PortfolioStatsTable performanceData={performanceData} />
           <PortfolioPieChart />
+          <EtfReturnsLineChart />
           <div className="my-4">
             <UserComments initialComments={comments} />
           </div>

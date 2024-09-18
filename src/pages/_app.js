@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EquityDataFetcher from '@/components/s3/EquityDataFetcher';
 import LatestPortfolioFetcher from '@/components/s3/LatestPortfolioFetcher';
+import EtfReturnsFetcher from '@/components/s3/EtfReturnsFetcher';
 import { getPerformanceData } from '@/pages/api/portfolio';
 import usePerformanceStore from '@/stores/usePerfromanceStore';
 
@@ -53,6 +54,7 @@ export default function App({ Component, pageProps }) {
         <Layout>
           <EquityDataFetcher />
           <LatestPortfolioFetcher />
+          <EtfReturnsFetcher />
           <ToastContainer
             position="top-right"
             autoClose={5000}
