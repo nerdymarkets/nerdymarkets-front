@@ -65,6 +65,11 @@ const PortfolioPieChart = () => {
       },
     },
   };
+  const portfolioTitles = [
+    'Low-Volatility Portfolio',
+    'Medium-Volatility Portfolio',
+    'High-Volatility Portfolio',
+  ];
 
   return (
     <Container className="bg-[#1a1a1a] p-5 rounded-2xl ">
@@ -74,7 +79,7 @@ const PortfolioPieChart = () => {
       <Row className="mt-4">
         {[portfolio1, portfolio2, portfolio3].map((portfolio, index) => (
           <Col key={index} md={4}>
-            <h3 className="text-white ">Portfolio {index + 1}</h3>
+            <h3 className="text-white ">{portfolioTitles[index]}</h3>
             <div
               className="flex justify-center items-center mt-4"
               style={{ height: '400px' }}

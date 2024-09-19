@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Button } from 'reactstrap';
+
 const PortfolioStatsTable = ({ performanceData }) => {
   const [activeType, setActiveType] = useState('Inception');
 
@@ -12,6 +13,13 @@ const PortfolioStatsTable = ({ performanceData }) => {
     'Sortino Ratio',
     'Total Performance [%]',
   ];
+
+  const portfolioNames = {
+    Portfolio_1: 'Low-Volatility Portfolio',
+    Portfolio_2: 'Medium-Volatility Portfolio',
+    Portfolio_3: 'High-Volatility Portfolio',
+    SPY: 'SPY',
+  };
 
   const roundToThree = (num) => {
     return num ? Number(num).toFixed(3) : '-';
@@ -26,7 +34,8 @@ const PortfolioStatsTable = ({ performanceData }) => {
     const stats = portfolioKeys.map((key) => {
       const portfolioData = typeData[key];
       return {
-        portfolio: key.replace('Portfolio_', 'Portfolio '),
+        portfolio:
+          portfolioNames[key] || key.replace('Portfolio_', 'Portfolio '),
         maxDailyReturn: roundToThree(portfolioData['Max Daily Return [%]']),
         maxDrawdown: roundToThree(portfolioData['Max Drawdown [%]']),
         sharpeRatio: roundToThree(portfolioData['Sharpe Ratio']),
@@ -37,6 +46,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
 
     return stats;
   };
+
   const tableData = getStatsData(activeType);
 
   return (
@@ -78,7 +88,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
         <tbody>
           {tableData.map((row, index) => (
             <tr key={index}>
-              <td className=" px-4 py-2 text-center ">{row.portfolio}</td>
+              <td className=" px-4 py-2 text-left ">{row.portfolio}</td>
               <td className="  px-4 py-2 text-center">{row.maxDailyReturn}</td>
               <td className=" px-4 py-2 text-center">{row.maxDrawdown}</td>
               <td className="  px-4 py-2 text-center">{row.sharpeRatio}</td>

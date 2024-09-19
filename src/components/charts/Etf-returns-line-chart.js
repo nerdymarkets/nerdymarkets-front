@@ -16,27 +16,39 @@ const EtfReturnsBarChart = () => {
   const { EtfData, loading } = useEtfDataStore();
   const [activePortfolio, setActivePortfolio] = useState(1);
 
-  const portfolios = [...new Set(EtfData.map((item) => item.Portfolio))];
+  // Portfolio Titles
+  const portfolioTitles = [
+    'Low-Volatility Portfolio',
+    'Medium-Volatility Portfolio',
+    'High-Volatility Portfolio',
+  ];
+
+  // Extract unique portfolio numbers and sort them
+  const portfolios = [...new Set(EtfData.map((item) => item.Portfolio))].sort(
+    (a, b) => a - b
+  );
 
   const filteredData = EtfData.filter(
     (item) => item.Portfolio === String(activePortfolio)
   ).map((item) => ({
     ticker: item.Ticker,
-    daily_return: (item.daily_return * 100).toFixed(2),
+    dailyReturn: (item.daily_return * 100).toFixed(2), // Converts daily return to percentage
   }));
+
   if (loading) {
     return <Spinner className="text-customPink" />;
   }
+
   return (
     <div>
       <div className="flex gap-2 justify-center pb-4">
-        {portfolios.map((portfolio) => (
+        {portfolios.map((portfolio, index) => (
           <Button
             className="bg-customPink hover:bg-customPinkSecondary border-none"
             key={portfolio}
             onClick={() => setActivePortfolio(portfolio)}
           >
-            Portfolio {portfolio}
+            {portfolioTitles[index]}
           </Button>
         ))}
       </div>
@@ -55,9 +67,12 @@ const EtfReturnsBarChart = () => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="ticker" />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            formatter={(value) => `${value}%`} // Adds % to tooltip values
+            labelFormatter={(label) => `Ticker: ${label}`} // Tooltip label formatter
+          />
           <Legend />
-          <Bar dataKey="daily_return" fill="#8884d8" />
+          <Bar dataKey="dailyReturn" name="Daily Return (%)" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -32,7 +32,7 @@ const PortfolioLineChart = () => {
     labels: labels,
     datasets: [
       {
-        label: 'Portfolio 1',
+        label: 'Low-Volatility Portfolio',
         data: portfolio1,
         borderColor: '#6A5ACD',
         borderWidth: 2,
@@ -43,7 +43,7 @@ const PortfolioLineChart = () => {
         tension: 0.4,
       },
       {
-        label: 'Portfolio 2',
+        label: 'Medium-Volatility Portfolio',
         data: portfolio2,
         borderColor: '#FFA500',
         borderWidth: 2,
@@ -54,7 +54,7 @@ const PortfolioLineChart = () => {
         tension: 0.4,
       },
       {
-        label: 'Portfolio 3',
+        label: 'High-Volatility Portfolio)',
         data: portfolio3,
         borderColor: '#32CD32',
         borderWidth: 2,

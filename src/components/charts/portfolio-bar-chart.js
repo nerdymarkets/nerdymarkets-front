@@ -16,7 +16,11 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const PortfolioBarChart = ({ performanceData }) => {
   const [activeType, setActiveType] = useState('Daily');
 
-  const labels = ['Portfolio 1', 'Portfolio 2', 'Portfolio 3'];
+  const labels = [
+    'Low-Volatility Portfolio',
+    'Medium-Volatility Portfolio',
+    'High-Volatility Portfolio',
+  ];
 
   const getDailyData = () => {
     return labels.map((_, index) => {
