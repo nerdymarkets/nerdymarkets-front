@@ -45,10 +45,24 @@ const Header = () => {
         </Link>
         {width < 678 ? (
           <div>
-            <BurgerMenu />
-            <div className="mr-6">
-              <Profile session={session} status={status} />
-            </div>
+            {!session && status !== 'authenticated' ? (
+              <NavItem>
+                <NavLink
+                  href="#"
+                  onClick={handleAuthClick}
+                  className="text-customPink hover:text-customPinkSecondary"
+                >
+                  Sign In
+                </NavLink>
+              </NavItem>
+            ) : (
+              <>
+                <BurgerMenu />
+                <div className="mr-6">
+                  <Profile session={session} status={status} />
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <Nav pills className="py-4 flex items-center">

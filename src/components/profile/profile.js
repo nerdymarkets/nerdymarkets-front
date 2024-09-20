@@ -15,7 +15,7 @@ import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import AccountSettingsModal from './account-settings-modal';
 
 const Profile = ({ session, status }) => {
-  const { user } = session;
+  const user = session?.user || {};
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [accountSettingsModalOpen, setAccountSettingsModalOpen] =
     useState(false);
