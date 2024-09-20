@@ -120,7 +120,7 @@ const PortfolioLineChart = () => {
   };
 
   return (
-    <Container className="bg-[#1a1a1a] p-5 rounded-2xl ">
+    <Container className="bg-[#1a1a1a] lg:p-5 p-2 rounded-2xl ">
       <h3 className="text-white text-3xl mb-4">
         All Portfolios VS SPY Benchmarks
       </h3>

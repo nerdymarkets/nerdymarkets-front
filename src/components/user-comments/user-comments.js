@@ -1,7 +1,18 @@
 import PropTypes from 'prop-types';
 import { formatDate } from '@/utils/fomrat-date';
-
+import { Spinner } from 'reactstrap';
+import { useState } from 'react';
 const UserComments = ({ initialComments }) => {
+  const [comments] = useState(initialComments);
+
+  if (!comments) {
+    return (
+      <div className="text-center py-4">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-pink-200 rounded-3xl py-4  mx-auto shadow-lg border-gray-600 font-handwritten">
       <table className="w-full ">
@@ -16,7 +27,7 @@ const UserComments = ({ initialComments }) => {
           </tr>
         </thead>
         <tbody>
-          {initialComments.map((comment) => (
+          {comments.map((comment) => (
             <tr
               key={comment._id}
               className="border-b-2  border-black text-left"

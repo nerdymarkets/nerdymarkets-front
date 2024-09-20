@@ -40,11 +40,11 @@ const EtfReturnsBarChart = () => {
   }
 
   return (
-    <div>
-      <div className="flex gap-2 justify-center pb-4">
+    <div className="bg-customBlack lg:p-5 p-2 rounded-2xl  ">
+      <div className="lg:flex gap-2 lg:justify-center grid pb-4">
         {portfolios.map((portfolio, index) => (
           <Button
-            className="bg-customPink hover:bg-customPinkSecondary border-none"
+            className="bg-customPink hover:bg-customPinkSecondary border-none "
             key={portfolio}
             onClick={() => setActivePortfolio(portfolio)}
           >
@@ -68,8 +68,8 @@ const EtfReturnsBarChart = () => {
           <XAxis dataKey="ticker" />
           <YAxis />
           <Tooltip
-            formatter={(value) => `${value}%`} // Adds % to tooltip values
-            labelFormatter={(label) => `Ticker: ${label}`} // Tooltip label formatter
+            formatter={(value) => `${value}%`}
+            labelFormatter={(label) => `Ticker: ${label}`}
           />
           <Legend />
           <Bar dataKey="dailyReturn" name="Daily Return (%)" fill="#8884d8" />

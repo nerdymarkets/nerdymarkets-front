@@ -7,6 +7,8 @@ import nerdylogo from '../../../public/logo/nerdylogo.png';
 import Image from 'next/image';
 import RegistrationModal from '@/components/registration/registration-modal';
 import Profile from '../profile/profile';
+import BurgerMenu from '../burger-menu/burger-menu';
+import useWindowDimensions from '@/hooks/useWindowDimension';
 const Header = () => {
   const { data: session, status } = useSession();
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
@@ -14,7 +16,7 @@ const Header = () => {
   const toggleSignInModal = useCallback(() => {
     setSignInModalOpen((prev) => !prev);
   }, []);
-
+  const { width } = useWindowDimensions();
   const toggleRegisterModal = useCallback(() => {
     setRegisterModalOpen((prev) => !prev);
   }, []);
@@ -37,57 +39,66 @@ const Header = () => {
 
   return (
     <>
-      <Navbar className="flex flex-end ">
+      <Navbar className="flex justify-between items-center p-4">
         <Link href="/" passHref>
-          <Image src={nerdylogo} alt="logo" width={300} height={250} />
+          <Image src={nerdylogo} alt="logo" width={150} height={100} />
         </Link>
-        <Nav pills className="py-4 flex items-center">
-          {!session && status !== 'authenticated' && (
-            <NavItem>
-              <NavLink
-                href="#"
-                onClick={handleAuthClick}
-                className="text-customPink hover:text-customPinkSecondary"
-              >
-                Sign In
-              </NavLink>
-            </NavItem>
-          )}
-          {!session && (
-            <NavItem>
-              <NavLink
-                href="#"
-                onClick={handleRegisterClick}
-                className="text-customPink hover:text-customPinkSecondary"
-              >
-                Register
-              </NavLink>
-            </NavItem>
-          )}
-          {session && status === 'authenticated' && (
-            <>
+        {width < 678 ? (
+          <div>
+            <BurgerMenu />
+            <div className="mr-6">
+              <Profile session={session} status={status} />
+            </div>
+          </div>
+        ) : (
+          <Nav pills className="py-4 flex items-center">
+            {!session && status !== 'authenticated' && (
               <NavItem>
                 <NavLink
-                  href="/portfolio"
+                  href="#"
+                  onClick={handleAuthClick}
                   className="text-customPink hover:text-customPinkSecondary"
                 >
-                  Portfolio
+                  Sign In
                 </NavLink>
               </NavItem>
-              {session.user.roles.includes('admin') && (
+            )}
+            {!session && (
+              <NavItem>
+                <NavLink
+                  href="#"
+                  onClick={handleRegisterClick}
+                  className="text-customPink hover:text-customPinkSecondary"
+                >
+                  Register
+                </NavLink>
+              </NavItem>
+            )}
+            {session && status === 'authenticated' && (
+              <>
                 <NavItem>
                   <NavLink
-                    href="/admin"
+                    href="/portfolio"
                     className="text-customPink hover:text-customPinkSecondary"
                   >
-                    Dashboard
+                    Portfolio
                   </NavLink>
                 </NavItem>
-              )}
-              <Profile session={session} status={status} />
-            </>
-          )}
-        </Nav>
+                {session.user.roles.includes('admin') && (
+                  <NavItem>
+                    <NavLink
+                      href="/admin"
+                      className="text-customPink hover:text-customPinkSecondary"
+                    >
+                      Dashboard
+                    </NavLink>
+                  </NavItem>
+                )}
+                <Profile session={session} status={status} />
+              </>
+            )}
+          </Nav>
+        )}
       </Navbar>
       <SignInModal
         isOpen={isSignInModalOpen}
