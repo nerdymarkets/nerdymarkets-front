@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import useEquityDataStore from '@/stores/useEtfDataStore';
+import useEtfDataStore from '@/stores/useEtfDataStore';
 import useFetchLatestData from '@/hooks/useFetchLatestData';
 
 const EtfReturnsFetcher = () => {
-  const setEtfData = useEquityDataStore((state) => state.setEtfData);
-  const setLoading = useEquityDataStore((state) => state.setLoading);
-  const EtfData = useEquityDataStore((state) => state.EtfData);
+  const setEtfData = useEtfDataStore((state) => state.setEtfData);
+  const setLoading = useEtfDataStore((state) => state.setLoading);
+  const EtfData = useEtfDataStore((state) => state.EtfData);
   const { fetchLatestDataFromS3, loading } = useFetchLatestData();
 
   useEffect(() => {
