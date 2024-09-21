@@ -1,5 +1,3 @@
-// components/EquityDataFetcher.js
-
 import { useEffect } from 'react';
 import useEquityDataStore from '@/stores/useEqutiyDataStore';
 import useFetchLatestData from '@/hooks/useFetchLatestData';

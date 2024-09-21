@@ -23,6 +23,10 @@ const PortfolioBarChart = ({ performanceData }) => {
   ];
 
   const getDailyData = () => {
+    if (!performanceData.data || !performanceData.data.Daily) {
+      return labels.map(() => 0);
+    }
+
     return labels.map((_, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
       return Number(
@@ -34,6 +38,10 @@ const PortfolioBarChart = ({ performanceData }) => {
   };
 
   const getAvgDailyReturnData = (type) => {
+    if (!performanceData.data || !performanceData.data[type]) {
+      return labels.map(() => 0); // Return an array of zeros or handle it as needed
+    }
+
     return labels.map((_, index) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
       return Number(

@@ -10,7 +10,6 @@ const PortfolioPieChart = () => {
   if (loading) {
     return <Spinner className="text-customPink" />;
   }
-
   const portfolio1 = portfolioData.filter((item) => item.Group === '1');
   const portfolio2 = portfolioData.filter((item) => item.Group === '2');
   const portfolio3 = portfolioData.filter((item) => item.Group === '3');

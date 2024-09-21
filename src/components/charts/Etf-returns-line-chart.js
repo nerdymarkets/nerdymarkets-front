@@ -15,15 +15,11 @@ import { Button, Spinner } from 'reactstrap';
 const EtfReturnsBarChart = () => {
   const { EtfData, loading } = useEtfDataStore();
   const [activePortfolio, setActivePortfolio] = useState(1);
-
-  // Portfolio Titles
   const portfolioTitles = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
     'High-Volatility Portfolio',
   ];
-
-  // Extract unique portfolio numbers and sort them
   const portfolios = [...new Set(EtfData.map((item) => item.Portfolio))].sort(
     (a, b) => a - b
   );
@@ -32,7 +28,7 @@ const EtfReturnsBarChart = () => {
     (item) => item.Portfolio === String(activePortfolio)
   ).map((item) => ({
     ticker: item.Ticker,
-    dailyReturn: (item.daily_return * 100).toFixed(2), // Converts daily return to percentage
+    monthlyReturn: (item.monthly_return * 100).toFixed(2),
   }));
 
   if (loading) {
@@ -72,7 +68,11 @@ const EtfReturnsBarChart = () => {
             labelFormatter={(label) => `Ticker: ${label}`}
           />
           <Legend />
-          <Bar dataKey="dailyReturn" name="Daily Return (%)" fill="#8884d8" />
+          <Bar
+            dataKey="monthlyReturn"
+            name="Monthly Return (%)"
+            fill="#8884d8"
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

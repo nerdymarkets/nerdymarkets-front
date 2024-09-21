@@ -26,6 +26,10 @@ const PortfolioStatsTable = ({ performanceData }) => {
   };
 
   const getStatsData = (type) => {
+    if (!performanceData.data || !performanceData.data[type]) {
+      return [];
+    }
+
     const typeData = performanceData.data[type];
     const portfolioKeys = Object.keys(typeData).filter(
       (key) => key.includes('Portfolio_') || key === 'SPY'
