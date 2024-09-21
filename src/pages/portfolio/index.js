@@ -61,9 +61,9 @@ const Portfolio = () => {
       {hasActiveSubscription ? (
         <Container className="text-center flex flex-col gap-20">
           <PortfolioLineChart />
-          {/* <PortfolioBarChart performanceData={performanceData} />
-          <PortfolioStatsTable performanceData={performanceData} /> */}
-          {/* <PortfolioPieChart /> */}
+          <PortfolioBarChart performanceData={performanceData} />
+          <PortfolioStatsTable performanceData={performanceData} />
+          <PortfolioPieChart />
           <EtfReturnsLineChart />
           <div className="my-4">
             <UserComments initialComments={comments} />
