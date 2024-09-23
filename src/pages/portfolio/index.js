@@ -8,11 +8,12 @@ import usePerformanceStore from '@/stores/usePerfromanceStore';
 
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
-import PortfolioStatsTable from '@/components/charts/portfolio-stats-table';
+import PortfolioStatsTable from '@/components/portfolio-tabels/portfolio-stats-table';
 import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
 import UserComments from '@/components/user-comments/user-comments';
 import { fetchAllComments } from '@/pages/api/auth';
 import EtfReturnsLineChart from '@/components/charts/Etf-returns-line-chart';
+import HistoricalChangesTable from '@/components/portfolio-tabels/historical-changes-table';
 
 const Portfolio = () => {
   const { data: session, status } = useSession();
@@ -65,6 +66,7 @@ const Portfolio = () => {
           <PortfolioStatsTable performanceData={performanceData} />
           <PortfolioPieChart />
           <EtfReturnsLineChart />
+          <HistoricalChangesTable />
           <div className="my-4">
             <UserComments initialComments={comments} />
           </div>

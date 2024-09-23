@@ -13,6 +13,7 @@ import LatestPortfolioFetcher from '@/components/s3/LatestPortfolioFetcher';
 import EtfReturnsFetcher from '@/components/s3/EtfReturnsFetcher';
 import { getPerformanceData } from '@/pages/api/portfolio';
 import usePerformanceStore from '@/stores/usePerfromanceStore';
+import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -55,6 +56,7 @@ export default function App({ Component, pageProps }) {
           <EquityDataFetcher />
           <LatestPortfolioFetcher />
           <EtfReturnsFetcher />
+          <HistoricalChangesDataFetcher />
           <ToastContainer
             position="top-right"
             autoClose={5000}

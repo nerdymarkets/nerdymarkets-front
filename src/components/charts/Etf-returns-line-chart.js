@@ -68,7 +68,7 @@ const EtfReturnsBarChart = () => {
             labelFormatter={(label) => `Ticker: ${label}`}
           />
           <Legend />
-          <Bar dataKey="dailyReturn" name="Monthly Return (%)" fill="#8884d8" />
+          <Bar dataKey="dailyReturn" name="Daily Return (%)" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
     </div>
