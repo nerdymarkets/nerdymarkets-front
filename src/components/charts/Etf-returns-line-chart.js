@@ -28,7 +28,7 @@ const EtfReturnsBarChart = () => {
     (item) => item.Portfolio === String(activePortfolio)
   ).map((item) => ({
     ticker: item.Ticker,
-    monthlyReturn: (item.monthly_return * 100).toFixed(2),
+    dailyReturn: (item.daily_return * 100).toFixed(2),
   }));
 
   if (loading) {
@@ -68,11 +68,7 @@ const EtfReturnsBarChart = () => {
             labelFormatter={(label) => `Ticker: ${label}`}
           />
           <Legend />
-          <Bar
-            dataKey="monthlyReturn"
-            name="Monthly Return (%)"
-            fill="#8884d8"
-          />
+          <Bar dataKey="dailyReturn" name="Monthly Return (%)" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
     </div>
