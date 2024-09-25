@@ -21,11 +21,10 @@ ChartJS.register(
 
 const PortfolioLineChart = () => {
   const { equityData, loading } = useEquityDataStore();
-
-  const labels = equityData.map((item) => item['']);
-  const portfolio1 = equityData.map((item) => parseFloat(item[1]));
-  const portfolio2 = equityData.map((item) => parseFloat(item[2]));
-  const portfolio3 = equityData.map((item) => parseFloat(item[3]));
+  const labels = equityData.map((item) => item[''] || '');
+  const portfolio1 = equityData.map((item) => parseFloat(item['1.0']) || 0);
+  const portfolio2 = equityData.map((item) => parseFloat(item['2.0']) || 0);
+  const portfolio3 = equityData.map((item) => parseFloat(item['3.0']) || 0);
   const spy = equityData.map((item) => parseFloat(item.SPY));
 
   const chartData = {
