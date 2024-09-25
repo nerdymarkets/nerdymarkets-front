@@ -4,7 +4,6 @@ import { Table, Button } from 'reactstrap';
 
 const PortfolioStatsTable = ({ performanceData }) => {
   const [activeType, setActiveType] = useState('Inception');
-
   const columns = [
     'Portfolio',
     'Max Daily Return [%]',

@@ -15,7 +15,6 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const PortfolioBarChart = ({ performanceData }) => {
   const [activeType, setActiveType] = useState('Daily');
-
   const labels = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
@@ -31,7 +30,8 @@ const PortfolioBarChart = ({ performanceData }) => {
       const portfolioNumber = `Portfolio_${index + 1}`;
       return Number(
         (
-          performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0
+          (performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0) *
+          100
         ).toFixed(3)
       );
     });
@@ -39,7 +39,7 @@ const PortfolioBarChart = ({ performanceData }) => {
 
   const getAvgDailyReturnData = (type) => {
     if (!performanceData.data || !performanceData.data[type]) {
-      return labels.map(() => 0); // Return an array of zeros or handle it as needed
+      return labels.map(() => 0);
     }
 
     return labels.map((_, index) => {
