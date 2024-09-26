@@ -43,7 +43,7 @@ const PortfolioPieChart = () => {
     maintainAspectRatio: false,
     layout: {
       padding: {
-        top: 20,
+        top: 30,
         bottom: 20,
       },
     },
@@ -51,7 +51,7 @@ const PortfolioPieChart = () => {
       legend: {
         position: 'bottom',
         labels: {
-          padding: 20,
+          padding: 30,
         },
       },
       tooltip: {
@@ -64,6 +64,7 @@ const PortfolioPieChart = () => {
         color: '#fff',
         anchor: 'end',
         align: 'end',
+        rotation: -8,
         offset: 0,
         formatter: (value, context) => {
           const label = context.chart.data.labels[context.dataIndex];
