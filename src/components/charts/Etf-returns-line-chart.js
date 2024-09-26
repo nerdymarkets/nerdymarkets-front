@@ -28,7 +28,7 @@ const EtfReturnsBarChart = () => {
     (item) => item.Portfolio === String(activePortfolio)
   ).map((item) => ({
     ticker: item.Ticker,
-    dailyReturn: (item.daily_return * 100).toFixed(2),
+    dailyReturn: parseFloat((item.daily_return * 100).toFixed(2)),
   }));
 
   if (loading) {
