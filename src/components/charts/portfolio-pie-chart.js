@@ -41,8 +41,19 @@ const PortfolioPieChart = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+      },
+    },
     plugins: {
-      legend: { position: 'right' },
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 20,
+        },
+      },
       tooltip: {
         callbacks: {
           label: (tooltipItem) =>
@@ -50,10 +61,10 @@ const PortfolioPieChart = () => {
         },
       },
       datalabels: {
-        color: '#000',
+        color: '#fff',
         anchor: 'end',
-        align: 'start',
-        offset: 10,
+        align: 'end',
+        offset: 0,
         formatter: (value, context) => {
           const label = context.chart.data.labels[context.dataIndex];
           return `${label} (${value.toFixed(2)}%)`;
@@ -61,9 +72,11 @@ const PortfolioPieChart = () => {
         textAlign: 'center',
         font: { size: 12, weight: 'bold' },
         padding: { top: 5, bottom: 5 },
+        clip: false,
       },
     },
   };
+
   const portfolioTitles = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
@@ -72,21 +85,39 @@ const PortfolioPieChart = () => {
 
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-2 rounded-2xl ">
-      <h2 className="text-3xl text-white">
+      <h2 className="text-3xl text-white text-center mb-4">
         Current Portfolio Composition (Holdings by Weights) {latestFolderDate}
       </h2>
+      <Row>
+        <Col md={6}>
+          <h3 className="text-white text-center">{portfolioTitles[0]}</h3>
+          <div
+            className="flex justify-center items-center mt-4"
+            style={{ height: '400px' }}
+          >
+            <Pie data={createChartData(portfolio1)} options={options} />
+          </div>
+        </Col>
+        <Col md={6}>
+          <h3 className="text-white text-center">{portfolioTitles[1]}</h3>
+          <div
+            className="flex justify-center items-center mt-4"
+            style={{ height: '400px' }}
+          >
+            <Pie data={createChartData(portfolio2)} options={options} />
+          </div>
+        </Col>
+      </Row>
       <Row className="mt-4">
-        {[portfolio1, portfolio2, portfolio3].map((portfolio, index) => (
-          <Col key={index} md={4}>
-            <h3 className="text-white ">{portfolioTitles[index]}</h3>
-            <div
-              className="flex justify-center items-center mt-4"
-              style={{ height: '400px' }}
-            >
-              <Pie data={createChartData(portfolio)} options={options} />
-            </div>
-          </Col>
-        ))}
+        <Col md={{ size: 6, offset: 3 }}>
+          <h3 className="text-white text-center">{portfolioTitles[2]}</h3>
+          <div
+            className="flex justify-center items-center mt-4 "
+            style={{ height: '400px' }}
+          >
+            <Pie data={createChartData(portfolio3)} options={options} />
+          </div>
+        </Col>
       </Row>
     </Container>
   );
