@@ -13,6 +13,7 @@ import useEtfDataStore from '@/stores/useEtfDataStore';
 import { Button, Spinner } from 'reactstrap';
 
 const EtfReturnsBarChart = () => {
+  //wewerwer
   const { EtfData, loading } = useEtfDataStore();
   const [activePortfolio, setActivePortfolio] = useState(1);
   const portfolioTitles = [
