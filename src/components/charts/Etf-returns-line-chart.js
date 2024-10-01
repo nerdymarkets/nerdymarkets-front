@@ -37,7 +37,7 @@ const EtfReturnsBarChart = () => {
   }
 
   return (
-    <div className="bg-customBlack lg:p-5 p-2 rounded-2xl  ">
+    <div className="bg-customBlack lg:p-5 p-4 rounded-2xl  ">
       <div className="lg:flex gap-2 lg:justify-center grid pb-4">
         {portfolios.map((portfolio, index) => (
           <Button

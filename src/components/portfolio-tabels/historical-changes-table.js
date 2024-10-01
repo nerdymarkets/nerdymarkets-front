@@ -42,7 +42,7 @@ const HistoricalChangesTable = () => {
   }
 
   return (
-    <div className=" bg-customBlack lg:p-5 p-2 rounded-2xl ">
+    <div className=" bg-customBlack lg:p-5 p-4 rounded-2xl ">
       <h2 className="text-3xl text-white mb-4 text-center">
         {selectedPortfolio} - Historical Changes to Portfolio
       </h2>

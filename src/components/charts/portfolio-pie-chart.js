@@ -85,7 +85,7 @@ const PortfolioPieChart = () => {
   ];
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-2 rounded-2xl ">
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h2 className="text-3xl text-white text-center mb-4">
         Current Portfolio Composition (Holdings by Weights) {latestFolderDate}
       </h2>
