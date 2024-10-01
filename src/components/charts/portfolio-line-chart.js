@@ -226,7 +226,7 @@ const PortfolioLineChart = () => {
         onClick={handleCurrentMonthClick}
         className={`mr-2  ${activeButton === 'currentMonth' ? 'bg-customPink hover:bg-customPinkSecondary' : ''} border-none`}
       >
-        This Month
+        Current
       </Button>
       <Button
         onClick={handleLastSixMonthsClick}
