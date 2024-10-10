@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Container, Spinner, Button } from 'reactstrap';
+import { Container, Spinner } from 'reactstrap';
 import {
   Chart as ChartJS,
   LineElement,
@@ -23,37 +23,25 @@ ChartJS.register(
 
 const PortfolioLineChart = () => {
   const { equityData, loading } = useEquityDataStore();
-  const [filteredData, setFilteredData] = useState(equityData);
-  const [activeButton, setActiveButton] = useState('currentMonth');
+  console.log(equityData);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     if (equityData.length > 0) {
-      handleCurrentMonthClick();
+      handleLast31Days();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [equityData]);
 
-  const getMonthFromDate = (dateString) => {
-    return new Date(dateString).getMonth() + 1;
-  };
+  const handleLast31Days = () => {
+    const currentDate = new Date();
+    const past31Days = new Date();
+    past31Days.setDate(currentDate.getDate() - 31);
 
-  const getYearFromDate = (dateString) => {
-    return new Date(dateString).getFullYear();
-  };
-
-  const handleCurrentMonthClick = () => {
-    const currentMonth = new Date().getMonth() + 1;
-    let filtered = equityData.filter(
-      (item) => getMonthFromDate(item['']) === currentMonth
-    );
-
-    let fallbackMonth = currentMonth;
-    while (filtered.length === 0 && fallbackMonth > 0) {
-      fallbackMonth--;
-      filtered = equityData.filter(
-        (item) => getMonthFromDate(item['']) === fallbackMonth
-      );
-    }
+    const filtered = equityData.filter((item) => {
+      const itemDate = new Date(item['']);
+      return itemDate >= past31Days && itemDate <= currentDate;
+    });
 
     const formattedData = filtered.map((item) => ({
       date: new Date(item['']).toLocaleDateString('en-US', {
@@ -67,59 +55,9 @@ const PortfolioLineChart = () => {
     }));
 
     setFilteredData(formattedData);
-    setActiveButton('currentMonth');
   };
 
-  const handleLastSixMonthsClick = () => {
-    const currentDate = new Date();
-    const lastSixMonths = [];
-
-    for (let i = 0; i < 6; i++) {
-      const month = currentDate.getMonth() + 1 - i;
-      const year = currentDate.getFullYear();
-      lastSixMonths.push({ month, year });
-    }
-
-    const aggregatedData = lastSixMonths.map(({ month, year }) => {
-      const monthData = equityData.filter(
-        (item) =>
-          getMonthFromDate(item['']) === month &&
-          getYearFromDate(item['']) === year
-      );
-      const avgPortfolio1 =
-        monthData.reduce((sum, item) => sum + parseFloat(item['1.0'] || 0), 0) /
-          monthData.length || 0;
-      const avgPortfolio2 =
-        monthData.reduce((sum, item) => sum + parseFloat(item['2.0'] || 0), 0) /
-          monthData.length || 0;
-      const avgPortfolio3 =
-        monthData.reduce((sum, item) => sum + parseFloat(item['3.0'] || 0), 0) /
-          monthData.length || 0;
-      const avgSpy =
-        monthData.reduce((sum, item) => sum + parseFloat(item.SPY || 0), 0) /
-          monthData.length || 0;
-
-      return {
-        month: new Date(year, month - 1).toLocaleString('en-US', {
-          month: 'short',
-          year: 'numeric',
-        }),
-        portfolio1: avgPortfolio1,
-        portfolio2: avgPortfolio2,
-        portfolio3: avgPortfolio3,
-        spy: avgSpy,
-      };
-    });
-    aggregatedData.sort((a, b) => new Date(a.month) - new Date(b.month));
-
-    setFilteredData(aggregatedData);
-    setActiveButton('lastSixMonths');
-  };
-
-  const labels = filteredData.map((item) =>
-    activeButton === 'lastSixMonths' ? item.month : item.date || ''
-  );
-
+  const labels = filteredData.map((item) => item.date || '');
   const portfolio1 = filteredData.map((item) => item.portfolio1 || 0);
   const portfolio2 = filteredData.map((item) => item.portfolio2 || 0);
   const portfolio3 = filteredData.map((item) => item.portfolio3 || 0);
@@ -221,19 +159,6 @@ const PortfolioLineChart = () => {
       <h3 className="text-white text-3xl mb-4">
         All Portfolios VS SPY Benchmarks
       </h3>
-      <Button
-        color={activeButton === 'currentMonth' ? 'primary' : 'secondary'}
-        onClick={handleCurrentMonthClick}
-        className={`mr-2  ${activeButton === 'currentMonth' ? 'bg-customPink hover:bg-customPinkSecondary' : ''} border-none`}
-      >
-        Current
-      </Button>
-      <Button
-        onClick={handleLastSixMonthsClick}
-        className={`mr-2  ${activeButton === 'lastSixMonths' ? 'bg-customPink hover:bg-customPinkSecondary' : ''} border-none`}
-      >
-        6-Month Avg
-      </Button>
       {loading ? (
         <Spinner className="text-customPink" />
       ) : (
