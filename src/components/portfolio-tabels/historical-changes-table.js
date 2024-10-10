@@ -6,16 +6,12 @@ const HistoricalChangesTable = () => {
   const [selectedPortfolio, setSelectedPortfolio] = useState(
     'Low-Volatility Portfolio'
   );
-
-  // Helper function to convert the file name date to a readable month-year format
   const formatDate = (fileName) => {
     const datePart = fileName.split('/').pop().split('.csv')[0];
     const [year, month, day] = datePart.split('-');
     const date = new Date(year, month - 1, day);
     return date.toLocaleString('default', { month: 'short', year: 'numeric' });
   };
-
-  // Function to get group number based on portfolio name
   const getGroupNumber = (portfolioName) => {
     switch (portfolioName) {
       case 'Low-Volatility Portfolio':
@@ -28,8 +24,6 @@ const HistoricalChangesTable = () => {
         return '1';
     }
   };
-
-  // Filtered data based on the selected portfolio
   const filteredData = HistoricalChanges.map((change) => ({
     ...change,
     data: change.data.filter(
@@ -79,8 +73,8 @@ const HistoricalChangesTable = () => {
       >
         <thead>
           <tr>
-            <th>Month & Group</th>
-            <th>Composition</th>
+            <th>Month</th>
+            <th>Current Composition</th>
             <th>Tickers Added</th>
             <th>Tickers Removed</th>
           </tr>

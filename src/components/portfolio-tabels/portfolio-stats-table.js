@@ -54,6 +54,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
 
   return (
     <div className=" bg-customBlack lg:p-5 p-4 rounded-2xl ">
+      <h1 className="text-white text-3xl pb-4">Portfolio Quick Statistics</h1>
       <div className="lg:flex lg:justify-center mb-4 grid gap-2">
         {['Inception', 'Monthly', 'YTD'].map((type) => (
           <Button

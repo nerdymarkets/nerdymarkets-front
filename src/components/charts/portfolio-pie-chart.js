@@ -49,10 +49,7 @@ const PortfolioPieChart = () => {
     },
     plugins: {
       legend: {
-        position: 'bottom',
-        labels: {
-          padding: 30,
-        },
+        display: false, // Hide the legend
       },
       tooltip: {
         callbacks: {
@@ -61,19 +58,7 @@ const PortfolioPieChart = () => {
         },
       },
       datalabels: {
-        color: '#fff',
-        anchor: 'end',
-        align: 'end',
-        rotation: -8,
-        offset: 0,
-        formatter: (value, context) => {
-          const label = context.chart.data.labels[context.dataIndex];
-          return `${label} (${value.toFixed(2)}%)`;
-        },
-        textAlign: 'center',
-        font: { size: 12, weight: 'bold' },
-        padding: { top: 5, bottom: 5 },
-        clip: false,
+        display: false, // Hide the datalabels by default
       },
     },
   };
@@ -87,10 +72,13 @@ const PortfolioPieChart = () => {
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h2 className="text-3xl text-white text-center mb-4">
-        Current Portfolio Composition (Holdings by Weights) {latestFolderDate}
+        Portfolio Composition by Weight as of {latestFolderDate}
       </h2>
+      <p className="text-center text-white text-sm mb-4">
+        Hover for weight details
+      </p>
       <Row>
-        <Col md={6}>
+        <Col md={4}>
           <h3 className="text-white text-center">{portfolioTitles[0]}</h3>
           <div
             className="flex justify-center items-center mt-4"
@@ -99,7 +87,7 @@ const PortfolioPieChart = () => {
             <Pie data={createChartData(portfolio1)} options={options} />
           </div>
         </Col>
-        <Col md={6}>
+        <Col md={4}>
           <h3 className="text-white text-center">{portfolioTitles[1]}</h3>
           <div
             className="flex justify-center items-center mt-4"
@@ -108,9 +96,7 @@ const PortfolioPieChart = () => {
             <Pie data={createChartData(portfolio2)} options={options} />
           </div>
         </Col>
-      </Row>
-      <Row className="mt-4">
-        <Col md={{ size: 6, offset: 3 }}>
+        <Col md={4}>
           <h3 className="text-white text-center">{portfolioTitles[2]}</h3>
           <div
             className="flex justify-center items-center mt-4 "
