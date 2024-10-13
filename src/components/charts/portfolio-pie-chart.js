@@ -1,15 +1,21 @@
+import { useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Container, Spinner, Row, Col } from 'reactstrap';
+import { Container, Spinner, Button } from 'reactstrap';
 import usePortfolioDataStore from '@/stores/usePortfolioDataStore';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const PortfolioPieChart = () => {
   const { portfolioData, loading, latestFolderDate } = usePortfolioDataStore();
+  const [activePortfolio, setActivePortfolio] = useState(
+    'Low-Volatility Portfolio'
+  );
+
   if (loading) {
     return <Spinner className="text-customPink" />;
   }
+
   const portfolio1 = portfolioData.filter((item) => item.Group === '1');
   const portfolio2 = portfolioData.filter((item) => item.Group === '2');
   const portfolio3 = portfolioData.filter((item) => item.Group === '3');
@@ -58,7 +64,19 @@ const PortfolioPieChart = () => {
         },
       },
       datalabels: {
-        display: false, // Hide the datalabels by default
+        display: true,
+        color: '#fff',
+        anchor: 'end',
+        align: 'end',
+        offset: 5,
+        formatter: (value, context) => {
+          const ticker = context.chart.data.labels[context.dataIndex];
+          return `${ticker}: ${value.toFixed(2)}%`;
+        },
+        labels: {
+          outside: true,
+        },
+        clip: false,
       },
     },
   };
@@ -69,6 +87,12 @@ const PortfolioPieChart = () => {
     'High-Volatility Portfolio',
   ];
 
+  const portfolioMap = {
+    'Low-Volatility Portfolio': portfolio1,
+    'Medium-Volatility Portfolio': portfolio2,
+    'High-Volatility Portfolio': portfolio3,
+  };
+
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h2 className="text-3xl text-white text-center mb-4">
@@ -77,35 +101,25 @@ const PortfolioPieChart = () => {
       <p className="text-center text-white text-sm mb-4">
         Hover for weight details
       </p>
-      <Row>
-        <Col md={4}>
-          <h3 className="text-white text-center">{portfolioTitles[0]}</h3>
-          <div
-            className="flex justify-center items-center mt-4"
-            style={{ height: '400px' }}
+      <div className="text-center mb-4">
+        {portfolioTitles.map((title) => (
+          <Button
+            key={title}
+            className={`m-2 border-none rounded-lg ${activePortfolio === title ? 'bg-customPink hover:bg-customPinkSecondary' : 'bg-gray-500'}`}
+            onClick={() => setActivePortfolio(title)}
           >
-            <Pie data={createChartData(portfolio1)} options={options} />
-          </div>
-        </Col>
-        <Col md={4}>
-          <h3 className="text-white text-center">{portfolioTitles[1]}</h3>
-          <div
-            className="flex justify-center items-center mt-4"
-            style={{ height: '400px' }}
-          >
-            <Pie data={createChartData(portfolio2)} options={options} />
-          </div>
-        </Col>
-        <Col md={4}>
-          <h3 className="text-white text-center">{portfolioTitles[2]}</h3>
-          <div
-            className="flex justify-center items-center mt-4 "
-            style={{ height: '400px' }}
-          >
-            <Pie data={createChartData(portfolio3)} options={options} />
-          </div>
-        </Col>
-      </Row>
+            {title}
+          </Button>
+        ))}
+      </div>
+
+      <h3 className="text-white text-center">{activePortfolio}</h3>
+      <div className="flex justify-center items-center mt-4 h-[600px] ">
+        <Pie
+          data={createChartData(portfolioMap[activePortfolio])}
+          options={options}
+        />
+      </div>
     </Container>
   );
 };
