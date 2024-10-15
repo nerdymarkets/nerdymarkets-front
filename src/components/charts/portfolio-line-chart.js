@@ -30,7 +30,6 @@ ChartJS.register(
 
 const PortfolioLineChart = () => {
   const { equityData, loading } = useEquityDataStore();
-
   const [filteredData, setFilteredData] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -82,9 +81,9 @@ const PortfolioLineChart = () => {
           month: 'short',
           day: 'numeric',
         }),
-        portfolio1: parseFloat(item['1.0']) || 0,
-        portfolio2: parseFloat(item['2.0']) || 0,
-        portfolio3: parseFloat(item['3.0']) || 0,
+        portfolio1: parseFloat(item['1']) || 0,
+        portfolio2: parseFloat(item['2']) || 0,
+        portfolio3: parseFloat(item['3']) || 0,
         spy: parseFloat(item.SPY) || 0,
       }));
 
