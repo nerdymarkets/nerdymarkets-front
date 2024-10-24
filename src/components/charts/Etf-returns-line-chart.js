@@ -13,25 +13,27 @@ import useEtfDataStore from '@/stores/useEtfDataStore';
 import { Button, Spinner } from 'reactstrap';
 
 const EtfReturnsBarChart = () => {
-  //wewerwer
   const { EtfData, loading } = useEtfDataStore();
+  console.log(EtfData);
   const [activePortfolio, setActivePortfolio] = useState(1);
   const portfolioTitles = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
     'High-Volatility Portfolio',
   ];
-  const portfolios = [...new Set(EtfData.map((item) => item.Portfolio))].sort(
-    (a, b) => a - b
-  );
-
+  const portfolios = [
+    ...new Set(
+      EtfData.map((item) => parseFloat(item.Portfolio)).filter((value) =>
+        [1, 2, 3].includes(value)
+      )
+    ),
+  ].sort((a, b) => a - b);
   const filteredData = EtfData.filter(
-    (item) => item.Portfolio === String(activePortfolio)
+    (item) => parseFloat(item.Portfolio) === parseFloat(activePortfolio)
   ).map((item) => ({
     ticker: item.Ticker,
     dailyReturn: parseFloat((item.daily_return * 100).toFixed(2)),
   }));
-
   if (loading) {
     return <Spinner className="text-customPink" />;
   }
