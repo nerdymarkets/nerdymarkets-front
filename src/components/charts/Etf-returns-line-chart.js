@@ -14,7 +14,6 @@ import { Button, Spinner } from 'reactstrap';
 
 const EtfReturnsBarChart = () => {
   const { EtfData, loading } = useEtfDataStore();
-  console.log(EtfData);
   const [activePortfolio, setActivePortfolio] = useState(1);
   const portfolioTitles = [
     'Low-Volatility Portfolio',
