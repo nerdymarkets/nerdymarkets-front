@@ -4,10 +4,12 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Container, Spinner, Button } from 'reactstrap';
 import usePortfolioDataStore from '@/stores/usePortfolioDataStore';
+import useWindowDimensions from '@/hooks/useWindowDimension';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const PortfolioPieChart = () => {
   const { portfolioData, loading, latestFolderDate } = usePortfolioDataStore();
+  const { width } = useWindowDimensions();
   const [activePortfolio, setActivePortfolio] = useState(
     'Low-Volatility Portfolio'
   );
@@ -50,7 +52,9 @@ const PortfolioPieChart = () => {
     layout: {
       padding: {
         top: 30,
-        bottom: 20,
+        bottom: `${width <= 768 ? '40' : '30'}`,
+        left: `${width <= 425 ? '50' : '0'}`,
+        right: `${width <= 425 ? '50' : '0'}`,
       },
     },
     plugins: {
@@ -75,6 +79,9 @@ const PortfolioPieChart = () => {
         },
         labels: {
           outside: true,
+        },
+        font: {
+          size: `${width <= 426 ? '8' : '16'}`,
         },
         clip: false,
       },
@@ -114,7 +121,7 @@ const PortfolioPieChart = () => {
       </div>
 
       <h3 className="text-white text-center">{activePortfolio}</h3>
-      <div className="flex justify-center items-center mt-4 h-[600px] ">
+      <div className="flex justify-center items-center mt-4  lg:h-[600px] h-[300px]  ">
         <Pie
           data={createChartData(portfolioMap[activePortfolio])}
           options={options}
