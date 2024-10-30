@@ -62,7 +62,7 @@ const HistoricalChangesTable = () => {
       </div>
 
       <Table
-        className="font-sans text-white"
+        className=" text-white"
         dark
         hover
         responsive

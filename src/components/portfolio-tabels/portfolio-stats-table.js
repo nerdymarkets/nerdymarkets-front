@@ -71,7 +71,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
         ))}
       </div>
       <Table
-        className="font-sans text-white"
+        className=" text-white"
         dark
         hover
         responsive

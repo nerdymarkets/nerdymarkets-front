@@ -14,7 +14,7 @@ const UserComments = ({ initialComments }) => {
   }
 
   return (
-    <div className="bg-customBlack rounded-3xl py-4 text-white mx-auto shadow-lg border-gray-600 font-handwritten">
+    <div className="bg-customBlack rounded-3xl py-4 text-white mx-auto shadow-lg border-gray-600 ">
       <table className="w-full ">
         <thead>
           <tr>
