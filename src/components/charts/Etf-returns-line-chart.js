@@ -3,7 +3,6 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -54,18 +53,7 @@ const EtfReturnsBarChart = () => {
         ))}
       </div>
       <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          width={500}
-          height={300}
-          data={filteredData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
+        <BarChart width={500} height={300} data={filteredData}>
           <XAxis dataKey="ticker" />
           <YAxis />
           <Tooltip
