@@ -39,7 +39,7 @@ const Header = () => {
 
   return (
     <>
-      <Navbar className="flex justify-between items-center p-4">
+      <Navbar className="flex justify-between items-center lg:p-4">
         <Link href="/" passHref>
           <Image src={nerdylogo} alt="logo" width={150} height={100} />
         </Link>
@@ -56,12 +56,12 @@ const Header = () => {
                 </NavLink>
               </NavItem>
             ) : (
-              <>
-                <BurgerMenu />
+              <div className="flex items-center">
                 <div className="mr-6">
                   <Profile session={session} status={status} />
                 </div>
-              </>
+                <BurgerMenu />
+              </div>
             )}
           </div>
         ) : (
