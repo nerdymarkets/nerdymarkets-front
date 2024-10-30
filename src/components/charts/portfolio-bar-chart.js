@@ -10,7 +10,6 @@ import {
   Legend,
 } from 'chart.js';
 import PropTypes from 'prop-types';
-
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const PortfolioBarChart = ({ performanceData }) => {
@@ -117,6 +116,15 @@ const PortfolioBarChart = ({ performanceData }) => {
         borderColor: '#fff',
         borderWidth: 1,
         padding: 10,
+      },
+      datalabels: {
+        color: 'white',
+        anchor: 'center',
+        align: 'start',
+        font: {
+          size: 16,
+        },
+        formatter: (value) => value.toFixed(3),
       },
     },
   };

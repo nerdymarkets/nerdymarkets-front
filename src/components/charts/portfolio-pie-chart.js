@@ -55,7 +55,7 @@ const PortfolioPieChart = () => {
     },
     plugins: {
       legend: {
-        display: false, // Hide the legend
+        display: false,
       },
       tooltip: {
         callbacks: {
