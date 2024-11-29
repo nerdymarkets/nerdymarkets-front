@@ -4,8 +4,6 @@ import { useSession } from 'next-auth/react';
 import { Spinner, Container } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
-import usePerformanceStore from '@/stores/usePerfromanceStore';
-
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
 import PortfolioStatsTable from '@/components/portfolio-tabels/portfolio-stats-table';
@@ -18,8 +16,6 @@ import HistoricalChangesTable from '@/components/portfolio-tabels/historical-cha
 const Portfolio = () => {
   const { data: session, status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
-  const { performanceData, loading: performanceDataLoading } =
-    usePerformanceStore();
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -41,7 +37,7 @@ const Portfolio = () => {
 
     fetchComments();
   }, [session?.accessToken]);
-  if (status === 'loading' || loading || isLoading || performanceDataLoading) {
+  if (status === 'loading' || loading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner className="text-customPink" />
@@ -62,8 +58,8 @@ const Portfolio = () => {
       {hasActiveSubscription ? (
         <Container className="text-center flex flex-col gap-20">
           <PortfolioLineChart />
-          <PortfolioBarChart performanceData={performanceData} />
-          <PortfolioStatsTable performanceData={performanceData} />
+          <PortfolioBarChart />
+          <PortfolioStatsTable />
           <PortfolioPieChart />
           <EtfReturnsLineChart />
           <HistoricalChangesTable />

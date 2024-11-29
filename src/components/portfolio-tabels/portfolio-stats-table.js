@@ -1,77 +1,52 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Table, Button } from 'reactstrap';
+import { Table } from 'reactstrap';
+import useDailyInceptionDataStore from '@/stores/useDailyInceptionDataStore';
 
-const PortfolioStatsTable = ({ performanceData }) => {
-  const [activeType, setActiveType] = useState('Inception');
+const PortfolioStatsTable = () => {
+  const daily = useDailyInceptionDataStore((state) => state.daily);
+
   const columns = [
     'Portfolio',
-    'Max Daily Return [%]',
-    'Max Drawdown [%]',
-    'Sharpe Ratio',
-    'Sortino Ratio',
-    'Total Performance [%]',
+    'Daily Return [%]',
+    'Cumulative PL [%]',
+    'Total Return [%]',
+    'Previous Balance',
+    'Current Balance',
   ];
 
   const portfolioNames = {
-    Portfolio_1: 'Low-Volatility Portfolio',
-    Portfolio_2: 'Medium-Volatility Portfolio',
-    Portfolio_3: 'High-Volatility Portfolio',
-    SPY: 'SPY',
+    1: 'Low-Volatility Portfolio',
+    2: 'Medium-Volatility Portfolio',
+    3: 'High-Volatility Portfolio',
   };
 
-  const roundToThree = (num) => {
-    return num ? Number(num).toFixed(3) : '-';
+  const roundToTwo = (num) => {
+    return num ? Number(num).toFixed(2) : '-';
   };
 
-  const getStatsData = (type) => {
-    if (!performanceData.data || !performanceData.data[type]) {
+  const getStatsData = () => {
+    if (!daily || daily.length === 0) {
       return [];
     }
 
-    const typeData = performanceData.data[type];
-    const portfolioKeys = Object.keys(typeData).filter(
-      (key) => key.includes('Portfolio_') || key === 'SPY'
-    );
-
-    const stats = portfolioKeys.map((key) => {
-      const portfolioData = typeData[key];
-      return {
-        portfolio:
-          portfolioNames[key] || key.replace('Portfolio_', 'Portfolio '),
-        maxDailyReturn: roundToThree(portfolioData['Max Daily Return [%]']),
-        maxDrawdown: roundToThree(portfolioData['Max Drawdown [%]']),
-        sharpeRatio: roundToThree(portfolioData['Sharpe Ratio']),
-        sortinoRatio: roundToThree(portfolioData['Sortino Ratio']),
-        totalPerformance: roundToThree(portfolioData['Total Performance [%]']),
-      };
-    });
-
-    return stats;
+    return daily.map((portfolio) => ({
+      portfolio:
+        portfolioNames[portfolio.Portfolio] ||
+        `Portfolio ${portfolio.Portfolio}`,
+      dailyReturn: portfolio.DailyReturn || '-',
+      cumulativePL: portfolio.CumulativePL || '-',
+      totalReturn: roundToTwo(portfolio.TotalReturn),
+      previousBalance: roundToTwo(portfolio.PreviousBalance),
+      currentBalance: roundToTwo(portfolio.CurrentBalance),
+    }));
   };
 
-  const tableData = getStatsData(activeType);
+  const tableData = getStatsData();
 
   return (
-    <div className=" bg-customBlack lg:p-5 p-4 rounded-2xl ">
-      <h1 className="text-white text-3xl pb-4">Portfolio Quick Statistics</h1>
-      <div className="lg:flex lg:justify-center mb-4 grid gap-2">
-        {['Inception', 'Monthly', 'YTD'].map((type) => (
-          <Button
-            key={type}
-            className={`px-4 py-2 mx-2 text-white border-none ${
-              activeType === type
-                ? 'bg-customPink hover:bg-customPinkSecondary'
-                : 'bg-gray-500'
-            }`}
-            onClick={() => setActiveType(type)}
-          >
-            {type}
-          </Button>
-        ))}
-      </div>
+    <div className="bg-customBlack lg:p-5 p-4 rounded-2xl">
+      <h1 className="text-white text-3xl pb-4">Portfolio Daily Statistics</h1>
       <Table
-        className=" text-white"
+        className="text-white"
         dark
         hover
         responsive
@@ -83,7 +58,7 @@ const PortfolioStatsTable = ({ performanceData }) => {
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column} className="  px-4 py-2 text-center ">
+              <th key={column} className="px-4 py-2 text-center">
                 <p>{column}</p>
               </th>
             ))}
@@ -92,22 +67,18 @@ const PortfolioStatsTable = ({ performanceData }) => {
         <tbody>
           {tableData.map((row, index) => (
             <tr key={index}>
-              <td className=" px-4 py-2 text-left ">{row.portfolio}</td>
-              <td className="  px-4 py-2 text-center">{row.maxDailyReturn}</td>
-              <td className=" px-4 py-2 text-center">{row.maxDrawdown}</td>
-              <td className="  px-4 py-2 text-center">{row.sharpeRatio}</td>
-              <td className="px-4 py-2 text-center">{row.sortinoRatio}</td>
-              <td className=" px-4 py-2 text-center">{row.totalPerformance}</td>
+              <td className="px-4 py-2 text-left">{row.portfolio}</td>
+              <td className="px-4 py-2 text-center">{row.dailyReturn}</td>
+              <td className="px-4 py-2 text-center">{row.cumulativePL}</td>
+              <td className="px-4 py-2 text-center">{row.totalReturn}</td>
+              <td className="px-4 py-2 text-center">{row.previousBalance}</td>
+              <td className="px-4 py-2 text-center">{row.currentBalance}</td>
             </tr>
           ))}
         </tbody>
       </Table>
     </div>
   );
-};
-
-PortfolioStatsTable.propTypes = {
-  performanceData: PropTypes.object.isRequired,
 };
 
 export default PortfolioStatsTable;

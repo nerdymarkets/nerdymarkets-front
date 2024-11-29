@@ -1,7 +1,6 @@
 import Layout from '@/components/layout/layout';
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/globals.css';
 import { loadStripe } from '@stripe/stripe-js';
@@ -11,40 +10,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import EquityDataFetcher from '@/components/s3/EquityDataFetcher';
 import LatestPortfolioFetcher from '@/components/s3/LatestPortfolioFetcher';
 import EtfReturnsFetcher from '@/components/s3/EtfReturnsFetcher';
-import { getPerformanceData } from '@/pages/api/portfolio';
-import usePerformanceStore from '@/stores/usePerfromanceStore';
 import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
+import DailyDataFetcher from '@/components/s3/DailyDataFetcher';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
 function SessionWrapper({ children }) {
-  const { data: session } = useSession();
-  const { setPerformanceData, setLoading } = usePerformanceStore();
-
-  useEffect(() => {
-    if (!session?.accessToken) {
-      return;
-    }
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const performanceResponse = await getPerformanceData(
-          session.accessToken
-        );
-        setPerformanceData(performanceResponse);
-      } catch (error) {
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [session?.accessToken, setPerformanceData, setLoading]);
-
   return children;
 }
 
@@ -57,6 +30,7 @@ export default function App({ Component, pageProps }) {
           <LatestPortfolioFetcher />
           <EtfReturnsFetcher />
           <HistoricalChangesDataFetcher />
+          <DailyDataFetcher />
           <ToastContainer
             position="top-right"
             autoClose={5000}

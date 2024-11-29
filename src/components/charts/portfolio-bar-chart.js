@@ -9,59 +9,58 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import PropTypes from 'prop-types';
+
+import useDailyInceptionDataStore from '@/stores/useDailyInceptionDataStore';
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const PortfolioBarChart = ({ performanceData }) => {
-  const [activeType, setActiveType] = useState('Daily');
+const PortfolioBarChart = () => {
+  const [activeType, setActiveType] = useState('Daily'); // Active type (Daily or Inception)
   const labels = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
     'High-Volatility Portfolio',
   ];
 
+  // Accessing Zustand data
+  const daily = useDailyInceptionDataStore((state) => state.daily);
+  const inception = useDailyInceptionDataStore((state) => state.inception);
+
+  // Get Daily Data
   const getDailyData = () => {
-    if (!performanceData.data || !performanceData.data.Daily) {
-      return labels.map(() => 0);
+    if (!daily || daily.length === 0) {
+      return labels.map(() => 0); // Return 0 if no data
     }
 
-    return labels.map((_, index) => {
-      const portfolioNumber = `Portfolio_${index + 1}`;
-      return Number(
-        (
-          (performanceData.data.Daily[portfolioNumber]?.Portfolio_return ?? 0) *
-          100
-        ).toFixed(3)
-      );
+    return daily.map((portfolio) => {
+      // Extract "DailyReturn", remove "%" and convert to number
+      const dailyReturn =
+        parseFloat(portfolio.DailyReturn.replace('%', '')) || 0;
+      return dailyReturn;
     });
   };
 
-  const getAvgDailyReturnData = (type) => {
-    if (!performanceData.data || !performanceData.data[type]) {
+  // Get Inception Data (if needed in the future)
+  const getInceptionData = () => {
+    if (!inception || inception.length === 0) {
       return labels.map(() => 0);
     }
 
-    return labels.map((_, index) => {
-      const portfolioNumber = `Portfolio_${index + 1}`;
-      return Number(
-        (
-          performanceData.data[type][portfolioNumber]?.[
-            'Total Performance [%]'
-          ] ?? 0
-        ).toFixed(3)
-      );
+    // Example processing for inception data (adjust as needed)
+    return inception.map((portfolio) => {
+      const inceptionReturn =
+        parseFloat(portfolio.TotalReturn.replace('%', '')) || 0;
+      return inceptionReturn;
     });
   };
 
+  // Chart Data
   const chartData = {
     labels,
     datasets: [
       {
-        label: `Total Return [%] (${activeType})`,
-        data:
-          activeType === 'Daily'
-            ? getDailyData()
-            : getAvgDailyReturnData(activeType),
+        label: `Return [%] (${activeType})`,
+        data: activeType === 'Daily' ? getDailyData() : getInceptionData(),
         backgroundColor: (context) => {
           const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 400);
           gradient.addColorStop(0, 'rgba(75, 192, 192, 0.9)');
@@ -78,6 +77,7 @@ const PortfolioBarChart = ({ performanceData }) => {
     ],
   };
 
+  // Chart Options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -117,15 +117,6 @@ const PortfolioBarChart = ({ performanceData }) => {
         borderWidth: 1,
         padding: 10,
       },
-      datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'start',
-        font: {
-          size: 16,
-        },
-        formatter: (value) => value.toFixed(3),
-      },
     },
   };
 
@@ -133,10 +124,10 @@ const PortfolioBarChart = ({ performanceData }) => {
     <div className="bg-customBlack lg:p-5 p-4 rounded-2xl">
       <h1 className="text-white text-3xl pb-4">Returns Across Portfolios</h1>
       <div className="mb-4 lg:flex lg:justify-center grid gap-2 ">
-        {['Daily', 'Monthly', 'YTD', 'Inception'].map((type) => (
+        {['Daily', 'Inception'].map((type) => (
           <Button
             key={type}
-            className={`px-4 py-2 mx-2 text-white border-none  ${
+            className={`px-4 py-2 mx-2 text-white border-none ${
               activeType === type
                 ? 'bg-customPink hover:bg-customPinkSecondary'
                 : 'bg-gray-500'
@@ -153,10 +144,6 @@ const PortfolioBarChart = ({ performanceData }) => {
       </div>
     </div>
   );
-};
-
-PortfolioBarChart.propTypes = {
-  performanceData: PropTypes.object.isRequired,
 };
 
 export default PortfolioBarChart;
