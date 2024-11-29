@@ -12,8 +12,8 @@ const EquityDataFetcher = () => {
     if (equityData.length === 0 && !loading) {
       const fetchEquityData = async () => {
         const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME;
-        const prefix = 'IV_Portfolios/Data/Metrics/Performance/Inception/';
-        const fileSuffix = 'Portfolios_equity_data_since_inception.csv';
+        const prefix = 'IV_Portfolios/Data/Metrics/Performance/Daily/';
+        const fileSuffix = 'consolidated_balances.csv';
 
         const result = await fetchLatestDataFromS3(
           bucketName,

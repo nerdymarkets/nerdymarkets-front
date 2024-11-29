@@ -34,14 +34,14 @@ const PortfolioLineChart = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [useCustomDates, setUseCustomDates] = useState(false);
-  const firstDate = equityData.length > 0 ? equityData[0][''] : null;
+  const firstDate = equityData.length > 0 ? equityData[0].Date : null;
   const lastDate =
-    equityData.length > 0 ? equityData[equityData.length - 1][''] : null;
+    equityData.length > 0 ? equityData[equityData.length - 1].Date : null;
+
   useEffect(() => {
     if (equityData.length > 0) {
       handleLast31Days();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [equityData]);
 
   const handleLast31Days = () => {
@@ -50,17 +50,18 @@ const PortfolioLineChart = () => {
     past31Days.setDate(currentDate.getDate() - 31);
 
     const filtered = equityData.filter((item) => {
-      const itemDate = new Date(item['']);
+      const itemDate = new Date(item.Date);
       return itemDate >= past31Days && itemDate <= currentDate;
     });
+
     const formattedData = filtered.map((item) => ({
-      date: new Date(item['']).toLocaleDateString('en-US', {
+      date: new Date(item.Date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
       }),
-      portfolio1: parseFloat(item['1.0'] || item['1']) || 0,
-      portfolio2: parseFloat(item['2.0'] || item['2']) || 0,
-      portfolio3: parseFloat(item['3.0'] || item['3']) || 0,
+      portfolio1: parseFloat(item.Portfolio_1) || 0,
+      portfolio2: parseFloat(item.Portfolio_2) || 0,
+      portfolio3: parseFloat(item.Portfolio_3) || 0,
       spy: parseFloat(item.SPY) || 0,
     }));
 
@@ -70,20 +71,20 @@ const PortfolioLineChart = () => {
   const handleFilterDates = () => {
     if (startDate && endDate) {
       const filtered = equityData.filter((item) => {
-        const itemDate = new Date(item['']);
+        const itemDate = new Date(item.Date);
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
         return itemDate >= startDateObj && itemDate <= endDateObj;
       });
 
       const formattedData = filtered.map((item) => ({
-        date: new Date(item['']).toLocaleDateString('en-US', {
+        date: new Date(item.Date).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
         }),
-        portfolio1: parseFloat(item['1.0'] || item['1']) || 0,
-        portfolio2: parseFloat(item['2.0'] || item['2']) || 0,
-        portfolio3: parseFloat(item['3.0'] || item['3']) || 0,
+        portfolio1: parseFloat(item.Portfolio_1) || 0,
+        portfolio2: parseFloat(item.Portfolio_2) || 0,
+        portfolio3: parseFloat(item.Portfolio_3) || 0,
         spy: parseFloat(item.SPY) || 0,
       }));
 
@@ -219,10 +220,10 @@ const PortfolioLineChart = () => {
           </Label>
         </FormGroup>
       </div>
-      <div className="flex  justify-center">
+      <div className="flex justify-center">
         {useCustomDates && (
           <div>
-            <div className="mb-1.5 flex  gap-x-4">
+            <div className="mb-1.5 flex gap-x-4">
               <div>
                 <label className="text-white">Start Date: </label>
                 <Input
