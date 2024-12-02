@@ -1,6 +1,7 @@
 import Layout from '@/components/layout/layout';
 import PropTypes from 'prop-types';
-import { SessionProvider } from 'next-auth/react';
+import { useEffect } from 'react';
+import { SessionProvider, useSession } from 'next-auth/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/globals.css';
 import { loadStripe } from '@stripe/stripe-js';
@@ -12,12 +13,34 @@ import LatestPortfolioFetcher from '@/components/s3/LatestPortfolioFetcher';
 import EtfReturnsFetcher from '@/components/s3/EtfReturnsFetcher';
 import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
 import DailyDataFetcher from '@/components/s3/DailyDataFetcher';
-
+import { getPerformanceData } from '@/pages/api/portfolio';
+import usePerformanceStore from '@/stores/usePerformanceStore';
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
 function SessionWrapper({ children }) {
+  const { data: session } = useSession();
+  const { setPerformanceData, setLoading } = usePerformanceStore();
+  useEffect(() => {
+    if (!session?.accessToken) {
+      return;
+    }
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const performanceResponse = await getPerformanceData(
+          session.accessToken
+        );
+        setPerformanceData(performanceResponse);
+      } catch (error) {
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [session?.accessToken, setPerformanceData, setLoading]);
   return children;
 }
 

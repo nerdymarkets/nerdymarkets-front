@@ -6,6 +6,7 @@ import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
+import usePerformanceStore from '@/stores/usePerformanceStore';
 import PortfolioStatsTable from '@/components/portfolio-tabels/portfolio-stats-table';
 import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
 import UserComments from '@/components/user-comments/user-comments';
@@ -16,6 +17,8 @@ import HistoricalChangesTable from '@/components/portfolio-tabels/historical-cha
 const Portfolio = () => {
   const { data: session, status } = useSession();
   const { subscriptionDetails, loading } = useSubscriptionStore();
+  const { performanceData, loading: performanceDataLoading } =
+    usePerformanceStore();
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -37,7 +40,7 @@ const Portfolio = () => {
 
     fetchComments();
   }, [session?.accessToken]);
-  if (status === 'loading' || loading || isLoading) {
+  if (status === 'loading' || loading || isLoading || performanceDataLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner className="text-customPink" />
@@ -59,7 +62,7 @@ const Portfolio = () => {
         <Container className="text-center flex flex-col gap-20">
           <PortfolioLineChart />
           <PortfolioBarChart />
-          <PortfolioStatsTable />
+          <PortfolioStatsTable performanceData={performanceData} />
           <PortfolioPieChart />
           <EtfReturnsLineChart />
           <HistoricalChangesTable />
