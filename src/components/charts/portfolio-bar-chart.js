@@ -24,7 +24,6 @@ const PortfolioBarChart = () => {
 
   // Accessing Zustand data
   const daily = useDailyInceptionDataStore((state) => state.daily);
-  const inception = useDailyInceptionDataStore((state) => state.inception);
 
   // Get Daily Data
   const getDailyData = () => {
@@ -42,14 +41,14 @@ const PortfolioBarChart = () => {
 
   // Get Inception Data (if needed in the future)
   const getInceptionData = () => {
-    if (!inception || inception.length === 0) {
+    if (!daily || daily.length === 0) {
       return labels.map(() => 0);
     }
 
     // Example processing for inception data (adjust as needed)
-    return inception.map((portfolio) => {
+    return daily.map((portfolio) => {
       const inceptionReturn =
-        parseFloat(portfolio.TotalReturn.replace('%', '')) || 0;
+        parseFloat(portfolio.CumulativePL.replace('%', '')) || 0;
       return inceptionReturn;
     });
   };
