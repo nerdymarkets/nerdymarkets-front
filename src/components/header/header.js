@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { NavItem, NavLink, Nav, Navbar, Spinner } from 'reactstrap';
+import { NavItem, NavLink, Nav, Navbar } from 'reactstrap';
 import Link from 'next/link';
 import SignInModal from '@/components/sign-in/signin-modal';
 import nerdylogo from '../../../public/logo/nerdylogo.png';
@@ -32,10 +32,6 @@ const Header = () => {
   const handleRegisterClick = () => {
     toggleRegisterModal();
   };
-
-  if (status === 'loading') {
-    return <Spinner className="text-customPink" />;
-  }
 
   return (
     <>
