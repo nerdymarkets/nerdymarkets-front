@@ -121,7 +121,9 @@ const PortfolioBarChart = () => {
 
   return (
     <div className="bg-customBlack lg:p-5 p-4 rounded-2xl">
-      <h1 className="text-white text-3xl pb-4">Returns Across Portfolios</h1>
+      <h1 className="text-white text-3xl pb-4">
+        Returns Across Portfolios (Compounded)
+      </h1>
       <div className="mb-4 lg:flex lg:justify-center grid gap-2 ">
         {['Daily', 'Inception'].map((type) => (
           <Button

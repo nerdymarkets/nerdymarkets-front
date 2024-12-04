@@ -205,7 +205,7 @@ const PortfolioLineChart = () => {
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h3 className="text-white text-3xl mb-4">
-        All Portfolios vs. SPY Benchmark
+        All Portfolios vs. SPY Benchmark (Compounded)
       </h3>
 
       <div className="mb-4">
