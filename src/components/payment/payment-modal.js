@@ -10,10 +10,8 @@ import {
   Input,
   Form,
 } from 'reactstrap';
-import Paypal from '@/components/paypal/paypa';
 import Stripe from '@/components/strip/strip';
 import Image from 'next/image';
-import paypalLogo from '../../../public/logo/paypallogo.png';
 import stripeLogo from '../../../public/logo/stripelogo.png';
 
 const PaymentModal = ({ isOpen, toggle, subscriptionType }) => {
@@ -44,33 +42,9 @@ const PaymentModal = ({ isOpen, toggle, subscriptionType }) => {
             <Form>
               <FormGroup tag="fieldset" className="space-y-4">
                 <legend className="text-xl font-bold text-center py-4">
-                  Select Payment Method
+                  Payment Method
                 </legend>
                 <div className="flex justify-center gap-10 ">
-                  <Label
-                    check
-                    className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
-                      paymentMethod === 'paypal'
-                        ? '  shadow-paypal'
-                        : 'border-gray-300'
-                    }`}
-                  >
-                    <Input
-                      type="radio"
-                      name="paymentMethod"
-                      value="paypal"
-                      checked={paymentMethod === 'paypal'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="hidden"
-                    />
-                    <Image
-                      src={paypalLogo}
-                      alt="PayPal"
-                      width={80}
-                      height={40}
-                    />
-                  </Label>
-
                   <Label
                     check
                     className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
@@ -108,12 +82,6 @@ const PaymentModal = ({ isOpen, toggle, subscriptionType }) => {
         )}
         {step === 2 && (
           <div>
-            {paymentMethod === 'paypal' && (
-              <Paypal
-                subscriptionType={subscriptionType}
-                buttonName="Subscribe with PayPal"
-              />
-            )}
             {paymentMethod === 'stripe' && (
               <Stripe
                 subscriptionType={subscriptionType}

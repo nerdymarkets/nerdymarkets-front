@@ -1,18 +1,18 @@
-import { ListGroupItem, Badge, Button } from 'reactstrap';
+import { ListGroupItem, Badge } from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import CancelSubscription from '../subscription/cancel-subscription';
 import PaymentInfo from './payment-info';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import ChangeSubscriptionPlan from '../subscription/change-subscription-plan';
 import SubscriptionInfo from './subscription-info';
 const Subscription = ({ toggle }) => {
   const { subscriptionStatus } = useSubscriptionStore();
-  const router = useRouter();
-  const handelNavigateToChangePaymentMethod = () => {
-    toggle();
-    router.push('/change-payment-method');
-  };
+  // const router = useRouter();
+  // const handelNavigateToChangePaymentMethod = () => {
+  //   toggle();
+  //   router.push('/change-payment-method');
+  // };
 
   return (
     <>
@@ -49,7 +49,7 @@ const Subscription = ({ toggle }) => {
               />
               <ChangeSubscriptionPlan />
             </div>
-            <div>
+            {/* <div>
               <Button
                 size="sm"
                 color="primary"
@@ -58,7 +58,7 @@ const Subscription = ({ toggle }) => {
               >
                 Change Payment Method
               </Button>
-            </div>
+            </div> */}
           </>
         )}
       </ListGroupItem>
