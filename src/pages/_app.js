@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
 import { getPerformanceData } from '@/pages/api/portfolio';
 import usePerformanceStore from '@/stores/usePerformanceStore';
+
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );

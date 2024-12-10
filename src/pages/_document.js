@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 // eslint-disable-next-line @next/next/no-page-custom-font
 <link
   href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -10,6 +11,7 @@ export default function Document() {
       <Head />
       <body>
         <Main />
+        <SpeedInsights />
         <NextScript />
       </body>
     </Html>
