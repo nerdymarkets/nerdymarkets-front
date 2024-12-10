@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import {
-  Container,
-  Spinner,
-  Input,
-  Button,
-  FormGroup,
-  Label,
-} from 'reactstrap';
+import { Container, Input, Button, FormGroup, Label } from 'reactstrap';
 import {
   Chart as ChartJS,
   LineElement,
@@ -17,8 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import useEquityDataStore from '@/stores/useEqutiyDataStore';
-
+import PropTypes from 'prop-types';
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -28,8 +20,7 @@ ChartJS.register(
   Legend
 );
 
-const PortfolioLineChart = () => {
-  const { equityData, loading } = useEquityDataStore();
+const PortfolioLineChart = ({ equityData }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -260,15 +251,21 @@ const PortfolioLineChart = () => {
         )}
       </div>
 
-      {loading ? (
-        <Spinner className="text-customPink" />
-      ) : (
-        <div style={{ height: '400px' }}>
-          <Line data={chartData} options={chartOptions} />
-        </div>
-      )}
+      <div style={{ height: '400px' }}>
+        <Line data={chartData} options={chartOptions} />
+      </div>
     </Container>
   );
 };
-
+PortfolioLineChart.propTypes = {
+  equityData: PropTypes.arrayOf(
+    PropTypes.shape({
+      Date: PropTypes.string.isRequired,
+      Portfolio_1: PropTypes.string,
+      Portfolio_2: PropTypes.string,
+      Portfolio_3: PropTypes.string,
+      SPY: PropTypes.string,
+    })
+  ).isRequired,
+};
 export default PortfolioLineChart;

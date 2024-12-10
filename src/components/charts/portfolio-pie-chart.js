@@ -2,21 +2,16 @@ import { useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Container, Spinner, Button } from 'reactstrap';
-import usePortfolioDataStore from '@/stores/usePortfolioDataStore';
+import { Container, Button } from 'reactstrap';
+import PropTypes from 'prop-types';
 import useWindowDimensions from '@/hooks/useWindowDimension';
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const PortfolioPieChart = () => {
-  const { portfolioData, loading, latestFolderDate } = usePortfolioDataStore();
+const PortfolioPieChart = ({ portfolioData }) => {
   const { width } = useWindowDimensions();
   const [activePortfolio, setActivePortfolio] = useState(
     'Low-Volatility Portfolio'
   );
-
-  if (loading) {
-    return <Spinner className="text-customPink" />;
-  }
 
   const portfolio1 = portfolioData.filter((item) => item.Group === '1');
   const portfolio2 = portfolioData.filter((item) => item.Group === '2');
@@ -103,7 +98,7 @@ const PortfolioPieChart = () => {
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h2 className="text-3xl text-white text-center mb-4">
-        Portfolio Composition by Weight as of {latestFolderDate}
+        Portfolio Composition by Weight as of
       </h2>
       <p className="text-center text-white text-sm mb-4">
         Hover for weight details
@@ -130,5 +125,19 @@ const PortfolioPieChart = () => {
     </Container>
   );
 };
-
+PortfolioPieChart.propTypes = {
+  portfolioData: PropTypes.arrayOf(
+    PropTypes.shape({
+      '': PropTypes.string.isRequired,
+      Date: PropTypes.string.isRequired,
+      Ticker: PropTypes.string.isRequired,
+      'Expiration Date': PropTypes.string.isRequired,
+      Group: PropTypes.string.isRequired,
+      Allocation: PropTypes.string.isRequired,
+      Avg_IV_moneyness: PropTypes.string.isRequired,
+      'Sharpe Ratio': PropTypes.string.isRequired,
+      'Underlying Price': PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
 export default PortfolioPieChart;

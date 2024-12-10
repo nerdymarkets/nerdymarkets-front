@@ -8,11 +8,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import EquityDataFetcher from '@/components/s3/EquityDataFetcher';
-import LatestPortfolioFetcher from '@/components/s3/LatestPortfolioFetcher';
-import EtfReturnsFetcher from '@/components/s3/EtfReturnsFetcher';
 import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
-import DailyDataFetcher from '@/components/s3/DailyDataFetcher';
 import { getPerformanceData } from '@/pages/api/portfolio';
 import usePerformanceStore from '@/stores/usePerformanceStore';
 const stripePromise = loadStripe(
@@ -49,11 +45,7 @@ export default function App({ Component, pageProps }) {
     <SessionProvider session={pageProps.session}>
       <Elements stripe={stripePromise}>
         <Layout>
-          <EquityDataFetcher />
-          <LatestPortfolioFetcher />
-          <EtfReturnsFetcher />
           <HistoricalChangesDataFetcher />
-          <DailyDataFetcher />
           <ToastContainer
             position="top-right"
             autoClose={5000}

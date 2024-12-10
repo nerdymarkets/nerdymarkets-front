@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Button } from 'reactstrap';
@@ -10,22 +11,16 @@ import {
   Legend,
 } from 'chart.js';
 
-import useDailyInceptionDataStore from '@/stores/useDailyInceptionDataStore';
-
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const PortfolioBarChart = () => {
-  const [activeType, setActiveType] = useState('Daily'); // Active type (Daily or Inception)
+const PortfolioBarChart = ({ daily }) => {
+  const [activeType, setActiveType] = useState('Daily');
   const labels = [
     'Low-Volatility Portfolio',
     'Medium-Volatility Portfolio',
     'High-Volatility Portfolio',
   ];
 
-  // Accessing Zustand data
-  const daily = useDailyInceptionDataStore((state) => state.daily);
-
-  // Get Daily Data
   const getDailyData = () => {
     if (!daily || daily.length === 0) {
       return labels.map(() => 0); // Return 0 if no data

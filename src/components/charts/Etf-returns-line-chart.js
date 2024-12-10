@@ -8,11 +8,10 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useState } from 'react';
-import useEtfDataStore from '@/stores/useEtfDataStore';
-import { Button, Spinner } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
 
-const EtfReturnsBarChart = () => {
-  const { EtfData, loading } = useEtfDataStore();
+const EtfReturnsBarChart = ({ EtfData }) => {
   const [activePortfolio, setActivePortfolio] = useState(1);
   const portfolioTitles = [
     'Low-Volatility Portfolio',
@@ -32,9 +31,6 @@ const EtfReturnsBarChart = () => {
     ticker: item.Ticker,
     dailyReturn: parseFloat((item.daily_return * 100).toFixed(2)),
   }));
-  if (loading) {
-    return <Spinner className="text-customPink" />;
-  }
 
   return (
     <div className="bg-customBlack lg:p-5 p-4 rounded-2xl  ">
@@ -67,5 +63,17 @@ const EtfReturnsBarChart = () => {
     </div>
   );
 };
-
+EtfReturnsBarChart.propTypes = {
+  EtfData: PropTypes.arrayOf(
+    PropTypes.shape({
+      '': PropTypes.string.isRequired, // Assuming this represents an identifier
+      Allocation: PropTypes.string.isRequired, // Allocation is a string
+      Portfolio: PropTypes.string.isRequired, // Portfolio number as a string
+      Price_today: PropTypes.string.isRequired, // Today's price as a string
+      Price_yesterday: PropTypes.string.isRequired, // Yesterday's price as a string
+      Ticker: PropTypes.string.isRequired, // Ticker symbol
+      daily_return: PropTypes.string.isRequired, // Daily return as a string
+    })
+  ).isRequired,
+};
 export default EtfReturnsBarChart;
