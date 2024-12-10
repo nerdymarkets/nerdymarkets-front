@@ -1,12 +1,21 @@
+import { useState } from 'react';
+import {
+  Button,
+  Spinner,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import useSubscriptionStore from '@/stores/subscription-store';
 import { changeStripeSubscriptionPlan } from '@/pages/api/stripe-api';
 import { changePaypalSubscriptionPlan } from '@/pages/api/paypal';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import { Button, Spinner } from 'reactstrap';
+
 const ChangeSubscriptionPlan = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const {
     planType,
     isStripeActive,
@@ -15,7 +24,10 @@ const ChangeSubscriptionPlan = () => {
     subscriptionDetails,
   } = useSubscriptionStore();
   const { data: session } = useSession();
-  const handelChangeSubscriptionPlan = async () => {
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen); // Toggle modal
+
+  const confirmChangeSubscriptionPlan = async () => {
     setIsLoading(true);
 
     if (isStripeActive) {
@@ -61,6 +73,7 @@ const ChangeSubscriptionPlan = () => {
         );
       } finally {
         setIsLoading(false);
+        toggleModal(); // Close modal
       }
     } else if (isPaypalActive) {
       try {
@@ -92,19 +105,22 @@ const ChangeSubscriptionPlan = () => {
         );
       } finally {
         setIsLoading(false);
+        toggleModal(); // Close modal
       }
     } else {
       toast.error('No active subscription method selected.');
       setIsLoading(false);
+      toggleModal(); // Close modal
     }
   };
 
   return (
     <div>
+      {/* Button to open confirmation modal */}
       <Button
         size="sm"
         color="primary"
-        onClick={handelChangeSubscriptionPlan}
+        onClick={toggleModal}
         disabled={isLoading}
         className="rounded-3xl font-bold"
       >
@@ -116,6 +132,37 @@ const ChangeSubscriptionPlan = () => {
           'Change Subscription Plan'
         )}
       </Button>
+
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        toggle={toggleModal}
+        className="bg-white rounded-3xl"
+      >
+        <ModalHeader toggle={toggleModal}>Confirm Plan Change</ModalHeader>
+        <ModalBody>
+          Are you sure you want to change your subscription plan to{' '}
+          <b>{planType === 'monthly' ? 'Yearly' : 'Monthly'}</b>?
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={confirmChangeSubscriptionPlan}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Spinner size="sm" className="text-light" /> Confirming...
+              </>
+            ) : (
+              'Confirm'
+            )}
+          </Button>{' '}
+          <Button color="secondary" onClick={toggleModal}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };
