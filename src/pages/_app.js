@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import HistoricalChangesDataFetcher from '@/components/s3/historicalChangesDataFetcher';
 import { getPerformanceData } from '@/pages/api/portfolio';
 import usePerformanceStore from '@/stores/usePerformanceStore';
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
@@ -46,6 +46,7 @@ export default function App({ Component, pageProps }) {
     <SessionProvider session={pageProps.session}>
       <Elements stripe={stripePromise}>
         <Layout>
+          <SpeedInsights />
           <HistoricalChangesDataFetcher />
           <ToastContainer
             position="top-right"
