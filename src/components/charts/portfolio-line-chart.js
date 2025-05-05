@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Container, Input, Button, FormGroup, Label } from 'reactstrap';
+import { Container } from 'reactstrap';
 import {
   Chart as ChartJS,
   LineElement,
@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 import PropTypes from 'prop-types';
+
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -20,125 +21,78 @@ ChartJS.register(
   Legend
 );
 
-const PortfolioLineChart = ({ equityData }) => {
-  const [filteredData, setFilteredData] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [useCustomDates, setUseCustomDates] = useState(false);
-  const firstDate = equityData.length > 0 ? equityData[0].Date : null;
-  const lastDate =
-    equityData.length > 0 ? equityData[equityData.length - 1].Date : null;
+const PortfolioLineChart = ({ equityData, spyData }) => {
+  const [normalizedEquity, setNormalizedEquity] = useState([]);
+  const [normalizedSpy, setNormalizedSpy] = useState([]);
 
   useEffect(() => {
-    if (equityData.length > 0) {
-      handleLast31Days();
-    }
-  }, [equityData]);
-
-  const handleLast31Days = () => {
-    const currentDate = new Date();
-    const past31Days = new Date();
-    past31Days.setDate(currentDate.getDate() - 31);
-
-    const filtered = equityData.filter((item) => {
-      const itemDate = new Date(item.Date);
-      return itemDate >= past31Days && itemDate <= currentDate;
-    });
-
-    const formattedData = filtered.map((item) => ({
-      date: new Date(item.Date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      }),
-      portfolio1: parseFloat(item.Portfolio_1) || 0,
-      portfolio2: parseFloat(item.Portfolio_2) || 0,
-      portfolio3: parseFloat(item.Portfolio_3) || 0,
-      spy: parseFloat(item.SPY) || 0,
-    }));
-
-    setFilteredData(formattedData);
-  };
-
-  const handleFilterDates = () => {
-    if (startDate && endDate) {
-      const filtered = equityData.filter((item) => {
-        const itemDate = new Date(item.Date);
-        const startDateObj = new Date(startDate);
-        const endDateObj = new Date(endDate);
-        return itemDate >= startDateObj && itemDate <= endDateObj;
-      });
-
-      const formattedData = filtered.map((item) => ({
-        date: new Date(item.Date).toLocaleDateString('en-US', {
+    if (equityData.length && spyData.length) {
+      const formattedEquity = equityData.map((item) => ({
+        date: new Date(item[''] || item.Date).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
         }),
-        portfolio1: parseFloat(item.Portfolio_1) || 0,
-        portfolio2: parseFloat(item.Portfolio_2) || 0,
-        portfolio3: parseFloat(item.Portfolio_3) || 0,
-        spy: parseFloat(item.SPY) || 0,
+        rawDate: item[''] || item.Date,
+        value: parseFloat(item.Close),
       }));
 
-      setFilteredData(formattedData);
-    }
-  };
+      const formattedSpy = spyData.map((item) => ({
+        date: new Date(item.datetime).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+        rawDate: item.datetime,
+        value: parseFloat(item.cumulative_PL),
+      }));
 
-  const handleToggleCustomDates = () => {
-    if (!useCustomDates) {
-      handleLast31Days();
-    }
-    setUseCustomDates(!useCustomDates);
-  };
+      const spyMap = new Map(formattedSpy.map((d) => [d.rawDate, d]));
+      const alignedEquity = formattedEquity.filter((d) =>
+        spyMap.has(d.rawDate)
+      );
+      const alignedSpy = alignedEquity.map((d) => spyMap.get(d.rawDate));
 
-  const labels = filteredData.map((item) => item.date || '');
-  const portfolio1 = filteredData.map((item) => item.portfolio1 || 0);
-  const portfolio2 = filteredData.map((item) => item.portfolio2 || 0);
-  const portfolio3 = filteredData.map((item) => item.portfolio3 || 0);
-  const spy = filteredData.map((item) => item.spy || 0);
+      const baseEquity = alignedEquity[0]?.value || 1;
+      const baseSpy = alignedSpy[0]?.value || 1;
+
+      setNormalizedEquity(
+        alignedEquity.map((item) => ({
+          date: item.date,
+          value: parseFloat(((item.value / baseEquity) * 100).toFixed(2)),
+        }))
+      );
+
+      setNormalizedSpy(
+        alignedSpy.map((item) => ({
+          date: item.date,
+          value: parseFloat(((item.value / baseSpy) * 100).toFixed(2)),
+        }))
+      );
+    }
+  }, [equityData, spyData]);
+
+  const labels = normalizedEquity.map((item) => item.date);
+  const equityClose = normalizedEquity.map((item) => item.value);
+  const spyClose = normalizedSpy.map((item) => item.value);
 
   const chartData = {
-    labels: labels,
+    labels,
     datasets: [
       {
-        label: 'Low-Volatility Portfolio',
-        data: portfolio1,
-        borderColor: '#6A5ACD',
+        label: 'Portfolio',
+        data: equityClose,
+        borderColor: '#4CAF50',
         borderWidth: 2,
-        pointBackgroundColor: '#6A5ACD',
-        pointHoverRadius: 6,
+        pointBackgroundColor: '#4CAF50',
         pointRadius: 4,
         fill: false,
         tension: 0.4,
       },
       {
-        label: 'Medium-Volatility Portfolio',
-        data: portfolio2,
-        borderColor: '#FFA500',
+        label: 'SPY Benchmark',
+        data: spyClose,
+        borderColor: '#FF5733',
         borderWidth: 2,
-        pointBackgroundColor: '#FFA500',
-        pointHoverRadius: 6,
-        pointRadius: 4,
-        fill: false,
-        tension: 0.4,
-      },
-      {
-        label: 'High-Volatility Portfolio',
-        data: portfolio3,
-        borderColor: '#32CD32',
-        borderWidth: 2,
-        pointBackgroundColor: '#32CD32',
-        pointHoverRadius: 6,
-        pointRadius: 4,
-        fill: false,
-        tension: 0.4,
-      },
-      {
-        label: 'Portfolio SPY',
-        data: spy,
-        borderColor: '#FF6347',
-        borderWidth: 2,
-        pointBackgroundColor: '#FF6347',
-        pointHoverRadius: 6,
+        pointBackgroundColor: '#FF5733',
         pointRadius: 4,
         fill: false,
         tension: 0.4,
@@ -151,121 +105,61 @@ const PortfolioLineChart = ({ equityData }) => {
     maintainAspectRatio: false,
     scales: {
       x: {
-        grid: {
-          color: '#444',
-        },
-        ticks: {
-          color: '#ddd',
-          callback: function (value) {
-            if (useCustomDates) {
-              return '';
-            }
-            return this.getLabelForValue(value);
-          },
-        },
+        ticks: { color: '#ddd' },
+        grid: { color: '#444' },
       },
       y: {
-        grid: {
-          color: '#444',
-        },
-        ticks: {
-          color: '#ddd',
-        },
+        ticks: { color: '#ddd' },
+        grid: { color: '#444' },
       },
     },
     plugins: {
       legend: {
-        display: true,
-        labels: {
-          color: '#ddd',
-        },
-        position: 'top',
+        labels: { color: '#ddd' },
       },
       tooltip: {
-        enabled: true,
-        backgroundColor: '#222',
+        backgroundColor: '#000',
         titleColor: '#fff',
-        bodyColor: '#ddd',
+        bodyColor: '#eee',
       },
       datalabels: {
-        display: false,
+        color: (ctx) => {
+          const datasetIndex = ctx.datasetIndex;
+          return datasetIndex === 0 ? '#4CAF50' : '#FF5733';
+        },
+        font: {
+          weight: 'bold',
+          size: 13,
+        },
+        align: 'top',
+        formatter: (value) => value.toFixed(1),
       },
     },
   };
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
-      <h3 className="text-white text-3xl mb-4">
-        All Portfolios vs. SPY Benchmark (Compounded)
-      </h3>
-
-      <div className="mb-4">
-        <FormGroup check>
-          <Label check>
-            <Input
-              type="checkbox"
-              checked={useCustomDates}
-              onChange={handleToggleCustomDates}
-            />
-            <p className="text-white">Use Custom Date Range</p>
-          </Label>
-        </FormGroup>
-      </div>
-      <div className="flex justify-center">
-        {useCustomDates && (
-          <div>
-            <div className="mb-1.5 flex gap-x-4">
-              <div>
-                <label className="text-white">Start Date: </label>
-                <Input
-                  type="date"
-                  name="startDate"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  min={firstDate}
-                  max={lastDate}
-                />
-              </div>
-              <div>
-                <label className="text-white">End Date: </label>
-                <Input
-                  type="date"
-                  name="endDate"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  min={startDate || firstDate}
-                  max={lastDate}
-                />
-              </div>
-            </div>
-            <div>
-              <Button
-                onClick={handleFilterDates}
-                disabled={!startDate || !endDate}
-                className="rounded-lg bg-customPink hover:bg-customPinkSecondary border-none"
-              >
-                Apply Filter
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl">
+      <h3 className="text-white text-3xl mb-4">Portfolio vs. SPY Benchmark</h3>
       <div style={{ height: '400px' }}>
         <Line data={chartData} options={chartOptions} />
       </div>
     </Container>
   );
 };
+
 PortfolioLineChart.propTypes = {
   equityData: PropTypes.arrayOf(
     PropTypes.shape({
-      Date: PropTypes.string.isRequired,
-      Portfolio_1: PropTypes.string,
-      Portfolio_2: PropTypes.string,
-      Portfolio_3: PropTypes.string,
-      SPY: PropTypes.string,
+      Date: PropTypes.string,
+      Close: PropTypes.string,
+    })
+  ).isRequired,
+  spyData: PropTypes.arrayOf(
+    PropTypes.shape({
+      Date: PropTypes.string,
+      Close: PropTypes.string,
     })
   ).isRequired,
 };
+
 export default PortfolioLineChart;

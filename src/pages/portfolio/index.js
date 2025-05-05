@@ -7,26 +7,25 @@ import useSubscriptionStore from '@/stores/subscription-store';
 import NotAuthenticatedMessage from '@/components/shared/NotAuthenticatedMessage';
 import PortfolioLineChart from '@/components/charts/portfolio-line-chart';
 import PortfolioBarChart from '@/components/charts/portfolio-bar-chart';
-import usePerformanceStore from '@/stores/usePerformanceStore';
 import PortfolioStatsTable from '@/components/portfolio-tabels/portfolio-stats-table';
-import PortfolioPieChart from '@/components/charts/portfolio-pie-chart';
+import PortfolioCompositionPieChart from '@/components/charts/portfolio-composition-pie-chart';
 import UserComments from '@/components/user-comments/user-comments';
 import { fetchAllComments } from '@/pages/api/auth';
-import EtfReturnsLineChart from '@/components/charts/Etf-returns-line-chart';
-import HistoricalChangesTable from '@/components/portfolio-tabels/historical-changes-table';
-import { fetchLatestDataFromS3 } from '@/utils/fetchS3Data';
+import CurrentPortfolioTable from '@/components/portfolio-tabels/current-portfolio-table';
+import config from '@/environments/environment';
+import HistoricalOrdersTable from '@/components/portfolio-tabels/historical-orders-table';
 
 const Portfolio = ({
   equityData,
-  portfolioData,
-  dailyData,
-  EtfData,
+  spyData,
+  metricsData,
+  portfolioValues,
+  orders,
   error,
 }) => {
   const { data: session, status } = useSession();
   const { subscriptionDetails } = useSubscriptionStore();
-  const { performanceData, loading: performanceDataLoading } =
-    usePerformanceStore();
+
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,7 +54,7 @@ const Portfolio = ({
     fetchComments();
   }, [session?.accessToken]);
 
-  if (status === 'loading' || isLoading || performanceDataLoading) {
+  if (status === 'loading' || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner className="text-customPink" />
@@ -83,12 +82,13 @@ const Portfolio = ({
     <div className="bg-black">
       {hasActiveSubscription ? (
         <Container className="text-center flex flex-col gap-20">
-          <PortfolioLineChart equityData={equityData} />
-          <PortfolioBarChart daily={dailyData} />
-          <PortfolioStatsTable performanceData={performanceData} />
-          <PortfolioPieChart portfolioData={portfolioData} />
-          <EtfReturnsLineChart EtfData={EtfData} />
-          <HistoricalChangesTable />
+          <PortfolioLineChart equityData={equityData} spyData={spyData} />
+          <PortfolioBarChart spyData={spyData} metricsData={metricsData} />
+          <PortfolioStatsTable metricsData={metricsData} />
+          <CurrentPortfolioTable portfolioValues={portfolioValues} />
+          <PortfolioCompositionPieChart portfolioValues={portfolioValues} />
+
+          <HistoricalOrdersTable orders={orders} />
           <div className="my-4">
             <UserComments initialComments={comments} />
           </div>
@@ -101,40 +101,44 @@ const Portfolio = ({
 };
 
 export async function getServerSideProps() {
-  const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME;
-
-  const filesToFetch = [
-    {
-      prefix: 'IV_Portfolios/Data/Metrics/Performance/Daily/',
-      fileSuffix: 'consolidated_balances.csv',
-    },
-    {
-      prefix: 'IV_Portfolios/Data/Portfolios/',
-      fileSuffix: 'PortfoliosValues.csv',
-    },
-    {
-      prefix: 'IV_Portfolios/Data/Metrics/Performance/Daily/',
-      fileSuffix: 'summary_returns.csv',
-    },
-    {
-      prefix: 'IV_Portfolios/Data/Metrics/Performance/Daily/',
-      fileSuffix: 'etf_returns.csv',
-    },
-  ];
+  const baseUrl = config.backendBaseUrl;
 
   try {
-    const results = await Promise.all(
-      filesToFetch.map(({ prefix, fileSuffix }) =>
-        fetchLatestDataFromS3(bucketName, prefix, fileSuffix)
-      )
-    );
+    const [equityRes, spyRes, metricsRes, portfolioValuesRes, ordersRes] =
+      await Promise.all([
+        fetch(`${baseUrl}/performance/equity`),
+        fetch(`${baseUrl}/performance/spy`),
+        fetch(`${baseUrl}/performance/metrics`),
+        fetch(`${baseUrl}/performance/portfolio-values`),
+        fetch(`${baseUrl}/performance/orders`),
+      ]);
+
+    if (
+      !equityRes.ok ||
+      !spyRes.ok ||
+      !metricsRes.ok ||
+      !portfolioValuesRes.ok ||
+      !ordersRes.ok
+    ) {
+      throw new Error('Failed to fetch performance data');
+    }
+
+    const [equityData, spyData, metricsData, portfolioValues, orders] =
+      await Promise.all([
+        equityRes.json(),
+        spyRes.json(),
+        metricsRes.json(),
+        portfolioValuesRes.json(),
+        ordersRes.json(),
+      ]);
 
     return {
       props: {
-        equityData: results[0]?.json || [],
-        portfolioData: results[1]?.json || [],
-        dailyData: results[2]?.json || [],
-        EtfData: results[3]?.json || [],
+        equityData,
+        spyData,
+        metricsData,
+        portfolioValues,
+        orders,
         error: false,
       },
     };
@@ -142,9 +146,10 @@ export async function getServerSideProps() {
     return {
       props: {
         equityData: [],
-        portfolioData: [],
-        dailyData: [],
-        EtfData: [],
+        spyData: [],
+        metricsData: [],
+        portfolioValues: [],
+        orders: [],
         error: true,
       },
     };

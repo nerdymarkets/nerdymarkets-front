@@ -1,7 +1,4 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Button } from 'reactstrap';
 import {
   Chart as ChartJS,
   BarElement,
@@ -10,136 +7,74 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { Container } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const PortfolioBarChart = ({ daily }) => {
-  const [activeType, setActiveType] = useState('Daily');
-  const labels = [
-    'Low-Volatility Portfolio',
-    'Medium-Volatility Portfolio',
-    'High-Volatility Portfolio',
-  ];
+export default function PortfolioBarChart({ spyData, metricsData }) {
+  const spyReturn = parseFloat(spyData.at(-1)?.cumulative_return || '0') * 100;
 
-  const getDailyData = () => {
-    if (!daily || daily.length === 0) {
-      return labels.map(() => 0); // Return 0 if no data
-    }
+  const rawPortfolioReturn = metricsData[0]?.Return || '0%';
+  const cleanedPortfolioReturn = parseFloat(
+    rawPortfolioReturn.replace('%', '').trim()
+  );
 
-    return daily.map((portfolio) => {
-      // Extract "DailyReturn", remove "%" and convert to number
-      const dailyReturn =
-        parseFloat(portfolio.DailyReturn.replace('%', '')) || 0;
-      return dailyReturn;
-    });
-  };
-
-  // Get Inception Data (if needed in the future)
-  const getInceptionData = () => {
-    if (!daily || daily.length === 0) {
-      return labels.map(() => 0);
-    }
-
-    // Example processing for inception data (adjust as needed)
-    return daily.map((portfolio) => {
-      const inceptionReturn =
-        parseFloat(portfolio.CumulativePL.replace('%', '')) || 0;
-      return inceptionReturn;
-    });
-  };
-
-  // Chart Data
-  const chartData = {
-    labels,
+  const data = {
+    labels: ['SPY', 'Portfolio'],
     datasets: [
       {
-        label: `Return [%] (${activeType})`,
-        data: activeType === 'Daily' ? getDailyData() : getInceptionData(),
-        backgroundColor: (context) => {
-          const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, 'rgba(75, 192, 192, 0.9)');
-          gradient.addColorStop(1, 'rgba(75, 192, 192, 0.2)');
-          return gradient;
-        },
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 2,
-        hoverBackgroundColor: 'rgba(75, 192, 192, 1)',
-        hoverBorderColor: '#fff',
-        hoverBorderWidth: 3,
-        borderRadius: 8,
+        label: 'Cumulative Return (%)',
+        data: [spyReturn.toFixed(2), cleanedPortfolioReturn.toFixed(2)],
+        backgroundColor: ['#FF5733', '#4CAF50'],
+        borderRadius: 6,
       },
     ],
   };
 
-  // Chart Options
-  const chartOptions = {
+  const options = {
     responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: '#ddd',
-        },
-      },
-      y: {
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        ticks: {
-          color: '#ddd',
-        },
+    plugins: {
+      legend: { labels: { color: '#ddd' } },
+      tooltip: {
+        backgroundColor: '#000',
+        titleColor: '#fff',
+        bodyColor: '#eee',
       },
     },
-    plugins: {
-      legend: {
-        display: true,
-        labels: {
-          color: '#ddd',
-          boxWidth: 20,
-        },
-        position: 'top',
+    scales: {
+      x: {
+        ticks: { color: '#ddd' },
+        grid: { display: false },
       },
-      tooltip: {
-        enabled: true,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        titleColor: '#fff',
-        bodyColor: '#ddd',
-        borderColor: '#fff',
-        borderWidth: 1,
-        padding: 10,
+      y: {
+        ticks: { color: '#ddd' },
+        grid: { color: '#444' },
       },
     },
   };
 
   return (
-    <div className="bg-customBlack lg:p-5 p-4 rounded-2xl">
-      <h1 className="text-white text-3xl pb-4">
-        Returns Across Portfolios (Compounded)
-      </h1>
-      <div className="mb-4 lg:flex lg:justify-center grid gap-2 ">
-        {['Daily', 'Inception'].map((type) => (
-          <Button
-            key={type}
-            className={`px-4 py-2 mx-2 text-white border-none ${
-              activeType === type
-                ? 'bg-customPink hover:bg-customPinkSecondary'
-                : 'bg-gray-500'
-            }`}
-            onClick={() => setActiveType(type)}
-          >
-            {type}
-          </Button>
-        ))}
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
+      <h3 className="text-white text-3xl mb-4">
+        Portfolio vs. SPY Benchmark Cumulative Returns
+      </h3>
+      <div style={{ height: '350px' }} className="flex justify-center">
+        <Bar data={data} options={options} />
       </div>
-
-      <div style={{ height: '400px' }}>
-        <Bar data={chartData} options={chartOptions} />
-      </div>
-    </div>
+    </Container>
   );
-};
+}
 
-export default PortfolioBarChart;
+PortfolioBarChart.propTypes = {
+  spyData: PropTypes.arrayOf(
+    PropTypes.shape({
+      cumulative_return: PropTypes.string,
+    })
+  ).isRequired,
+  metricsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      Return: PropTypes.string,
+    })
+  ).isRequired,
+};
