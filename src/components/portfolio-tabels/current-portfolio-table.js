@@ -7,7 +7,7 @@ export default function CurrentPortfolioTable({ portfolioValues }) {
       <h3 className="text-white text-3xl mb-4">
         Current Portfolio Composition
       </h3>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto cursor-pointer">
         <table className="min-w-full table-auto text-left border-collapse">
           <thead className="bg-[#2c2c2c]">
             <tr>
@@ -29,10 +29,10 @@ export default function CurrentPortfolioTable({ portfolioValues }) {
                 <td className="px-4 py-2">${item.average_price}</td>
                 <td className="px-4 py-2">{item.unrealized_profit}</td>
                 <td className="px-4 py-2">
-                  {item.unrealized_profit_percentage}%
+                  {item.unrealized_profit_percentage}
                 </td>
                 <td className="px-4 py-2">
-                  {parseFloat(item.allocation_percent).toFixed(2)}%
+                  {parseFloat(item.allocation_percent).toFixed(2)}
                 </td>
               </tr>
             ))}

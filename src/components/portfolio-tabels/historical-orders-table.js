@@ -14,8 +14,8 @@ export default function HistoricalOrdersTable({ orders }) {
               <th>Date</th>
               <th>Symbol</th>
               <th>Quantity</th>
-              <th>Price</th>
-              <th>Value</th>
+              <th>Price ($)</th>
+              <th>Value ($)</th>
               <th>Status</th>
             </tr>
           </thead>

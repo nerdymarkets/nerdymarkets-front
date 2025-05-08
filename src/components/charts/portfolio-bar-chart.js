@@ -26,8 +26,10 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
       {
         label: 'Cumulative Return (%)',
         data: [spyReturn.toFixed(2), cleanedPortfolioReturn.toFixed(2)],
-        backgroundColor: ['#FF5733', '#4CAF50'],
-        borderRadius: 6,
+        backgroundColor: '#FF5733',
+        borderColor: ['#fff'],
+        borderWidth: 2,
+        borderRadius: 100,
       },
     ],
   };
@@ -40,6 +42,17 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
         backgroundColor: '#000',
         titleColor: '#fff',
         bodyColor: '#eee',
+      },
+      datalabels: {
+        display: true,
+        color: '#fff',
+        anchor: 'center',
+        align: 'start',
+        font: {
+          weight: 'bold',
+          size: 22,
+        },
+        formatter: (value) => `${value}%`,
       },
     },
     scales: {
@@ -55,7 +68,7 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
   };
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl cursor-pointer ">
       <h3 className="text-white text-3xl mb-4">
         Portfolio vs. SPY Benchmark Cumulative Returns
       </h3>

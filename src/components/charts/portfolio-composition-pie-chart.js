@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Container } from 'reactstrap';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); // Register plugin
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export default function PortfolioCompositionPieChart({ portfolioValues }) {
   const labels = portfolioValues.map((item) => item.symbol);

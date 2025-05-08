@@ -115,7 +115,15 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
     },
     plugins: {
       legend: {
-        labels: { color: '#ddd' },
+        position: 'top', // default, but makes it explicit
+        labels: {
+          color: '#ddd',
+        },
+      },
+      layout: {
+        padding: {
+          top: 30, // adds spacing below the legend
+        },
       },
       tooltip: {
         backgroundColor: '#000',
@@ -131,16 +139,16 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
           weight: 'bold',
           size: 13,
         },
-        align: 'top',
+        align: 'bottom',
         formatter: (value) => value.toFixed(1),
       },
     },
   };
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl">
-      <h3 className="text-white text-3xl mb-4">Portfolio vs. SPY Benchmark</h3>
-      <div style={{ height: '400px' }}>
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl cursor-pointer">
+      <h3 className="text-white text-3xl mb-8">Portfolio vs. SPY Benchmark</h3>{' '}
+      <div style={{ height: '500px' }}>
         <Line data={chartData} options={chartOptions} />
       </div>
     </Container>
