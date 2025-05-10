@@ -18,10 +18,10 @@ const UserComments = ({ initialComments }) => {
       <table className="w-full ">
         <thead>
           <tr>
-            <th className="py-3 px-4 text-left border-b-2 border-black ">
+            <th className="py-3 px-4 text-left border-b-2 border-black  text-3xl">
               Month/Date
             </th>
-            <th className="py-3 px-4 text-center border-b-2 border-black">
+            <th className="py-3 px-4 text-center border-b-2 border-black  text-3xl">
               Commentary/Update
             </th>
           </tr>

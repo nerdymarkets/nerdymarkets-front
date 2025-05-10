@@ -25,7 +25,7 @@ export default function CurrentPortfolioTable({ portfolioValues }) {
               <tr key={item.symbol} className="border-b border-gray-700">
                 <td className="px-4 py-2">{item.symbol}</td>
                 <td className="px-4 py-2">{item.quantity}</td>
-                <td className="px-4 py-2">${item.value}</td>
+                <td className="px-4 py-2">{item.value}</td>
                 <td className="px-4 py-2">${item.average_price}</td>
                 <td className="px-4 py-2">{item.unrealized_profit}</td>
                 <td className="px-4 py-2">

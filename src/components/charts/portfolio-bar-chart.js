@@ -26,10 +26,24 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
       {
         label: 'Cumulative Return (%)',
         data: [spyReturn.toFixed(2), cleanedPortfolioReturn.toFixed(2)],
-        backgroundColor: '#FF5733',
-        borderColor: ['#fff'],
+        backgroundColor: function (context) {
+          const index = context.dataIndex;
+          const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 400);
+          if (index === 0) {
+            gradient.addColorStop(0, '#ff5c5c');
+            gradient.addColorStop(1, '#b10000');
+          } else {
+            gradient.addColorStop(0, '#5cd65c');
+            gradient.addColorStop(1, '#267326');
+          }
+          return gradient;
+        },
+        borderRadius: 12,
+        barPercentage: 0.5,
+        categoryPercentage: 1.5,
         borderWidth: 2,
-        borderRadius: 100,
+        borderColor: '#222',
+        hoverBackgroundColor: ['#ff1a1a', '#339933'],
       },
     ],
   };

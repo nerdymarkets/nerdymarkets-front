@@ -24,10 +24,33 @@ ChartJS.register(
 const PortfolioLineChart = ({ equityData, spyData }) => {
   const [normalizedEquity, setNormalizedEquity] = useState([]);
   const [normalizedSpy, setNormalizedSpy] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
-    if (equityData.length && spyData.length) {
-      const formattedEquity = equityData.map((item) => ({
+    if (spyData.length) {
+      const lastDate = new Date(spyData.at(-1).datetime);
+      const firstDate = new Date(lastDate);
+      firstDate.setDate(firstDate.getDate() - 30);
+      setStartDate(firstDate.toISOString().split('T')[0]);
+      setEndDate(lastDate.toISOString().split('T')[0]);
+    }
+  }, [spyData]);
+  useEffect(() => {
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    const parseDate = (d) => new Date(d);
+    const start = parseDate(startDate);
+    const end = parseDate(endDate);
+
+    const formattedEquity = equityData
+      .filter((item) => {
+        const date = parseDate(item[''] || item.Date);
+        return date >= start && date <= end;
+      })
+      .map((item) => ({
         date: new Date(item[''] || item.Date).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
@@ -36,7 +59,12 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
         value: parseFloat(item.Close),
       }));
 
-      const formattedSpy = spyData.map((item) => ({
+    const formattedSpy = spyData
+      .filter((item) => {
+        const date = parseDate(item.datetime);
+        return date >= start && date <= end;
+      })
+      .map((item) => ({
         date: new Date(item.datetime).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
@@ -45,30 +73,27 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
         value: parseFloat(item.cumulative_PL),
       }));
 
-      const spyMap = new Map(formattedSpy.map((d) => [d.rawDate, d]));
-      const alignedEquity = formattedEquity.filter((d) =>
-        spyMap.has(d.rawDate)
-      );
-      const alignedSpy = alignedEquity.map((d) => spyMap.get(d.rawDate));
+    const spyMap = new Map(formattedSpy.map((d) => [d.rawDate, d]));
+    const alignedEquity = formattedEquity.filter((d) => spyMap.has(d.rawDate));
+    const alignedSpy = alignedEquity.map((d) => spyMap.get(d.rawDate));
 
-      const baseEquity = alignedEquity[0]?.value || 1;
-      const baseSpy = alignedSpy[0]?.value || 1;
+    const baseEquity = alignedEquity[0]?.value || 1;
+    const baseSpy = alignedSpy[0]?.value || 1;
 
-      setNormalizedEquity(
-        alignedEquity.map((item) => ({
-          date: item.date,
-          value: parseFloat(((item.value / baseEquity) * 100).toFixed(2)),
-        }))
-      );
+    setNormalizedEquity(
+      alignedEquity.map((item) => ({
+        date: item.date,
+        value: parseFloat(((item.value / baseEquity) * 100).toFixed(2)),
+      }))
+    );
 
-      setNormalizedSpy(
-        alignedSpy.map((item) => ({
-          date: item.date,
-          value: parseFloat(((item.value / baseSpy) * 100).toFixed(2)),
-        }))
-      );
-    }
-  }, [equityData, spyData]);
+    setNormalizedSpy(
+      alignedSpy.map((item) => ({
+        date: item.date,
+        value: parseFloat(((item.value / baseSpy) * 100).toFixed(2)),
+      }))
+    );
+  }, [equityData, spyData, startDate, endDate]);
 
   const labels = normalizedEquity.map((item) => item.date);
   const equityClose = normalizedEquity.map((item) => item.value);
@@ -115,14 +140,14 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
     },
     plugins: {
       legend: {
-        position: 'top', // default, but makes it explicit
+        position: 'top',
         labels: {
           color: '#ddd',
         },
       },
       layout: {
         padding: {
-          top: 30, // adds spacing below the legend
+          top: 30,
         },
       },
       tooltip: {
@@ -146,10 +171,34 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
   };
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl cursor-pointer">
+    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
       <h3 className="text-white text-3xl mb-8">Portfolio vs. SPY Benchmark</h3>{' '}
+      <div className="flex gap-4 mb-4">
+        <div className="flex items-center gap-2 ">
+          <label className="text-white">Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="text-black p-1 rounded-2xl cursor-pointer"
+          />
+        </div>
+        <div className="flex items-center gap-2 cursor-pointer">
+          <label className="text-white">End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="text-black p-1 rounded-2xl cursor-pointer bg-gray-300"
+          />
+        </div>
+      </div>
       <div style={{ height: '500px' }}>
-        <Line data={chartData} options={chartOptions} />
+        <Line
+          data={chartData}
+          options={chartOptions}
+          className="cursor-pointer"
+        />
       </div>
     </Container>
   );
