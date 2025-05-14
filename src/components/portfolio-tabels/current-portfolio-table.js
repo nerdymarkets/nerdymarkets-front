@@ -4,7 +4,7 @@ import { Container } from 'reactstrap';
 export default function CurrentPortfolioTable({ portfolioValues }) {
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl text-white">
-      <h3 className="text-white text-3xl mb-4">
+      <h3 className="text-white text-xl sm:text-2xl lg:text-3xl mb-4">
         Current Portfolio Composition
       </h3>
       <div className="overflow-x-auto cursor-pointer">

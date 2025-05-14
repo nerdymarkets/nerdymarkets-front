@@ -4,7 +4,7 @@ import { Container, Table } from 'reactstrap';
 export default function HistoricalOrdersTable({ orders }) {
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl mt-8">
-      <h3 className="text-white text-3xl mb-4">
+      <h3 className="text-white text-xl sm:text-2xl lg:text-3xl mb-4">
         Transactions – Historical Changes to Portfolio
       </h3>
       <div className="overflow-x-auto">

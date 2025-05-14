@@ -20,13 +20,15 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import useWindowDimensions from '@/hooks/useWindowDimension';
 
 const PortfolioLineChart = ({ equityData, spyData }) => {
   const [normalizedEquity, setNormalizedEquity] = useState([]);
   const [normalizedSpy, setNormalizedSpy] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   useEffect(() => {
     if (spyData.length) {
       const lastDate = new Date(spyData.at(-1).datetime);
@@ -94,10 +96,15 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
       }))
     );
   }, [equityData, spyData, startDate, endDate]);
+  const visibleCount = isMobile ? 5 : normalizedEquity.length;
 
-  const labels = normalizedEquity.map((item) => item.date);
-  const equityClose = normalizedEquity.map((item) => item.value);
-  const spyClose = normalizedSpy.map((item) => item.value);
+  const labels = normalizedEquity.slice(-visibleCount).map((item) => item.date);
+  const equityClose = normalizedEquity
+    .slice(-visibleCount)
+    .map((item) => item.value);
+  const spyClose = normalizedSpy
+    .slice(-visibleCount)
+    .map((item, index) => normalizedSpy.slice(-visibleCount)[index].value);
 
   const chartData = {
     labels,
@@ -171,25 +178,27 @@ const PortfolioLineChart = ({ equityData, spyData }) => {
   };
 
   return (
-    <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl ">
-      <h3 className="text-white text-3xl mb-8">Portfolio vs. SPY Benchmark</h3>{' '}
+    <Container className="bg-[#1a1a1a]  p-3  rounded-2xl ">
+      <h3 className="text-white text-xl sm:text-2xl lg:text-3xl mb-8">
+        Portfolio vs. SPY Benchmark
+      </h3>
       <div className="flex gap-4 mb-4">
         <div className="flex items-center gap-2 ">
-          <label className="text-white">Start Date</label>
+          <label className="text-white">Starტ</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="text-black p-1 rounded-2xl cursor-pointer"
+            className="text-black p-1.5 rounded-2xl cursor-pointer bg-gray-300"
           />
         </div>
         <div className="flex items-center gap-2 cursor-pointer">
-          <label className="text-white">End Date</label>
+          <label className="text-white">End</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="text-black p-1 rounded-2xl cursor-pointer bg-gray-300"
+            className="text-black p-1.5 rounded-2xl cursor-pointer bg-gray-300"
           />
         </div>
       </div>

@@ -9,12 +9,13 @@ import {
 } from 'chart.js';
 import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
-
+import useWindowDimensions from '@/hooks/useWindowDimension';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function PortfolioBarChart({ spyData, metricsData }) {
   const spyReturn = parseFloat(spyData.at(-1)?.cumulative_return || '0') * 100;
-
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   const rawPortfolioReturn = metricsData[0]?.Return || '0%';
   const cleanedPortfolioReturn = parseFloat(
     rawPortfolioReturn.replace('%', '').trim()
@@ -64,7 +65,7 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
         align: 'start',
         font: {
           weight: 'bold',
-          size: 22,
+          size: isMobile ? 10 : 22,
         },
         formatter: (value) => `${value}%`,
       },
@@ -83,10 +84,10 @@ export default function PortfolioBarChart({ spyData, metricsData }) {
 
   return (
     <Container className="bg-[#1a1a1a] lg:p-5 p-4 rounded-2xl cursor-pointer ">
-      <h3 className="text-white text-3xl mb-4">
+      <h3 className="text-white text-xl sm:text-2xl lg:text-3xl mb-4">
         Portfolio vs. SPY Benchmark Cumulative Returns
       </h3>
-      <div style={{ height: '350px' }} className="flex justify-center">
+      <div className="flex justify-center h-full">
         <Bar data={data} options={options} />
       </div>
     </Container>
