@@ -1,18 +1,21 @@
 import { useState, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { NavItem, NavLink, Nav, Navbar } from 'reactstrap';
+import { NavItem, NavLink, Nav, Navbar, Container } from 'reactstrap';
 import Link from 'next/link';
 import SignInModal from '@/components/sign-in/signin-modal';
-import nerdylogo from '../../../public/logo/nerdylogo.png';
+import logoBlack from '../../../public/logo/logo-black.png';
 import Image from 'next/image';
 import RegistrationModal from '@/components/registration/registration-modal';
 import Profile from '../profile/profile';
 import BurgerMenu from '../burger-menu/burger-menu';
+import { useRouter } from 'next/router';
 import useWindowDimensions from '@/hooks/useWindowDimension';
+
 const Header = () => {
   const { data: session, status } = useSession();
   const [isSignInModalOpen, setSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const router = useRouter();
   const toggleSignInModal = useCallback(() => {
     setSignInModalOpen((prev) => !prev);
   }, []);
@@ -34,10 +37,28 @@ const Header = () => {
   };
 
   return (
-    <>
-      <Navbar className="flex justify-between items-center lg:p-4">
+    <Container>
+      <Navbar className="flex justify-between items-center py-4 ">
+        <div className="flex gap-10 items-center">
+          <Link
+            href="/"
+            className={`${
+              router.pathname === '/' ? 'underline' : ''
+            } hover:underline`}
+          >
+            Home
+          </Link>
+          <Link
+            href="/research"
+            className={`${
+              router.pathname === '/research' ? 'underline' : ''
+            } hover:underline`}
+          >
+            Research
+          </Link>
+        </div>
         <Link href="/" passHref>
-          <Image src={nerdylogo} alt="logo" width={150} height={100} />
+          <Image src={logoBlack} alt="logo" width={110} height={80} />
         </Link>
         {width < 678 ? (
           <div>
@@ -61,7 +82,7 @@ const Header = () => {
             )}
           </div>
         ) : (
-          <Nav pills className="py-4 flex items-center">
+          <Nav pills className=" flex items-center">
             {!session && status !== 'authenticated' && (
               <NavItem>
                 <NavLink
@@ -104,7 +125,9 @@ const Header = () => {
                     </NavLink>
                   </NavItem>
                 )}
-                <Profile session={session} status={status} />
+                <div className="absolute right-[-80px]">
+                  <Profile session={session} status={status} />
+                </div>
               </>
             )}
           </Nav>
@@ -120,7 +143,7 @@ const Header = () => {
         toggle={toggleRegisterModal}
         openLoginModal={toggleSignInModal}
       />
-    </>
+    </Container>
   );
 };
 

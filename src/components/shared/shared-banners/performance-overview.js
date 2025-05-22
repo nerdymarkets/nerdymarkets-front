@@ -1,50 +1,53 @@
 import Image from 'next/image';
 import { Container } from 'reactstrap';
 import AnimationWrapper from '@/components/shared/animation-wrapper';
-
+import keyStat from '../../../../public/images/keystats.png';
 const PerformanceOverview = () => {
   return (
-    <Container className="bg-white py-20 text-start flex gap-6 flex-col items-center">
+    <Container className="bg-white py-20 text-start flex gap-6 flex-col items-center font-rubik">
       <AnimationWrapper>
-        <h1 className="text-6xl font-bold">
+        <h1 className="text-6xl font-extrabold">
           Unlock the Power of Smart Investing
         </h1>
       </AnimationWrapper>
       <AnimationWrapper delay={0.2}>
-        <div className="text-normal font-sans">
-          <p>
+        <div className="text-normal  font-extralight">
+          <p className="leading-[30px]">
             We believe in data-driven, methodical trading strategies. Our
             approach is rooted in statistics and probabilities, not hype or
             emotion. We are not stock market gurus with crystal ball
             predictions. Instead, we offer a transparent, reliable, and
             research-driven portfolios.
           </p>
-          <p>
-            We designed three strategic portfolios, each tailored to different
-            risk levels. Whether you prefer a low-, medium-, or high-volatility
-            approach, we have a portfolio for you. Follow one, two, or all three
-            to match your investment style.
+          <p className="mt-4 leading-[30px]">
+            We provide a{' '}
+            <span className="font-extrabold">robust portfolio</span>
+            that responds to market volatility and requires minimal monitoring,
+            as it rebalances on a monthly basis. This portfolio consists of
+            individual stocks and ETFs.
           </p>
-          <p>
-            Each month, we review the composition of each portfolio and make
+          <p className="mt-4">
+            Each month, we review the composition of the portfolio and make
             adjustments based on various factors embedded in our strictly
             mechanical approach. You’ll receive monthly commentary with all the
-            updates to the portfolios. Through your preferred broker, you decide
-            whether you want to act on the changes, allowing you full control
-            over your investments. This way you become an informed investor.
+            updates to the portfolio. Through your preferred broker, you decide
+            whether you want to act on the changes, allowing you a full control
+            over your investments. This way you become an{' '}
+            <span className="font-medium">informed investor.</span>
           </p>
         </div>
       </AnimationWrapper>
       <AnimationWrapper delay={0.4}>
         <div className="text-customPink font-semibold gap-6 flex flex-col items-center text-center">
-          <h4>Smart Volatility ETF Portfolios Performance</h4>
-          <h6>Backtesting Results 2015-2023</h6>
+          <h4 className="text-3xl">
+            Smart Volatility ETF Portfolios Performance
+          </h4>
+          <h6 className="text-base">Backtesting Results 2015-2023</h6>
           <Image
-            src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=646,h=349,fit=crop/Aq2BvWKQ6gSzv6l3/capture2-mk3DJGrrX9h7N3Zk.JPG"
+            src={keyStat}
             alt="banner-image"
-            width={600}
-            height={300}
-            className="h-10 md:h-12 lg:h-[250px]"
+            layout="responsive"
+            objectFit="contain"
           />
         </div>
       </AnimationWrapper>

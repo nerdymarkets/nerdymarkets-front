@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Form,
-  Row,
-  FormGroup,
-  Label,
-  Input,
-  Button,
-  FormFeedback,
-} from 'reactstrap';
+import { Form, Row, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { twMerge } from 'tailwind-merge';
 
@@ -36,7 +28,10 @@ const SubscriptionForm = ({ labelTextColor, roundedButton, inputWidth }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="flex flex-col  text-white">
+    <Form
+      onSubmit={handleSubmit}
+      className="flex flex-col font-rubik text-white  "
+    >
       <Row>
         <FormGroup>
           <Label
@@ -48,7 +43,7 @@ const SubscriptionForm = ({ labelTextColor, roundedButton, inputWidth }) => {
           </Label>
           <Input
             name="email"
-            bsSize="lg"
+            bsSize="md"
             id="Email"
             type="email"
             placeholder="Your email address"
@@ -56,20 +51,18 @@ const SubscriptionForm = ({ labelTextColor, roundedButton, inputWidth }) => {
             valid={emailValid}
             invalid={email.length > 0 && !emailValid}
             onChange={handleChange}
-            className="mb-2 border-2  text-black "
+            className="  w-[450px]  text-black "
             style={{ width: widthClass[inputWidth] }}
           />
           <FormFeedback valid>Valid email address.</FormFeedback>
           <FormFeedback>Invalid email address.</FormFeedback>
-          <Button
+          <button
             type="submit"
-            color="info"
             disabled={!emailValid}
-            size="lg"
-            className={twMerge(roundedButton ? 'custom-rounded-button' : '')}
+            className={`mt-4 text-white text-base bg-customPink py-3 px-5  ${roundedButton ? 'rounded-full ' : ' '}`}
           >
             Join the waitlist!
-          </Button>
+          </button>
         </FormGroup>
       </Row>
     </Form>

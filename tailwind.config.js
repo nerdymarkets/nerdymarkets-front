@@ -57,6 +57,7 @@ module.exports = {
         modernSerif: ['Merriweather', 'serif'],
         display: ['Oswald', 'sans-serif'],
         rounded: ['Quicksand', 'sans-serif'],
+        rubik: ['Rubik', 'sans-serif'],
       },
     },
   },

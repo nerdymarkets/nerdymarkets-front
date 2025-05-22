@@ -19,7 +19,9 @@ const Footer = () => {
                 placeholder="blur"
               />
 
-              <p className="text-lg font-light">Join us and be successful.</p>
+              <p className="text-lg font-bold text-customPink mt-10">
+                Join us and be successful.
+              </p>
             </AnimationWrapper>
           </div>
 
@@ -28,8 +30,8 @@ const Footer = () => {
           </AnimationWrapper>
         </div>
         <AnimationWrapper>
-          <div className="flex flex-col gap-4 mt-10 text-sm md:text-base">
-            <p>
+          <div className="flex flex-col gap-4 mt-10 text-sm md:text-base ">
+            <p className="leading-6">
               Disclosure: Any explanation or information which we give to you as
               part of this service, or about the performance of the portfolios
               is not intended to be, and should not be considered as investment
@@ -38,14 +40,16 @@ const Footer = () => {
               use. We are unable to provide any guarantee as to the performance
               of any particular portfolio or strategy.
             </p>
-            <p>
+            <p className="leading-6">
               Past performance, risk scores, statistics and any other
               information with respect to the portfolios are not reliable
               indicators of future performance. We do not represent or guarantee
               that you will achieve profits or losses similar to those shown on
               this website or within the service.
             </p>
-            <p>©NerdyMarkets Limited. All rights reserved.</p>
+            <p className="text-customPink text-center font-light">
+              ©NerdyMarkets Limited. All rights reserved.
+            </p>
           </div>
         </AnimationWrapper>
       </Container>

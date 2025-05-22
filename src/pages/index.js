@@ -17,13 +17,13 @@ export default function Home() {
     );
   }
   return (
-    <div>
+    <>
       <InfoBanner />
       <PerformanceOverview />
       <HowItWorksSection />
       <WaitListSection />
       <FaqSection />
       <WaitingForSection />
-    </div>
+    </>
   );
 }
