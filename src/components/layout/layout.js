@@ -1,13 +1,13 @@
-import Header from '@/components/header/header';
+import Header from '../../components/header/header';
 import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { Inter } from 'next/font/google';
 import Footer from '../footer/footer';
 import { useSession } from 'next-auth/react';
-import { getUserSubscriptions } from '@/pages/api/auth';
+import { getUserSubscriptions } from '../../pages/api/auth';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import useSubscriptionStore from '@/stores/subscription-store';
+import useSubscriptionStore from '../../stores/subscription-store';
 const inter = Inter({ subsets: ['latin'] });
 const Layout = ({ children }) => {
   const { data: session, status } = useSession();

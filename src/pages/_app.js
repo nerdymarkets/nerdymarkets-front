@@ -1,4 +1,4 @@
-import Layout from '@/components/layout/layout';
+import Layout from '../components/layout/layout';
 import PropTypes from 'prop-types';
 import { SessionProvider } from 'next-auth/react';
 import 'bootstrap/dist/css/bootstrap.min.css';

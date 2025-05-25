@@ -2,14 +2,14 @@ import { useState, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { NavItem, NavLink, Nav, Navbar, Container } from 'reactstrap';
 import Link from 'next/link';
-import SignInModal from '@/components/sign-in/signin-modal';
+import SignInModal from '../../components/sign-in/signin-modal';
 import logoBlack from '../../../public/logo/logo-black.png';
 import Image from 'next/image';
-import RegistrationModal from '@/components/registration/registration-modal';
+import RegistrationModal from '../../components/registration/registration-modal';
 import Profile from '../profile/profile';
 import BurgerMenu from '../burger-menu/burger-menu';
 import { useRouter } from 'next/router';
-import useWindowDimensions from '@/hooks/useWindowDimension';
+import useWindowDimensions from '../../hooks/useWindowDimension';
 
 const Header = () => {
   const { data: session, status } = useSession();
