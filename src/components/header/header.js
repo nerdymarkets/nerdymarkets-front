@@ -39,31 +39,34 @@ const Header = () => {
   return (
     <Container>
       <Navbar className="flex justify-between items-center py-4 ">
-        <div className="flex gap-10 items-center">
-          <Link
-            href="/"
-            className={`${
-              router.pathname === '/' ? 'underline' : ''
-            } hover:underline`}
-          >
-            Home
-          </Link>
-          <Link
-            href="/research"
-            className={`${
-              router.pathname === '/research' ? 'underline' : ''
-            } hover:underline`}
-          >
-            Research
-          </Link>
-        </div>
+        {width >= 678 && (
+          <div className="flex gap-10 items-center">
+            <Link
+              href="/"
+              className={`${
+                router.pathname === '/' ? 'underline' : ''
+              } hover:underline`}
+            >
+              Home
+            </Link>
+            <Link
+              href="/research"
+              className={`${
+                router.pathname === '/research' ? 'underline' : ''
+              } hover:underline`}
+            >
+              Research
+            </Link>
+          </div>
+        )}
+
         <Link href="/" passHref>
           <Image src={logoBlack} alt="logo" width={110} height={80} />
         </Link>
         {width < 678 ? (
           <div>
             {!session && status !== 'authenticated' ? (
-              <NavItem>
+              <NavItem className="list-none">
                 <NavLink
                   href="#"
                   onClick={handleAuthClick}

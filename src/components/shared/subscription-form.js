@@ -51,7 +51,7 @@ const SubscriptionForm = ({ labelTextColor, roundedButton, inputWidth }) => {
             valid={emailValid}
             invalid={email.length > 0 && !emailValid}
             onChange={handleChange}
-            className="  w-[450px]  text-black "
+            className="   text-black "
             style={{ width: widthClass[inputWidth] }}
           />
           <FormFeedback valid>Valid email address.</FormFeedback>

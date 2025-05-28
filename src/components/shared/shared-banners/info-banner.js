@@ -20,7 +20,7 @@ const InfoBanner = () => {
           </div>
         </AnimationWrapper>
 
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-10">
           <div className="flex-1">
             <div className="flex flex-col gap-6 my-4 pt-10s  text-start">
               <div>
@@ -35,7 +35,7 @@ const InfoBanner = () => {
 
             <SubscriptionForm roundedButton />
           </div>
-          <div className="w-1/2">
+          <div className="md:w-1/2">
             <Image
               src={perfromanceImage}
               alt="banner-image"

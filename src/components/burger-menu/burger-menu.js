@@ -8,7 +8,19 @@ const BurgerMenu = () => {
     <Menu right>
       {session && status === 'authenticated' && (
         <>
-          <NavItem>
+          <NavItem className="text-center">
+            <NavLink
+              href="/"
+              className="text-customPink hover:text-customPinkSecondary"
+            >
+              Home
+            </NavLink>
+            <NavLink
+              href="/research"
+              className="text-customPink hover:text-customPinkSecondary"
+            >
+              Research
+            </NavLink>
             <NavLink
               href="/portfolio"
               className="text-customPink hover:text-customPinkSecondary"
