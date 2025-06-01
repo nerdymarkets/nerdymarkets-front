@@ -66,15 +66,18 @@ const Header = () => {
         {width < 678 ? (
           <div>
             {!session && status !== 'authenticated' ? (
-              <NavItem className="list-none">
-                <NavLink
-                  href="#"
-                  onClick={handleAuthClick}
-                  className="text-customPink hover:text-customPinkSecondary"
-                >
-                  Sign In
-                </NavLink>
-              </NavItem>
+              <div className="flex items-center gap-x-4">
+                <NavItem className="list-none">
+                  <NavLink
+                    href="#"
+                    onClick={handleAuthClick}
+                    className="text-customPink hover:text-customPinkSecondary"
+                  >
+                    Sign In
+                  </NavLink>
+                </NavItem>
+                <BurgerMenu />
+              </div>
             ) : (
               <div className="flex items-center">
                 <div className="mr-6">
